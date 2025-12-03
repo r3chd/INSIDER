@@ -99,7 +99,7 @@ This is documentation that describes the implementation of **Insider**, an Among
 
 ### Phase 3: Discussion & Voting
 
-#### Judge Guesser
+#### Judge Guesser (OPTIONAL)
 - The first part is to discuss whether or not the **Guesser** is the **Insider**
 - If the majority vote YES, then
 	- If the **Guesser** is the **Insider**, **Insider Team** loses.
@@ -118,6 +118,9 @@ This is documentation that describes the implementation of **Insider**, an Among
 - If a **Player** has majority votes:
 	- If voted **Player** is **Insider**, **Insider Team** loses.
 	- Else if voted **Player** is not **Insider**, **Insider Team** wins.
+- If the **Timer** expires:
+	- If there are no votes, **Insider Team** wins.
+	- If there are votes, the **Player** with majority is voted out.
 
 ## 7. UI/UX Requirements
 
