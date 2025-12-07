@@ -1,4 +1,6 @@
-import GameContext from "./context/GameContext.js";
+import GameContext from "../game/context/GameContext.js";
+
+const socket = io();
 
 document.addEventListener("keydown", (event) => {
     if (event.code === "Space") {
