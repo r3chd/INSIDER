@@ -130,18 +130,17 @@ This is documentation that describes the implementation of **Insider**, an Among
 
 ## 10. Future Considerations
 
+
 ## Stack
 
 ### Front End:
-- **JavaScript**
-- **HTML**
-- **React**
+- React + Next.js ?
 
 ### Back End: 
-- **Node.js**
+- Node.js + Express ?
+- Socket.IO
+- MongoDB (for database)
 
-### Real Time:
-- **WebSockets**
-- **Socket.io**
-### Server Hosting: 
-- **AWS**
+### Hosting
+- (one for front end)
+- (one for back end)
