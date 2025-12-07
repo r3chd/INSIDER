@@ -1,10 +1,11 @@
 // for socket
-const express = require('express');
+import express from "express";
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
-const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
+const io = new Server(server, 
+  {pingInterval: 2000, pingTimeout: 5000});
 
 // for directory
 const path = require('path');
@@ -20,7 +21,6 @@ app.get('/', (req, res) => {
 const players = {}
 
 io.on('connection', (socket) => {
-    console.log('a user connected')
     players[socket.id] = { /* store player data here */ }
 
     io.emit('playerUpdate', players)
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 })
 
 
-const PORT = 3000;
+const PORT = 4000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 });

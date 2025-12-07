@@ -1,5 +1,5 @@
 import GameContext from "../game/context/GameContext.js";
-import Player from "./classes/Player.js";
+import Player from "../../models/Player.js";
 
 const socket = io();
 
