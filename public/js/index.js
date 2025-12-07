@@ -1,4 +1,5 @@
 import GameContext from "../game/context/GameContext.js";
+import Player from "./classes/Player.js";
 
 const socket = io();
 
@@ -8,6 +9,12 @@ socket.on('playerUpdate', (backendPlayers) => {
     for (const id in backendPlayers) {
         if (!players[id]) {
             players[id] = new Player(id);
+        }
+    }
+
+    for (const id in players) {
+        if (!backendPlayers[id]) {
+            delete players[id]
         }
     }
 
