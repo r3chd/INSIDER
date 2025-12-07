@@ -21,6 +21,12 @@ socket.on('playerUpdate', (backendPlayers) => {
     console.log(players);
 });
 
+setInterval(function () {
+      // ...
+      document.getElementById("player-list").innerText = `Players: ${Object.keys(players).length}`;
+
+  }, 1000);
+
 document.addEventListener("keydown", (event) => {
     if (event.code === "Space") {
         console.log("space hit");
