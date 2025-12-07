@@ -25,7 +25,13 @@ io.on('connection', (socket) => {
 
     io.emit('playerUpdate', players)
 
-    console.log('Current players:', Object.keys(players))
+    socket.on('disconnect', (reason) => {
+        console.log('user disconnected:', reason)
+        delete players[socket.id]
+        io.emit('playerUpdate', players)
+    })
+
+    console.log(players)
 })
 
 
