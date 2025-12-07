@@ -14,12 +14,20 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // Default route: serve game.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'game.html'))
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
 });
+
+const players = {}
 
 io.on('connection', (socket) => {
     console.log('a user connected')
+    players[socket.id] = { /* store player data here */ }
+
+    io.emit('playerUpdate', players)
+
+    console.log('Current players:', Object.keys(players))
 })
+
 
 const PORT = 3000;
 server.listen(PORT, () => {
