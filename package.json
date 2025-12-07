@@ -1,0 +1,9 @@
+{
+    "name": "insider",
+    "version": "0.0.1",
+    "description": "Insider game",
+    "dependencies": {
+        "express": "^5.2.1",
+        "socket.io": "^4.8.1"
+    }
+}

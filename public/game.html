@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>Socket.IO chat</title>
+    <style>
+        #menu, #game {
+            display: none;
+        }
+        #menu.active, #game.active {
+            display: block;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="menu" class="active">
+        <h1>hm</h1>
+        <p>Press SPACE to start</p>
+    </div>
+
+    <div id="game">
+        <h1>Hey Chat</h1>
+        <div id="board"></div>
+    </div>
+
+    <script type="module" src="/js/game.js"></script>
+  </body>
+</html>
