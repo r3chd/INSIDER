@@ -19,21 +19,23 @@ app.get('/', (req, res) => {
 
 const players = {}
 
+// adding users connection as players
 io.on('connection', (socket) => {
     console.log('a user connected')
     players[socket.id] = { /* store player data here */ }
 
     io.emit('playerUpdate', players)
 
+    // disconnecting users from the players list
     socket.on('disconnect', (reason) => {
         console.log('user disconnected:', reason)
         delete players[socket.id]
         io.emit('playerUpdate', players)
     })
 
+    // FOR DEBUGGING
     console.log(players)
 })
-
 
 const PORT = 3000;
 server.listen(PORT, () => {
