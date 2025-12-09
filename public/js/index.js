@@ -5,6 +5,7 @@ const socket = io();
 
 const players = {};
 
+// update players when they join for the front end, adding them to players list
 socket.on('playerUpdate', (backendPlayers) => {
     for (const id in backendPlayers) {
         if (!players[id]) {
@@ -12,15 +13,18 @@ socket.on('playerUpdate', (backendPlayers) => {
         }
     }
 
+    // delete players that don't exist in the backend anymore
     for (const id in players) {
         if (!backendPlayers[id]) {
             delete players[id]
         }
     }
 
+    // FOR DEBUGGING
     console.log(players);
 });
 
+// display information relating to players
 setInterval(function () {
       // ...
       document.getElementById("player-list").innerText = `Players: ${Object.keys(players).length}`;
