@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>Socket.IO chat</title>
+    <style>
+        #menu, #game {
+            display: none;
+        }
+        #menu.active, #game.active {
+            display: block;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="menu" class="active">
+        <h1>hm</h1>
+        <p>Press SPACE to start</p>
+    </div>
+    
+    <div id="game">
+        <h1>Hey Chat</h1>
+        <div id="board"></div>
+    </div>
+
+    <p id="player-list"></p>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js">
+      var socket = io();
+    </script>
+    <script type="module" src="/js/index.js"></script>
+  </body>
+</html>
