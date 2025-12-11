@@ -9,8 +9,6 @@ export default function Menu({ onStartGame }) {
     <div id="menu" className="active">
       <h1>hm</h1>
       <p>Press SPACE to start</p>
-      {/* Example of how to trigger the start action */}
-      {/* <button onClick={onStartGame} style={{display: 'none'}}>Start Button</button>  */}
     </div>
   );
 }

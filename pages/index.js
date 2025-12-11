@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import { socket } from '../socket';
+import { socket } from "../socket.js";
 
 import Menu from '../components/Menu.jsx';
 import Game from '../components/Game.jsx';
 import Status from '../components/Status.jsx';
-// do i need this
-import Player from "../models/Player.js";
 
 export default function Home() {
+
+
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
-
+    const [players, setPlayers] = useState({})
+    
     useEffect(() => {
+
         if (socket.connected) {
             onConnect();
         }
@@ -29,52 +31,32 @@ export default function Home() {
             setIsConnected(false);
             setTransport("N/A");
         }
-
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
+        socket.on("updatePlayers", (players) => {
+            setPlayers(players);
+            console.log(players);
+        })
 
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
-
+            socket.off("updatePlayers")
         };
-
+        
     }, []);
 
-//   const [isGameActive, setIsGameActive] = useState(false);
-
-//   // Function to transition from Menu to Game
-//   const handleStartGame = () => {
-//     setIsGameActive(prev => !prev);
-//     // space bar now toggles
-//     // setIsGameActive(true); is also fine
-//   };
-
-//   // Add a listener for the SPACE key, as specified in the original HTML
-//   useEffect(() => {
-//     const handleKeyDown = (event) => {
-//       if (event.code === 'Space' && !isGameActive) {
-//         handleStartGame();
-//       }
-//     };
-    
-//     document.addEventListener('keydown', handleKeyDown);
-
-//     // return () => {
-//     //   document.removeEventListener('keydown', handleKeyDown);
-//     // };
-//   }, [isGameActive]); // Re-run effect if isGameActive changes, ever
   return (
     <div>
-        <p>home</p>
+
         <Menu />
-
         <Game />
-        
-        <Status isConnected = { isConnected } />
-
-
-
+        <Status 
+          isConnected = { isConnected } 
+          players =  { players }
+          // Want to pass backend to frontend
+        />
+      <p>Transport: { transport }</p>
     </div>
   );
 }

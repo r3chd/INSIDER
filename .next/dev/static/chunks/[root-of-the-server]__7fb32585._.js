@@ -531,38 +531,13 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/index.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/socket.io-client/build/esm/index.js [client] (ecmascript) <locals>"); // Import the client library
 ;
 var _s = __turbopack_context__.k.signature();
-'use client'; // This must be a Client Component
 ;
-;
-const SOCKET_SERVER_URL = 'https://localhost:4000';
-const socket = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])(SOCKET_SERVER_URL);
 function Game() {
     _s();
     const [playerList, setPlayerList] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [gameMessage, setGameMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])('Hey Chat');
-    // This useEffect hook handles the client-side Socket.IO logic
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "Game.useEffect": ()=>{
-            // 1. Listen for player list updates or other game events
-            socket.on('player_update', {
-                "Game.useEffect": (list)=>{
-                    setPlayerList(list);
-                }
-            }["Game.useEffect"]);
-            // 2. Add other Socket.IO listeners here (e.g., 'game_state_update')
-            // For now, we'll keep the connection simple.
-            // 3. Cleanup function to disconnect listeners when component unmounts
-            return ({
-                "Game.useEffect": ()=>{
-                    socket.off('player_update');
-                // socket.disconnect(); // Only disconnect if you want the connection to close fully
-                }
-            })["Game.useEffect"];
-        }
-    }["Game.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         id: "game",
         children: [
@@ -570,24 +545,24 @@ function Game() {
                 children: gameMessage
             }, void 0, false, {
                 fileName: "[project]/components/Game.jsx",
-                lineNumber: 32,
+                lineNumber: 10,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 id: "board"
             }, void 0, false, {
                 fileName: "[project]/components/Game.jsx",
-                lineNumber: 33,
+                lineNumber: 13,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/Game.jsx",
-        lineNumber: 31,
+        lineNumber: 9,
         columnNumber: 5
     }, this);
 }
-_s(Game, "aJea4wgjSPju2aGPl5dXlNh7rkE=");
+_s(Game, "WKuKhY8FVufosclphazi1En1LPc=");
 _c = Game;
 var _c;
 __turbopack_context__.k.register(_c, "Game");
@@ -603,61 +578,44 @@ __turbopack_context__.s([
     ()=>Status
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react/index.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/socket.io-client/build/esm/index.js [client] (ecmascript) <locals>");
 ;
-var _s = __turbopack_context__.k.signature();
-;
-;
-const socket = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])();
-function Status({ isConnected }) {
-    _s();
-    // We'll attach the start logic here, likely listening for the SPACE key
-    // You would typically use a useEffect hook and a state handler here 
-    // to manage key presses, but for simplicity, we keep the UI structure.
+function Status({ isConnected, players }) {
     // useEffect(() => {
-    //     io.on("playerUpdate", (backendPlayers) => {
-    //         document.getElementById("aaa").innerText = 'Players: ${Object.keys(players).length}';
-    //     });
-    // });
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "Status.useEffect": ()=>{
-            socket.on('playerUpdate', {
-                "Status.useEffect": (backendPlayers)=>{
-                    console.log(backendPlayers);
-                }
-            }["Status.useEffect"]);
-        }
-    }["Status.useEffect"]);
+    //     socket.on('playerUpdate', (backendPlayers) => {
+    //         console.log(backendPlayers);
+    //     })
+    // })
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         id: "menu",
         className: "active",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 children: [
-                    "State: ",
-                    '' + isConnected
+                    "Is connected?: ",
+                    isConnected ? "True" : "False"
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/Status.jsx",
-                lineNumber: 24,
+                lineNumber: 10,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                children: "Players connected: "
-            }, void 0, false, {
+                children: [
+                    "Players connected: ",
+                    JSON.stringify(players)
+                ]
+            }, void 0, true, {
                 fileName: "[project]/components/Status.jsx",
-                lineNumber: 25,
+                lineNumber: 11,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/Status.jsx",
-        lineNumber: 23,
+        lineNumber: 9,
         columnNumber: 5
     }, this);
 }
-_s(Status, "OD7bBpZva5O2jO+Puf00hKivP7c=");
 _c = Status;
 var _c;
 __turbopack_context__.k.register(_c, "Status");
@@ -709,6 +667,7 @@ function Home() {
     _s();
     const [isConnected, setIsConnected] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [transport, setTransport] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])("N/A");
+    const [players, setPlayers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])({});
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Home.useEffect": ()=>{
             if (__TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].connected) {
@@ -729,67 +688,59 @@ function Home() {
             }
             __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].on("connect", onConnect);
             __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].on("disconnect", onDisconnect);
+            __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].on("updatePlayers", {
+                "Home.useEffect": (players)=>{
+                    setPlayers(players);
+                    console.log(players);
+                }
+            }["Home.useEffect"]);
             return ({
                 "Home.useEffect": ()=>{
                     __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].off("connect", onConnect);
                     __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].off("disconnect", onDisconnect);
+                    __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$client$5d$__$28$ecmascript$29$__["socket"].off("updatePlayers");
                 }
             })["Home.useEffect"];
         }
     }["Home.useEffect"], []);
-    //   const [isGameActive, setIsGameActive] = useState(false);
-    //   // Function to transition from Menu to Game
-    //   const handleStartGame = () => {
-    //     setIsGameActive(prev => !prev);
-    //     // space bar now toggles
-    //     // setIsGameActive(true); is also fine
-    //   };
-    //   // Add a listener for the SPACE key, as specified in the original HTML
-    //   useEffect(() => {
-    //     const handleKeyDown = (event) => {
-    //       if (event.code === 'Space' && !isGameActive) {
-    //         handleStartGame();
-    //       }
-    //     };
-    //     document.addEventListener('keydown', handleKeyDown);
-    //     // return () => {
-    //     //   document.removeEventListener('keydown', handleKeyDown);
-    //     // };
-    //   }, [isGameActive]); // Re-run effect if isGameActive changes, ever
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                children: "home"
-            }, void 0, false, {
-                fileName: "[project]/pages/index.js",
-                lineNumber: 69,
-                columnNumber: 9
-            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Menu$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 70,
+                lineNumber: 54,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Game$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 72,
+                lineNumber: 55,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Status$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                isConnected: isConnected
+                isConnected: isConnected,
+                players: players
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 74,
+                lineNumber: 56,
                 columnNumber: 9
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                children: [
+                    "Transport: ",
+                    transport
+                ]
+            }, void 0, true, {
+                fileName: "[project]/pages/index.js",
+                lineNumber: 61,
+                columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
-        lineNumber: 68,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }
-_s(Home, "MEuy3g5dcdCQP7h5RlSAUvvXY7o=");
+_s(Home, "SFWc5zBqFLR8/3djVh1mHIJCwBQ=");
 _c = Home;
 var _c;
 __turbopack_context__.k.register(_c, "Home");

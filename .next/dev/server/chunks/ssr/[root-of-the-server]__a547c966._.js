@@ -76,42 +76,17 @@ function Menu({ onStartGame }) {
 "[project]/components/Game.jsx [ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
-
 __turbopack_context__.s([
     "default",
     ()=>Game
 ]);
 var __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react/jsx-dev-runtime [external] (react/jsx-dev-runtime, cjs)");
 var __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react [external] (react, cjs)");
-var __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__ = __turbopack_context__.i("[externals]/socket.io-client [external] (socket.io-client, esm_import)"); // Import the client library
-var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
-    __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__
-]);
-[__TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
-'use client'; // This must be a Client Component
 ;
 ;
-;
-const SOCKET_SERVER_URL = 'https://localhost:4000';
-const socket = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__["io"])(SOCKET_SERVER_URL);
 function Game() {
     const [playerList, setPlayerList] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])([]);
     const [gameMessage, setGameMessage] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])('Hey Chat');
-    // This useEffect hook handles the client-side Socket.IO logic
-    (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
-        // 1. Listen for player list updates or other game events
-        socket.on('player_update', (list)=>{
-            setPlayerList(list);
-        });
-        // 2. Add other Socket.IO listeners here (e.g., 'game_state_update')
-        // For now, we'll keep the connection simple.
-        // 3. Cleanup function to disconnect listeners when component unmounts
-        return ()=>{
-            socket.off('player_update');
-        // socket.disconnect(); // Only disconnect if you want the connection to close fully
-        };
-    }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
         id: "game",
         children: [
@@ -119,89 +94,71 @@ function Game() {
                 children: gameMessage
             }, void 0, false, {
                 fileName: "[project]/components/Game.jsx",
-                lineNumber: 32,
+                lineNumber: 10,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                 id: "board"
             }, void 0, false, {
                 fileName: "[project]/components/Game.jsx",
-                lineNumber: 33,
+                lineNumber: 13,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/Game.jsx",
-        lineNumber: 31,
+        lineNumber: 9,
         columnNumber: 5
     }, this);
 }
-__turbopack_async_result__();
-} catch(e) { __turbopack_async_result__(e); } }, false);}),
+}),
 "[project]/components/Status.jsx [ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
-
-return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
 __turbopack_context__.s([
     "default",
     ()=>Status
 ]);
 var __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react/jsx-dev-runtime [external] (react/jsx-dev-runtime, cjs)");
-var __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react [external] (react, cjs)");
-var __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__ = __turbopack_context__.i("[externals]/socket.io-client [external] (socket.io-client, esm_import)");
-var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
-    __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__
-]);
-[__TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
-;
-;
-const socket = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$socket$2e$io$2d$client__$5b$external$5d$__$28$socket$2e$io$2d$client$2c$__esm_import$29$__["io"])();
-function Status({ isConnected }) {
-    // We'll attach the start logic here, likely listening for the SPACE key
-    // You would typically use a useEffect hook and a state handler here 
-    // to manage key presses, but for simplicity, we keep the UI structure.
+function Status({ isConnected, players }) {
     // useEffect(() => {
-    //     io.on("playerUpdate", (backendPlayers) => {
-    //         document.getElementById("aaa").innerText = 'Players: ${Object.keys(players).length}';
-    //     });
-    // });
-    (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
-        socket.on('playerUpdate', (backendPlayers)=>{
-            console.log(backendPlayers);
-        });
-    });
+    //     socket.on('playerUpdate', (backendPlayers) => {
+    //         console.log(backendPlayers);
+    //     })
+    // })
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
         id: "menu",
         className: "active",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
                 children: [
-                    "State: ",
-                    '' + isConnected
+                    "Is connected?: ",
+                    isConnected ? "True" : "False"
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/Status.jsx",
-                lineNumber: 24,
+                lineNumber: 10,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
-                children: "Players connected: "
-            }, void 0, false, {
+                children: [
+                    "Players connected: ",
+                    JSON.stringify(players)
+                ]
+            }, void 0, true, {
                 fileName: "[project]/components/Status.jsx",
-                lineNumber: 25,
+                lineNumber: 11,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/Status.jsx",
-        lineNumber: 23,
+        lineNumber: 9,
         columnNumber: 5
     }, this);
 }
-__turbopack_async_result__();
-} catch(e) { __turbopack_async_result__(e); } }, false);}),
+}),
 "[project]/models/Player.js [ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
@@ -234,11 +191,9 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Status$2e$jsx_
 // do i need this
 var __TURBOPACK__imported__module__$5b$project$5d2f$models$2f$Player$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/models/Player.js [ssr] (ecmascript)");
 var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
-    __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__,
-    __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Game$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__,
-    __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Status$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__
+    __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__
 ]);
-[__TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__, __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Game$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__, __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Status$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
+[__TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
 ;
 ;
@@ -249,6 +204,7 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 function Home() {
     const [isConnected, setIsConnected] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])(false);
     const [transport, setTransport] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])("N/A");
+    const [players, setPlayers] = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useState"])({});
     (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react__$5b$external$5d$__$28$react$2c$__cjs$29$__["useEffect"])(()=>{
         if (__TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].connected) {
             onConnect();
@@ -266,60 +222,50 @@ function Home() {
         }
         __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].on("connect", onConnect);
         __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].on("disconnect", onDisconnect);
+        __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].on("updatePlayers", (players)=>{
+            setPlayers(players);
+            console.log(players);
+        });
         return ()=>{
             __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].off("connect", onConnect);
             __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].off("disconnect", onDisconnect);
+            __TURBOPACK__imported__module__$5b$project$5d2f$socket$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["socket"].off("updatePlayers");
         };
     }, []);
-    //   const [isGameActive, setIsGameActive] = useState(false);
-    //   // Function to transition from Menu to Game
-    //   const handleStartGame = () => {
-    //     setIsGameActive(prev => !prev);
-    //     // space bar now toggles
-    //     // setIsGameActive(true); is also fine
-    //   };
-    //   // Add a listener for the SPACE key, as specified in the original HTML
-    //   useEffect(() => {
-    //     const handleKeyDown = (event) => {
-    //       if (event.code === 'Space' && !isGameActive) {
-    //         handleStartGame();
-    //       }
-    //     };
-    //     document.addEventListener('keydown', handleKeyDown);
-    //     // return () => {
-    //     //   document.removeEventListener('keydown', handleKeyDown);
-    //     // };
-    //   }, [isGameActive]); // Re-run effect if isGameActive changes, ever
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
-                children: "home"
-            }, void 0, false, {
-                fileName: "[project]/pages/index.js",
-                lineNumber: 69,
-                columnNumber: 9
-            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Menu$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 70,
+                lineNumber: 54,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Game$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 72,
+                lineNumber: 55,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Status$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {
-                isConnected: isConnected
+                isConnected: isConnected,
+                players: players
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
-                lineNumber: 74,
+                lineNumber: 56,
                 columnNumber: 9
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
+                children: [
+                    "Transport: ",
+                    transport
+                ]
+            }, void 0, true, {
+                fileName: "[project]/pages/index.js",
+                lineNumber: 61,
+                columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
-        lineNumber: 68,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }
