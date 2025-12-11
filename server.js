@@ -1,13 +1,15 @@
+// Server
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 
+// Player
 import Player from "./models/Player.js"
 
+// Server
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
@@ -23,14 +25,14 @@ app.prepare().then(() => {
         console.log("Current players:", Object.keys(players));
 
         players[socket.id] = new Player(socket.id);
-        socket.emit("updatePlayers", (players));
+        socket.broadcast.emit("updatePlayers", (players));
 
         socket.on("disconnect", () => {
             console.log("user diconnected");
             console.log("Current players:", Object.keys(players));
 
             delete players[socket.id];
-            socket.emit("updatePlayers", (players));
+            socket.broadcast.emit("updatePlayers", (players));
         })
 
         

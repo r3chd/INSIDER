@@ -1,9 +1,9 @@
 
 export default class Player {
 
-    constructor(id) {
-        this.id = id;
-        
+    constructor(cookie) {
+        this.cookie = cookie;
+
         
         // DO THIS LATER
     }

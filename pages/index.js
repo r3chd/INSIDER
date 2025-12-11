@@ -12,7 +12,8 @@ export default function Home() {
     const [activeView, setActiveView] = useState('menu');
 
     const handleSwitch = (view) => { setActiveView(view) 
-      
+      console.log(players);
+
     };
 
     const [isConnected, setIsConnected] = useState(false);
