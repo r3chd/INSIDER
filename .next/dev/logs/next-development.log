@@ -1,41 +1,653 @@
-[00:00:13.057] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"T6eIMpxGLQyEjJNIAAAE":{},"jTzgOBt5b6zyhPt-AAAD":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:13.057] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"T6eIMpxGLQyEjJNIAAAE":{},"jTzgOBt5b6zyhPt-AAAD":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"jTzgOBt5b6zyhPt-AAAD":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"jTzgOBt5b6zyhPt-AAAD":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"jTzgOBt5b6zyhPt-AAAD":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"C9MrrrrpyPpHW28tAAAF":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"1Cl_7DHL5gHd14zFAAAH":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"-3b7NzhseO1NimolAAAK":{},"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"F36bFh7sgYQJXClRAAAL":{},"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:15.282] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.112] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.113] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.113] Browser LOG     {"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.113] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.113] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:16.113] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{},"xA5WZ-MfJCKeNJyYAAAO":{}}
-[00:00:57.059] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:57.059] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"saL2QsZkDzjNLaU6AAAP":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:57.059] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:57.059] Browser LOG     {"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:57.664] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:58.628] Browser LOG     {"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:58.628] Browser LOG     {"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:58.628] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:00:58.628] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{},"wcN4d1sxVXb3D00VAAAS":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{},"K3rbhmnafBlP1oj0AAAT":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{}}
-[00:07:25.501] Browser LOG     {"JJnAmQkg3zJibJPEAAAX":{},"JeFJN2V6rIKUT08MAAAW":{}}
+[00:00:09.797] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"_uGX25rY7BL1WOjKAAAG":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:20.598] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{}}
+[00:00:44.854] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Status> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:00:44.854] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:44.855] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:44.855] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:44.984] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:44.984] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:44.984] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Status> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:00:45.630] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.404] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Status> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:01:04.404] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.405] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.405] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.405] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.405] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.405] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.771] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Status> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:04.772] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"D4p_uU1s_C73P3FOAAAT":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:09.123] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:10.044] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:11.188] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:11.550] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:12.577] Browser ERROR   uncaughtError: Error: ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+
+
+[00:01:12.844] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:12.844] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:12.844] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"_uGX25rY7BL1WOjKAAAG":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"8L4A3CmVBG-iYaSBAAAH":{},"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"IXAB2CzoWAt69gAiAAAP":{},"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser LOG     {"XdSYcRuBoI4HRHrKAAAL":{},"ila3EEpqS8BPZfLZAAAK":{},"raLuuolw_p2_yrNeAAAS":{},"suKga6DmNFoPlW-EAAAO":{}}
+[00:01:13.798] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:13.798] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:13.798] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:20.505] Browser ERROR   uncaughtError: Error: ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+
+
+[00:01:20.747] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:20.747] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:20.747] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:21.651] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:21.651] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:21.651] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:33.261] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:34.089] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:34.555] Browser ERROR   uncaughtError: Error: ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+
+
+[00:01:34.800] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:34.800] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:34.800] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:35.103] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:35.103] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:35.103] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:44.038] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
+[00:01:44.876] Browser ERROR   ./components/Status.jsx:18:13
+Ecmascript file had an error
+  16 |         socket.on('playerUpdate', (backendPlayers) => {
+  17 |             console.log(backendPlayers);
+> 18 |             players = backendPlayers;
+     |             ^^^^^^^
+  19 |         })
+  20 |     })
+  21 |
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Browser:
+    ./components/Status.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/Status.jsx
+    ./pages/index.js
