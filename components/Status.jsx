@@ -6,7 +6,7 @@ export default function Status({ isConnected, players }) {
     // })
 
   return (
-    <div id="menu" className="active">
+    <div id="menu">
       <p>Is connected?: { isConnected ? "True" : "False"}</p>
       <p>Players connected: { JSON.stringify(players) }</p>
     </div>

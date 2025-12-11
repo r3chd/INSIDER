@@ -1,0 +1,8 @@
+.game {
+  display: none;
+  /* Add game-specific styles here */
+}
+
+.game.active {
+  display: block;
+}

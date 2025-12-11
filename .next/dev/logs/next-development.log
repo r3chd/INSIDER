@@ -1,1 +1,507 @@
-[00:06:53.716] Browser LOG     {"v2jvWu_Rjm9Kfq75AAAJ":{"id":"v2jvWu_Rjm9Kfq75AAAJ"}}
+[00:00:55.813] Browser ERROR   uncaughtError: Error: ./pages/index.js:6:1
+Module not found: Can't resolve '../../components/Status.jsx'
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+> 6 | import Status from '../../components/Status.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export default function Home() {
+  9 |
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:55.979] Browser ERROR   ./pages/index.js:6:1
+Module not found: Can't resolve '../../components/Status.jsx'
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+> 6 | import Status from '../../components/Status.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export default function Home() {
+  9 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:5:1
+Module not found: Can't resolve '../../components/game/Game.jsx'
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+> 5 | import Game from '../../components/game/Game.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+  8 | export default function Home() {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve '../../components/menu/Menu.jsx'
+  2 | import { socket } from "../../socket.js";
+  3 |
+> 4 | import Menu from '../../components/menu/Menu.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import Game from '../../components/game/Game.jsx';
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:2:1
+Module not found: Can't resolve '../../socket.js'
+  1 | import { useState, useEffect } from 'react';
+> 2 | import { socket } from "../../socket.js";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:6:1
+Module not found: Can't resolve '../../components/Status.jsx'
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+> 6 | import Status from '../../components/Status.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export default function Home() {
+  9 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:5:1
+Module not found: Can't resolve '../../components/game/Game.jsx'
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+> 5 | import Game from '../../components/game/Game.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+  8 | export default function Home() {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve '../../components/menu/Menu.jsx'
+  2 | import { socket } from "../../socket.js";
+  3 |
+> 4 | import Menu from '../../components/menu/Menu.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import Game from '../../components/game/Game.jsx';
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:55.979] Browser ERROR   ./pages/index.js:2:1
+Module not found: Can't resolve '../../socket.js'
+  1 | import { useState, useEffect } from 'react';
+> 2 | import { socket } from "../../socket.js";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:00.011] Browser ERROR   ./pages/index.js:6:1
+Module not found: Can't resolve '../../components/Status.jsx'
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+> 6 | import Status from '../../components/Status.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export default function Home() {
+  9 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:00.011] Browser ERROR   ./pages/index.js:5:1
+Module not found: Can't resolve '../../components/game/Game.jsx'
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+> 5 | import Game from '../../components/game/Game.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+  8 | export default function Home() {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:00.011] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve '../../components/menu/Menu.jsx'
+  2 | import { socket } from "../../socket.js";
+  3 |
+> 4 | import Menu from '../../components/menu/Menu.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import Game from '../../components/game/Game.jsx';
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:00.011] Browser ERROR   ./pages/index.js:2:1
+Module not found: Can't resolve '../../socket.js'
+  1 | import { useState, useEffect } from 'react';
+> 2 | import { socket } from "../../socket.js";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:01.383] Browser ERROR   ./pages/index.js:6:1
+Module not found: Can't resolve '../../components/Status.jsx'
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+> 6 | import Status from '../../components/Status.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export default function Home() {
+  9 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:01.383] Browser ERROR   ./pages/index.js:5:1
+Module not found: Can't resolve '../../components/game/Game.jsx'
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+> 5 | import Game from '../../components/game/Game.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+  8 | export default function Home() {
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:01.383] Browser ERROR   ./pages/index.js:4:1
+Module not found: Can't resolve '../../components/menu/Menu.jsx'
+  2 | import { socket } from "../../socket.js";
+  3 |
+> 4 | import Menu from '../../components/menu/Menu.jsx';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import Game from '../../components/game/Game.jsx';
+  6 | import Status from '../../components/Status.jsx';
+  7 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:01.383] Browser ERROR   ./pages/index.js:2:1
+Module not found: Can't resolve '../../socket.js'
+  1 | import { useState, useEffect } from 'react';
+> 2 | import { socket } from "../../socket.js";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | import Menu from '../../components/menu/Menu.jsx';
+  5 | import Game from '../../components/game/Game.jsx';
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:03.973] Browser LOG     Refreshing page data due to server-side change
+[00:03:42.379] Browser LOG     Refreshing page data due to server-side change
+[00:03:42.379] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:47.206] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:48.936] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:48.936] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:51.843] Browser ERROR   uncaughtError: Error: ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:03:52.005] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:52.005] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve 'style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import 'style.css';
+     | ^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:03:59.528] Browser ERROR   ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+[00:03:59.528] Browser ERROR   ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+[00:03:59.528] Browser ERROR   uncaughtError: Error: ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+
+
+[00:04:00.299] Browser ERROR   uncaughtError: Error: ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+
+
+[00:04:00.469] Browser ERROR   ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+[00:04:00.470] Browser ERROR   ./pages/index.js
+Failed to compile
+    Global CSS cannot be imported from files other than your Custom <App>. Due to the Global nature of stylesheets, and to avoid conflicts, Please move all first-party global CSS imports to pages/_app.js. Or convert the import to Component-Level CSS (CSS Modules).
+    Read more: https://nextjs.org/docs/messages/css-global
+Location: pages/index.js
+Import path: ./style.css
+[00:04:14.783] Browser ERROR   uncaughtError: Error: ./pages/index.js:8:1
+Module not found: Can't resolve './style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import './style.css';
+     | ^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:04:14.945] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve './style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import './style.css';
+     | ^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:04:14.945] Browser ERROR   ./pages/index.js:8:1
+Module not found: Can't resolve './style.css'
+   6 | import Status from '../components/Status.jsx';
+   7 |
+>  8 | import './style.css';
+     | ^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function Home() {
+  11 |
+
+https://nextjs.org/docs/messages/module-not-found
+[00:11:20.049] Browser LOG     Refreshing page data due to server-side change
+[00:14:38.088] Browser ERROR   ./components/menu/Menu.jsx:10:6
+Parsing ecmascript source code failed
+   8 |       <p> INSIDER </p>
+   9 |       </div>
+> 10 |     </div>
+     |      ^^^^^
+  11 |   );
+  12 | }
+  13 |
+
+Unterminated regexp literal
+
+Import traces:
+  Browser:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+[00:14:43.811] Browser ERROR   ./components/menu/Menu.jsx:10:6
+Parsing ecmascript source code failed
+   8 |         <p> INSIDER </p>
+   9 |       </div>
+> 10 |     </div>
+     |      ^^^^^
+  11 |   );
+  12 | }
+  13 |
+
+Unterminated regexp literal
+
+Import traces:
+  Browser:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+[00:14:46.492] Browser ERROR   ./components/menu/Menu.jsx:10:6
+Parsing ecmascript source code failed
+   8 |         <p> INSIDER </p>
+   9 |       </div>
+> 10 |     </div>
+     |      ^^^^^
+  11 |   );
+  12 | }
+  13 |
+
+Unterminated regexp literal
+
+Import traces:
+  Browser:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+[00:15:13.416] Browser ERROR   ./components/menu/Menu.jsx:8:20
+Parsing ecmascript source code failed
+   6 |     <div className={`${styles.menu} ${isActive ? styles.active : ""}`}>
+   7 |       <div className={styles.menu}/></div>
+>  8 |       <p> INSIDER </p>
+     |                    ^^^
+   9 |     </div>
+  10 |   );
+  11 | }
+
+Unterminated regexp literal
+
+Import traces:
+  Browser:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+[00:15:24.906] Browser ERROR   ./components/menu/Menu.jsx:10:6
+Parsing ecmascript source code failed
+   8 |         <p> INSIDER </p>
+   9 |       </div>
+> 10 |     </div>
+     |      ^^^^^
+  11 |   );
+  12 | }
+  13 |
+
+Unterminated regexp literal
+
+Import traces:
+  Browser:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+
+  SSR:
+    ./components/menu/Menu.jsx
+    ./pages/index.js
+[00:17:49.811] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Menu> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:18:01.812] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Menu> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:32:05.813] Browser ERROR   %o
+
+%s
+
+%s
+ {} The above error occurred in the <Menu> component. React will try to recreate this component tree from scratch using the error boundary you provided, PagesDevOverlayErrorBoundary.
+[00:32:44.758] Browser LOG     Refreshing page data due to server-side change
+[00:32:44.758] Browser ERROR   ./pages/index.js:58:48
+Parsing ecmascript source code failed
+  56 |       <div className={styles.main}>
+  57 |           <Menu isActive={activeView ==="menu"} />
+> 58 |           <Game isActive={activeView ==="game" handleSwitch={handleSwitch}} />
+     |                                                ^^^^^^^^^^^^
+  59 |           <Status 
+  60 |             isConnected = { isConnected } 
+  61 |             players =  { players }
+
+Expected '</', got 'handleSwitch'
+[00:32:44.758] Browser ERROR   ./pages/index.js
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/pages/index.js [ssr] (ecmascript)
+
+Caused by:
+- CJS module can't be async.
+
+Debug info:
+- An error occurred while generating the chunk item [project]/pages/index.js [ssr] (ecmascript)
+- Execution of <ModuleChunkItem as EcmascriptChunkItem>::content_with_async_module_info failed
+- Execution of EcmascriptChunkItemContent::new failed
+- CJS module can't be async.
+[00:33:49.901] Browser ERROR   ./pages/index.js:16:11
+Ecmascript file had an error
+  14 |     const handleSwitch = (view) => setActiveView(view);
+  15 |
+> 16 |     const handleSwitch = (view) => {
+     |           ^^^^^^^^^^^^
+  17 |       setActiveView(view);
+  18 |     }
+  19 |
+
+the name `handleSwitch` is defined multiple times
+[00:33:53.492] Browser LOG     Refreshing page data due to server-side change
+[00:34:08.716] Browser ERROR   uncaughtError: TypeError: handleSwitch is not a function
+[00:34:35.011] Browser ERROR   uncaughtError: TypeError: handleSwitch is not a function
+[00:34:37.808] Browser LOG     {"nammK-MtA17Vfz5nAAAP":{"id":"nammK-MtA17Vfz5nAAAP"}}
+[00:35:19.546] Browser ERROR   uncaughtError: TypeError: handleSwitch is not a function
+[00:35:21.673] Browser ERROR   uncaughtError: TypeError: handleSwitch is not a function

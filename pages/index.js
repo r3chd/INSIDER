@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react';
 import { socket } from "../socket.js";
 
-import Menu from '../components/Menu.jsx';
-import Game from '../components/Game.jsx';
+import Menu from '../components/menu/Menu.jsx';
+import Game from '../components/game/Game.jsx';
 import Status from '../components/Status.jsx';
+
+import styles from './style.module.css';
 
 export default function Home() {
 
+    const [activeView, setActiveView] = useState('menu');
+
+    const handleSwitch = (view) => { setActiveView(view) 
+      
+    };
 
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
-    const [players, setPlayers] = useState({})
+    const [players, setPlayers] = useState({});
     
     useEffect(() => {
 
@@ -47,16 +54,17 @@ export default function Home() {
     }, []);
 
   return (
-    <div>
-
-        <Menu />
-        <Game />
-        <Status 
-          isConnected = { isConnected } 
-          players =  { players }
-          // Want to pass backend to frontend
-        />
-      <p>Transport: { transport }</p>
+    <div className={styles.container}>
+      <div className={styles.main}>
+          <Menu isActive={activeView === "menu"} handleSwitch={handleSwitch} />
+          <Game isActive={activeView === "game"} />
+          <Status 
+            isConnected = { isConnected } 
+            players =  { players }
+            // Want to pass backend to frontend
+          />
+        <p>Transport: { transport }</p>
+      </div>
     </div>
   );
 }

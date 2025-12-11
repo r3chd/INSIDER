@@ -1,0 +1,12 @@
+
+.container {
+    display:flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color:darkgray;
+}
+
+.main {
+    width: 500px;
+    background-color:aqua;
+}
