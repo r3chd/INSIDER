@@ -43,6 +43,11 @@ app.prepare().then(() => {
             console.log(data);
         });
 
+        // On player name set
+        socket.on("setPlayerName", (name) => {
+            currentPlayer.name = name;
+        })
+
         // On room being joined
         socket.on("joinRoom", (roomCode) => {
             socket.join(roomCode);

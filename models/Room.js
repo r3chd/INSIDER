@@ -1,22 +1,21 @@
 export default class Room {
 
+    #code;
+    #connectedPlayers;
+
     constructor(code, currentPlayer) {
-        this._code = code;
-        this._connectedPlayers = [];
-        this._test = "aorisentaroisten";
+        this.#code = code;
+        this.#connectedPlayers = [];
 
         this.addPlayer(currentPlayer);
     }
     
     addPlayer(playerId) {
-        this._connectedPlayers.push(playerId);
+        this.#connectedPlayers.push(playerId);
     }
 
     get connected() {
-        return this._connectedPlayers;
+        return this.#connectedPlayers;
     }
 
-    get test() {
-        return this._test;
-    }
 }

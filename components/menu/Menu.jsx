@@ -1,4 +1,4 @@
-import React from "react";
+import { useState }from 'react';
 import styles from "./Menu.module.css";
 
 export default function Menu({ isActive, handleSwitch }) {
@@ -18,7 +18,7 @@ export default function Menu({ isActive, handleSwitch }) {
           </div>
 
           <div className={styles.buttonBox}>
-            <button onClick={() => handleSwitch("game")}> create </button>
+            <button onClick={() => handleSwitch("game", name)}> create </button>
             <button> join </button>
           </div>
 
