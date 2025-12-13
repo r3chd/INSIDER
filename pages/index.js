@@ -22,7 +22,7 @@ export default function Home() {
     const handleSwitch = (view) => { 
       
       const room = generateRoomCode();
-      const name = ;
+      //const name = ;
       setCurrentRoom(room); // results in useEffect emitting the joinroom
 
       setActiveView(view) 
@@ -54,7 +54,9 @@ export default function Home() {
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
         socket.on("updatePlayers", (players) => {
+            console.log("HELLO FUCKING LOW?")
             setPlayers(players);
+            console.log("WHAT THE FUCK")
         })
 
         socket.on("updateRoom", (room) => {

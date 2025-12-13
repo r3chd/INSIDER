@@ -63,8 +63,6 @@ app.prepare().then(() => {
 
         // DISCONNECT CODE
         socket.on("disconnect", () => {
-            console.log("user diconnected");
-            console.log("Current players:", Object.keys(players));
 
             delete players[socket.id];
             io.emit("updatePlayers", (players));

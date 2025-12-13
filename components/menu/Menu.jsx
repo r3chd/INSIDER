@@ -4,7 +4,7 @@ import styles from "./Menu.module.css";
 export default function Menu({ isActive, handleSwitch }) {
   if (!isActive) return null;
 
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
   const handleChange = (e) => {
     setName(e.target.value);
   };
@@ -14,7 +14,9 @@ export default function Menu({ isActive, handleSwitch }) {
           <p> INSIDER </p>
           <div className = {styles.inputBox}>
             <p>name: </p>
-            <input value={name} onChange={handleChange}></input>
+            <input 
+            //</div></div>value={name} 
+            onChange={handleChange}></input>
           </div>
 
           <div className={styles.buttonBox}>
