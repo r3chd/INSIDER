@@ -1,5 +1,7 @@
+/** the backend for our program */
+
 // Server
-import { createServer } from "node:http";
+import { createServer } from "node:https";
 import next from "next";
 import { Server } from "socket.io";
 
@@ -24,8 +26,6 @@ app.prepare().then(() => {
 
     io.on("connection", (socket) => {
         console.log("a user connected");
-        console.log("Current players:", Object.keys(players));
-
         players[socket.id] = new Player(socket.id);
         const currentPlayer = players[socket.id];
         console.log("currentPlayer:", currentPlayer.id)
@@ -61,7 +61,7 @@ app.prepare().then(() => {
             socket.emit("updatePlayers", (players));
         })
 
-        
+        console.log("Current players:", Object.keys(players));
     });
 
     httpServer.once("error", (err) => {
@@ -69,6 +69,6 @@ app.prepare().then(() => {
         process.exit(1);
     })
     .listen(port, () => {
-        console.log(`> Ready on https://${hostname}:${port}`);
+        console.log(`> Ready on http://${hostname}:${port}`);
     });
 });
