@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 10, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/GGPC/Documents/vscode-home/INSIDER/app/page.js"],"sourcesContent":["// app/page.js\r\n\r\n// This is a Server Component by default in the App Router.\r\n// It will be rendered on the server for the initial load.\r\nexport default function HomePage() {\r\n  return (\r\n    <div>\r\n      <h1>Hello World!</h1>\r\n      <p>This is the root page of your Next.js application.</p>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":"AAAA,cAAc;AAEd,2DAA2D;AAC3D,0DAA0D;;;;;;;AAC3C,SAAS;IACtB,qBACE,8OAAC;;0BACC,8OAAC;0BAAG;;;;;;0BACJ,8OAAC;0BAAE;;;;;;;;;;;;AAGT"}}]
-}
