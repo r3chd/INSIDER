@@ -19,10 +19,11 @@ export default function Home() {
     const [currentRoom, setCurrentRoom] = useState();
     const [connectedRoom, setConnectedRoom] = useState();
 
-    const handleSwitch = (view) => { 
+    const handleSwitch = (view, name) => { 
       
       const room = generateRoomCode();
-      //const name = ;
+
+      socket.emit("setPlayerName", name)
       setCurrentRoom(room); // results in useEffect emitting the joinroom
 
       setActiveView(view) 
@@ -61,7 +62,7 @@ export default function Home() {
 
         socket.on("updateRoom", (room) => {
 
-          const playerIds = room._connectedPlayers.map(player => player._id);
+          const playerIds = room._connectedPlayers.map(player => player._name);
           socket.emit("console", playerIds);
           setConnectedRoom(playerIds);
           
