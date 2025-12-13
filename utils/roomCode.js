@@ -4,5 +4,5 @@ export function generateRoomCode(length = 5) {
     
     // return code;
 
-    return Math.floor(Math.random() * (1000));
+    return Math.floor(Math.random() * (2) + 1);
 }

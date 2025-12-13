@@ -1,7 +1,7 @@
 /** the backend for our program */
 
 // Server
-import { createServer } from "node:https";
+import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 
@@ -18,6 +18,7 @@ const handler = app.getRequestHandler();
 
 const players = {};
 const rooms = {};
+let currentRoom;
 
 app.prepare().then(() => {
     const httpServer = createServer(handler);
@@ -25,30 +26,38 @@ app.prepare().then(() => {
     const io = new Server(httpServer);
 
     io.on("connection", (socket) => {
-        console.log("a user connected");
+
+        // Set player and current player
         players[socket.id] = new Player(socket.id);
         const currentPlayer = players[socket.id];
+
+        // Print actively connected
+        console.log("a user connected");
         console.log("currentPlayer:", currentPlayer.id)
 
-        socket.emit("updatePlayers", (players));
-
-        socket.on("console", (string) => {
-            console.log(string);
+        // Update front end
+        io.emit("updatePlayers", (players));
+        
+        // Console.log code
+        socket.on("console", (data) => {
+            console.log(data);
         });
 
-
-        // ROOM CODE
+        // On room being joined
         socket.on("joinRoom", (roomCode) => {
             socket.join(roomCode);
             console.log(`this ${currentPlayer.id} has joined ${roomCode}`);
             
-            
-            rooms[roomCode] = new Room(roomCode, currentPlayer);
-            const currentRoom = rooms[roomCode];
+            if (!rooms[roomCode]) {
+                rooms[roomCode] = new Room(roomCode, currentPlayer);
+            } else {
+                rooms[roomCode].addPlayer(currentPlayer);
+            }
+            currentRoom = rooms[roomCode];
 
             console.log("existing rooms:", Object.keys(rooms));
 
-            socket.emit("updateRoom", (currentRoom))
+            io.to(roomCode).emit("updateRoom", (currentRoom))
         })
 
 
@@ -58,7 +67,7 @@ app.prepare().then(() => {
             console.log("Current players:", Object.keys(players));
 
             delete players[socket.id];
-            socket.emit("updatePlayers", (players));
+            io.emit("updatePlayers", (players));
         })
 
         console.log("Current players:", Object.keys(players));

@@ -57,7 +57,12 @@ export default function Home() {
         })
 
         socket.on("updateRoom", (room) => {
-          // setConnectedRoom(room);
+
+          const playerIds = room._connectedPlayers.map(player => player._id);
+          socket.emit("console", playerIds);
+          setConnectedRoom(playerIds);
+          
+          // setConnectedRoom(room._test);
           socket.emit("console", `ROOM: ${Object.keys(room)}, ${Object.values(room)}`);
         })
 
