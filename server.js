@@ -3,8 +3,9 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 
-// Player
+// Player and room
 import Player from "./models/Player.js"
+import Room from "./models/Room.js"
 
 // Server
 const dev = process.env.NODE_ENV !== "production";
@@ -13,7 +14,8 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-const players = {}
+const players = {};
+const rooms = {};
 
 app.prepare().then(() => {
     const httpServer = createServer(handler);
@@ -25,14 +27,38 @@ app.prepare().then(() => {
         console.log("Current players:", Object.keys(players));
 
         players[socket.id] = new Player(socket.id);
-        socket.broadcast.emit("updatePlayers", (players));
+        const currentPlayer = players[socket.id];
+        console.log("currentPlayer:", currentPlayer.id)
 
+        socket.emit("updatePlayers", (players));
+
+        socket.on("console", (string) => {
+            console.log(string);
+        });
+
+
+        // ROOM CODE
+        socket.on("joinRoom", (roomCode) => {
+            socket.join(roomCode);
+            console.log(`this ${currentPlayer.id} has joined ${roomCode}`);
+            
+            
+            rooms[roomCode] = new Room(roomCode, currentPlayer);
+            const currentRoom = rooms[roomCode];
+
+            console.log("existing rooms:", Object.keys(rooms));
+
+            socket.emit("updateRoom", (currentRoom))
+        })
+
+
+        // DISCONNECT CODE
         socket.on("disconnect", () => {
             console.log("user diconnected");
             console.log("Current players:", Object.keys(players));
 
             delete players[socket.id];
-            socket.broadcast.emit("updatePlayers", (players));
+            socket.emit("updatePlayers", (players));
         })
 
         

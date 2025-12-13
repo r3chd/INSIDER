@@ -7,21 +7,32 @@ import Status from '../components/Status.jsx';
 
 import styles from './style.module.css';
 
+import { generateRoomCode } from "../utils/roomCode.js"
+
+
 export default function Home() {
 
     const [activeView, setActiveView] = useState('menu');
-
-    const handleSwitch = (view) => { setActiveView(view) 
-      console.log(players);
-
-    };
-
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
-    const [players, setPlayers] = useState({});
-    
-    useEffect(() => {
+    const [players, setPlayers] = useState();
+    const [currentRoom, setCurrentRoom] = useState();
+    const [connectedRoom, setConnectedRoom] = useState();
 
+    const handleSwitch = (view) => { 
+      
+      const room = generateRoomCode();
+      setCurrentRoom(room); // results in useEffect emitting the joinroom
+
+      setActiveView(view) 
+    };
+
+    useEffect(() => {
+      if (!currentRoom) return;
+      socket.emit("joinRoom", `${currentRoom}`);
+    }, [currentRoom]);
+
+    useEffect(() => {
         if (socket.connected) {
             onConnect();
         }
@@ -43,7 +54,11 @@ export default function Home() {
         socket.on("disconnect", onDisconnect);
         socket.on("updatePlayers", (players) => {
             setPlayers(players);
-            console.log(players);
+        })
+
+        socket.on("updateRoom", (room) => {
+          // setConnectedRoom(room);
+          socket.emit("console", `ROOM: ${Object.keys(room)}, ${Object.values(room)}`);
         })
 
         return () => {
@@ -58,7 +73,11 @@ export default function Home() {
     <div className={styles.container}>
       <div className={styles.main}>
           <Menu isActive={activeView === "menu"} handleSwitch={handleSwitch} />
-          <Game isActive={activeView === "game"} />
+          <Game 
+            isActive={activeView === "game"} 
+            roomCode={currentRoom} // User may not need to know this // possibly pass in a Room instance
+            connectedPlayers={connectedRoom}
+          />
           <Status 
             isConnected = { isConnected } 
             players =  { players }

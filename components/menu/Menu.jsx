@@ -14,7 +14,8 @@ export default function Menu({ isActive, handleSwitch }) {
           </div>
 
           <div className={styles.buttonBox}>
-            <button onClick={() => handleSwitch("game")}> create </button> <button> join </button>
+            <button onClick={() => handleSwitch("game")}> create </button>
+            <button> join </button>
           </div>
 
     </div>

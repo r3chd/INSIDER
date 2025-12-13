@@ -1,10 +1,14 @@
 
 export default class Player {
 
-    constructor(cookie) {
-        this.cookie = cookie;
+    constructor(id) {
+        this._id = id;
 
         
         // DO THIS LATER
+    }
+
+    get id() {
+        return this._id;
     }
 }
