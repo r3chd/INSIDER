@@ -22,6 +22,7 @@ export default function Home() {
     const handleSwitch = (view) => { 
       
       const room = generateRoomCode();
+      const name = ;
       setCurrentRoom(room); // results in useEffect emitting the joinroom
 
       setActiveView(view) 
