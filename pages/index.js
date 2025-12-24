@@ -7,33 +7,42 @@ import Status from '../components/Status.jsx';
 
 import styles from './style.module.css';
 
-import { generateRoomCode } from "../utils/roomCode.js"
-
-
 export default function Home() {
 
-    const [activeView, setActiveView] = useState('menu');
+    // State of connectivity
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
-    const [players, setPlayers] = useState();
-    const [currentRoom, setCurrentRoom] = useState();
+
+
+    const [activeView, setActiveView] = useState('menu');
+
+    const [roomPlayers, setRoomPlayers] = useState();
+    const [roomCode, setRoomCode] = useState();
     const [connectedRoom, setConnectedRoom] = useState();
 
-    const handleSwitch = (view, name) => { 
-      
-      const room = generateRoomCode();
 
-      socket.emit("setPlayerName", name)
-      setCurrentRoom(room); // results in useEffect emitting the joinroom
+    // this runs when the "create" button is hit
+    const handleCreate = (name) => { 
 
-      setActiveView(view) 
+      // creates in backend
+      socket.emit("createRoom");
+
+      socket.emit("setPlayerName", name) // send name update to backend -- why?
+      // why?
+
+      setActiveView("game");
     };
 
-    useEffect(() => {
-      if (!currentRoom) return;
-      socket.emit("joinRoom", `${currentRoom}`);
-    }, [currentRoom]);
+    const handleJoin = (name, roomCode) => {
+      socket.emit("joinRoom", roomCode)
 
+      socket.emit("setPlayerName", name) // send name update to backend -- why?
+      // why?
+
+      setActiveView("game");
+    }
+
+    // Connectivity code (connection and socket receiving)
     useEffect(() => {
         if (socket.connected) {
             onConnect();
@@ -56,20 +65,19 @@ export default function Home() {
         socket.on("disconnect", onDisconnect);
         socket.on("updatePlayers", (players) => {
             console.log("HELLO FUCKING LOW?")
-            setPlayers(players);
-            console.log("WHAT THE FUCK")
-        })
+            setRoomPlayers(players);
+            console.log("WHAT THE FUCK") // lmao richard
+        });
 
+        socket.on("roomCreated", (roomCode) => {
+          setRoomCode(roomCode);
+        });
+        
         socket.on("updateRoom", (room) => {
-
-          const playerIds = room._connectedPlayers.map(player => player._name);
-          socket.emit("console", playerIds);
-          setConnectedRoom(playerIds);
-          
-          // setConnectedRoom(room._test);
-          socket.emit("console", `ROOM: ${Object.keys(room)}, ${Object.values(room)}`);
+          // Code should simply 'get' the players list from the backend.
         })
 
+        // Disables these codes i guess
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
@@ -81,15 +89,14 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-          <Menu isActive={activeView === "menu"} handleSwitch={handleSwitch} />
+          <Menu isActive={activeView === "menu"} handleCreate={handleCreate} handleJoin={handleJoin}/>
           <Game 
             isActive={activeView === "game"} 
-            roomCode={currentRoom} // User may not need to know this // possibly pass in a Room instance
-            connectedPlayers={connectedRoom}
+            roomCode={ roomCode } // roomCode is passed in for being read.
           />
           <Status 
             isConnected = { isConnected } 
-            players =  { players }
+            players =  { roomPlayers }
             // Want to pass backend to frontend
           />
         <p>Transport: { transport }</p>

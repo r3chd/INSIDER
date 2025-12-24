@@ -1,8 +1,13 @@
-export function generateRoomCode(length = 5) {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"
-    let code = "5";
-    
-    // return code;
+const VALID_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
+const LENGTH = 5;
 
-    return Math.floor(Math.random() * (2) + 1);
+export function generateRoomCode(length = 5) {
+    
+    let code = "";
+    
+    for (let i = 0; i < LENGTH; i++) {
+        code += VALID_CHARS[Math.floor(Math.random() * VALID_CHARS.length)]
+    }
+
+    return code;
 }

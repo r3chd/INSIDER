@@ -9,6 +9,8 @@ import { Server } from "socket.io";
 import Player from "./models/Player.js"
 import Room from "./models/Room.js"
 
+import { generateRoomCode } from "./utils/roomCode.js";
+
 // Server
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -16,8 +18,8 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-const players = {};
-const rooms = {};
+const players = new Map();
+const rooms = new Map();
 let currentRoom;
 
 app.prepare().then(() => {
@@ -46,7 +48,25 @@ app.prepare().then(() => {
         // On player name set
         socket.on("setPlayerName", (name) => {
             currentPlayer.name = name;
-        })
+        });
+
+
+        // will require code to close the room when no players are connected.
+        socket.on("createRoom", () => {
+            let roomCode;
+
+            // enforce uniqueness
+            do {
+                roomCode = generateRoomCode();
+            } while (rooms.has(roomCode))
+            
+            const room = new Room(roomCode);
+
+            rooms[roomCode] = rooms[roomCode];
+
+            socket.emit("roomCreated", roomCode);
+            // socket.emit
+        });
 
         // On room being joined
         socket.on("joinRoom", (roomCode) => {
@@ -54,7 +74,7 @@ app.prepare().then(() => {
             console.log(`this ${currentPlayer.id} has joined ${roomCode}`);
             
             if (!rooms[roomCode]) {
-                rooms[roomCode] = new Room(roomCode, currentPlayer);
+                console.log("room does not exist!"); // Update frontend
             } else {
                 rooms[roomCode].addPlayer(currentPlayer);
             }
