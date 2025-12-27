@@ -18,13 +18,14 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
+// used to track all players
 const players = new Map();
 const rooms = new Map();
 let currentRoom;
 
 app.prepare().then(() => {
-    const httpServer = createServer(handler);
 
+    const httpServer = createServer(handler);
     const io = new Server(httpServer);
 
     io.on("connection", (socket) => {
@@ -36,9 +37,6 @@ app.prepare().then(() => {
         // Print actively connected
         console.log("a user connected");
         console.log("currentPlayer:", currentPlayer.id)
-
-        // Update front end
-        io.emit("updatePlayers", (players));
         
         // Console.log code
         socket.on("console", (data) => {
@@ -51,7 +49,7 @@ app.prepare().then(() => {
         });
 
 
-        // will require code to close the room when no players are connected.
+        // On room being created
         socket.on("createRoom", () => {
             let roomCode;
 
@@ -62,27 +60,36 @@ app.prepare().then(() => {
             
             const room = new Room(roomCode);
 
-            rooms[roomCode] = rooms[roomCode];
 
-            socket.emit("roomCreated", roomCode);
-            // socket.emit
+            socket.join(roomCode);
+            currentRoom = room;
+            room.addPlayer(currentPlayer);
+            // set key to roomCode, and room as the object
+            rooms[roomCode] = room;
+
+            console.log(roomCode);
+            socket.emit("setRoomCode", roomCode);
         });
 
         // On room being joined
         socket.on("joinRoom", (roomCode) => {
-            socket.join(roomCode);
             console.log(`this ${currentPlayer.id} has joined ${roomCode}`);
             
             if (!rooms[roomCode]) {
-                console.log("room does not exist!"); // Update frontend
+                console.log("room does not exist!"); // Update frontend code needed
             } else {
+                socket.join(roomCode);
+                currentRoom = rooms[roomCode];
+
                 rooms[roomCode].addPlayer(currentPlayer);
+
+
+                console.log("existing rooms:", Object.keys(rooms));
+
+                socket.emit("setRoomCode", roomCode)
+                io.to(roomCode).emit("updatePlayers", (currentRoom.connectedPlayers))
             }
-            currentRoom = rooms[roomCode];
 
-            console.log("existing rooms:", Object.keys(rooms));
-
-            io.to(roomCode).emit("updateRoom", (currentRoom))
         })
 
 
@@ -90,10 +97,8 @@ app.prepare().then(() => {
         socket.on("disconnect", () => {
 
             delete players[socket.id];
-            io.emit("updatePlayers", (players));
+            io.emit("updatePlayers", (currentRoom.connectedPlayers));
         })
-
-        console.log("Current players:", Object.keys(players));
     });
 
     httpServer.once("error", (err) => {

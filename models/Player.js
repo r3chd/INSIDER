@@ -13,7 +13,6 @@ export default class Player {
 
     set name(name) {
         this.#name = name;
-
     }
 
     get id() {

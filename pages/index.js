@@ -16,29 +16,27 @@ export default function Home() {
 
     const [activeView, setActiveView] = useState('menu');
 
+    // information that the user should know
     const [roomPlayers, setRoomPlayers] = useState();
     const [roomCode, setRoomCode] = useState();
-    const [connectedRoom, setConnectedRoom] = useState();
-
+    const [activePlayerName, setActivePlayerName] = useState();
 
     // this runs when the "create" button is hit
-    const handleCreate = (name) => { 
-
+    const handleCreate = (playerName) => { 
       // creates in backend
       socket.emit("createRoom");
+      socket.emit("setPlayerName", playerName)
 
-      socket.emit("setPlayerName", name) // send name update to backend -- why?
-      // why?
-
+      // repetition here
+      setActivePlayerName(playerName);
       setActiveView("game");
     };
 
     const handleJoin = (name, roomCode) => {
       socket.emit("joinRoom", roomCode)
-
       socket.emit("setPlayerName", name) // send name update to backend -- why?
-      // why?
 
+      setActivePlayerName(name);
       setActiveView("game");
     }
 
@@ -66,14 +64,16 @@ export default function Home() {
         socket.on("updatePlayers", (players) => {
             console.log("HELLO FUCKING LOW?")
             setRoomPlayers(players);
+            socket.emit("console", players);
             console.log("WHAT THE FUCK") // lmao richard
         });
 
-        socket.on("roomCreated", (roomCode) => {
+        socket.on("setRoomCode", (roomCode) => {
+          console.log("roomcode set to", roomCode);
           setRoomCode(roomCode);
         });
         
-        socket.on("updateRoom", (room) => {
+        socket.on("Players", (room) => {
           // Code should simply 'get' the players list from the backend.
         })
 
@@ -89,10 +89,13 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-          <Menu isActive={activeView === "menu"} handleCreate={handleCreate} handleJoin={handleJoin}/>
+          <Menu isActive={activeView === "menu"} 
+            handleCreate={handleCreate} 
+            handleJoin={handleJoin}/>
           <Game 
             isActive={activeView === "game"} 
             roomCode={ roomCode } // roomCode is passed in for being read.
+            playerName = {activePlayerName}
           />
           <Status 
             isConnected = { isConnected } 

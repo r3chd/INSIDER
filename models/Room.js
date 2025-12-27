@@ -5,14 +5,14 @@ export default class Room {
 
     constructor(code) {
         this.#code = code; // 5 Digit alphanumeric string
-        this.#connectedPlayers = []; // Holds player models
+        this.#connectedPlayers = new Set(); // Holds player models
     }
     
     addPlayer(playerId) {
-        this.#connectedPlayers.push(playerId);
+        this.#connectedPlayers.add(playerId);
     }
 
-    get connected() {
+    get connectedPlayers() {
         return this.#connectedPlayers;
     }
     
