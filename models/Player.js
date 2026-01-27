@@ -1,14 +1,13 @@
 
 export default class Player {
     
-    #id;
-    #name;
+    #id = null;
+    #name = "";
 
 
-    constructor(id) {
+    constructor(id, name) {
         this.#id = id;
-        this.#name = null;
-        // DO THIS LATER
+        this.#name = name;
     }
 
     set name(name) {

@@ -13,30 +13,27 @@ export default function Home() {
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
 
-
+    // views
     const [activeView, setActiveView] = useState('menu');
 
     // information that the user should know
     const [roomPlayers, setRoomPlayers] = useState();
-    const [roomCode, setRoomCode] = useState();
     const [activePlayerName, setActivePlayerName] = useState();
 
     // this runs when the "create" button is hit
     const handleCreate = (playerName) => { 
       // creates in backend
-      socket.emit("createRoom");
-      socket.emit("setPlayerName", playerName)
+      socket.emit("createRoom", playerName);
 
       // repetition here
       setActivePlayerName(playerName);
       setActiveView("game");
     };
 
-    const handleJoin = (name, roomCode) => {
-      socket.emit("joinRoom", roomCode)
-      socket.emit("setPlayerName", name) // send name update to backend -- why?
+    const handleJoin = (roomCode, playerName) => {
+      socket.emit("joinRoom", {roomCode, playerName})
 
-      setActivePlayerName(name);
+      setActivePlayerName(playerName);
       setActiveView("game");
     }
 
@@ -67,11 +64,6 @@ export default function Home() {
             socket.emit("console", players);
             console.log("WHAT THE FUCK") // lmao richard
         });
-
-        socket.on("setRoomCode", (roomCode) => {
-          console.log("roomcode set to", roomCode);
-          setRoomCode(roomCode);
-        });
         
         socket.on("Players", (room) => {
           // Code should simply 'get' the players list from the backend.
@@ -91,10 +83,9 @@ export default function Home() {
       <div className={styles.main}>
           <Menu isActive={activeView === "menu"} 
             handleCreate={handleCreate} 
-            handleJoin={handleJoin}/>
+            handleJoin={handleJoin} /> 
           <Game 
             isActive={activeView === "game"} 
-            roomCode={ roomCode } // roomCode is passed in for being read.
             playerName = {activePlayerName}
           />
           <Status 

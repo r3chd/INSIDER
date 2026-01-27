@@ -5,10 +5,11 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 
-// Player and room
+// Player and room classes
 import Player from "./models/Player.js"
 import Room from "./models/Room.js"
 
+// Roomcode
 import { generateRoomCode } from "./utils/roomCode.js";
 
 // Server
@@ -21,7 +22,6 @@ const handler = app.getRequestHandler();
 // used to track all players
 const players = new Map();
 const rooms = new Map();
-let currentRoom;
 
 app.prepare().then(() => {
 
@@ -31,26 +31,19 @@ app.prepare().then(() => {
     io.on("connection", (socket) => {
 
         // Set player and current player
-        players[socket.id] = new Player(socket.id);
-        const currentPlayer = players[socket.id];
+        let playerName = "";
 
         // Print actively connected
         console.log("a user connected");
-        console.log("currentPlayer:", currentPlayer.id)
         
         // Console.log code
         socket.on("console", (data) => {
             console.log(data);
         });
 
-        // On player name set
-        socket.on("setPlayerName", (name) => {
-            currentPlayer.name = name;
-        });
-
 
         // On room being created
-        socket.on("createRoom", () => {
+        socket.on("createRoom", (playerName) => {
             let roomCode;
 
             // enforce uniqueness
@@ -59,37 +52,43 @@ app.prepare().then(() => {
             } while (rooms.has(roomCode))
             
             const room = new Room(roomCode);
+            rooms.set(roomCode, room);
+
+            // Make the player proper
+            const player = new Player(socket.id, playerName);
+            players.set(socket.id, player);
 
 
-            socket.join(roomCode);
-            currentRoom = room;
-            room.addPlayer(currentPlayer);
-            // set key to roomCode, and room as the object
-            rooms[roomCode] = room;
-
-            console.log(roomCode);
-            socket.emit("setRoomCode", roomCode);
+            // Interaction between the two
+            room.addPlayer(player);
+            socket.join(roomCode); // Set current connection to the roomCode
+            
+            console.log(`${roomCode} is made`);
         });
 
         // On room being joined
-        socket.on("joinRoom", (roomCode) => {
-            console.log(`this ${currentPlayer.id} has joined ${roomCode}`);
-            
-            if (!rooms[roomCode]) {
-                console.log("room does not exist!"); // Update frontend code needed
+        socket.on("joinRoom", ({ roomCode, playerName }) => {
+            const room = rooms.get(roomCode);
+            if (!room) {
+                console.log("room not found!")
+                return;
             } else {
-                socket.join(roomCode);
-                currentRoom = rooms[roomCode];
-
-                rooms[roomCode].addPlayer(currentPlayer);
-
-
-                console.log("existing rooms:", Object.keys(rooms));
-
-                socket.emit("setRoomCode", roomCode)
-                io.to(roomCode).emit("updatePlayers", (currentRoom.connectedPlayers))
+                console.log("room found!")
+                room.printRoom();
             }
 
+            if (room.connectedPlayers.has(socket.id)) {
+                console.log("player already in room");
+                return;
+            }
+
+            const player = new Player(socket.id, playerName);
+            console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
+            
+            room.addPlayer(player)
+            socket.join(roomCode);
+
+            io.to(roomCode).emit("roomUpdated", room.toDTO());
         })
 
 
@@ -97,7 +96,6 @@ app.prepare().then(() => {
         socket.on("disconnect", () => {
 
             delete players[socket.id];
-            io.emit("updatePlayers", (currentRoom.connectedPlayers));
         })
     });
 

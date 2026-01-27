@@ -5,7 +5,7 @@ import styles from "./Menu.module.css";
 import MenuButtons from "./MenuButtons";
 import MenuJoin from "./MenuJoin"
 
-export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin }) {
+export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin}) {
   if (!isActive) return null;
 
   const [name, setName] = useState("");
@@ -40,7 +40,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
   // Specifically joining a room
   const handleJoinRoomButtonPressed = () => {
-    handleJoin(name, roomCode)
+    handleJoin(roomCode, name)
   }
 
 
@@ -52,9 +52,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
           
           <div className = {styles.inputBox}>
             <p>name: </p>
-            <input 
-            //</div></div>value={name} 
-            onChange={handleNameChange}></input>
+            <input onChange={handleNameChange}></input>
           </div>
 
           <MenuButtons
