@@ -4,7 +4,6 @@ import { socket } from "../socket.js";
 import Menu from '../components/menu/Menu.jsx';
 import Game from '../components/game/Game.jsx';
 import Status from '../components/Status.jsx';
-
 import styles from './style.module.css';
 
 export default function Home() {
@@ -31,6 +30,7 @@ export default function Home() {
     };
 
     const handleJoin = (roomCode, playerName) => {
+      socket.emit("console", roomCode); // Did this fix it? Unsure.
       socket.emit("joinRoom", {roomCode, playerName})
 
       setActivePlayerName(playerName);
@@ -63,6 +63,11 @@ export default function Home() {
             setRoomPlayers(players);
             socket.emit("console", players);
             console.log("WHAT THE FUCK") // lmao richard
+        });
+
+        socket.on("roomUpdated", (data) => {
+          console.log(data);
+          // Need to display the data somewhere
         });
         
         socket.on("Players", (room) => {
