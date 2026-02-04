@@ -91,7 +91,6 @@ export default function Home() {
             handleJoin={handleJoin} /> 
           <Game 
             isActive={activeView === "game"} 
-            playerName = {activePlayerName}
           />
           <Status 
             isConnected = { isConnected } 

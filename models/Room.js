@@ -10,7 +10,7 @@ export default class Room {
     
     addPlayer(player) {
         this.#connectedPlayers.set(player.id, player);
-        console.log(`player ${player.name}, ${player.id} added to ${this.#code}`)
+        console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.role}`)
     }
 
     removePlayer(playerId) {
@@ -32,7 +32,8 @@ export default class Room {
         return {
             players: Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
-                name: p.name
+                name: p.name,
+                role: p.role
             }))
         }
 

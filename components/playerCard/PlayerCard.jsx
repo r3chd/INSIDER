@@ -11,12 +11,12 @@ export default function PlayerCard() { // Arguments needed here in for loop
   const parseDTOPlayers = dto => ({
     players: dto.players.map(p => ({
         id: p.id,
-        name: p.name
+        name: p.name,
+        role: p.role
     }))
   });
 
   const items = [];
-  const count = 6; // edit this
 
     useEffect(() => {
 
@@ -34,8 +34,8 @@ export default function PlayerCard() { // Arguments needed here in for loop
     
     
     items.push(
-      <div className="${styles.squircle}"> // need to fix
-        Player {i + 1} : {player.name}
+      <div key={player.id} className={styles.squircle}>
+        Player {i + 1} : {player.name} : role : {player.role}
       </div>
     );
   }
