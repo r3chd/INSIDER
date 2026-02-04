@@ -4,6 +4,7 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+import Roles from './components/constants/rolesEnum.js';
 
 // Player and room classes
 import Player from "./models/Player.js"
@@ -56,6 +57,7 @@ app.prepare().then(() => {
 
             // Make the player proper
             const player = new Player(socket.id, playerName);
+            player.role = Roles.ROOM_LEADER;
             players.set(socket.id, player);
 
 
@@ -84,6 +86,7 @@ app.prepare().then(() => {
             }
 
             const player = new Player(socket.id, playerName);
+            player.role = Roles.ROOM_MEMBER;
             console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
             
             room.addPlayer(player)

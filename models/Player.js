@@ -4,7 +4,7 @@ export default class Player {
     
     #id = null;
     #name = "";
-    #role = Roles.INSIDER;
+    #role = Roles.UNDEFINED;
 
     constructor(id, name) {
         this.#id = id;
@@ -25,5 +25,9 @@ export default class Player {
 
     get name() {
         return this.#name;
+    }
+
+    get role() {
+        return this.#role;
     }
 }
