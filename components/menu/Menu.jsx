@@ -2,8 +2,7 @@ import { useState }from 'react';
 import styles from "./Menu.module.css";
 
 // Menu components
-import MenuButtons from "./MenuButtons";
-import MenuJoin from "./MenuJoin"
+import MenuButton from "./MenuButton";
 
 export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin}) {
   if (!isActive) return null;
@@ -12,7 +11,8 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   const [roomCode, setRoomCode] = useState("");
 
   // for menu components
-  const [activeComponent, setActiveMenuComponent] = useState('buttons');
+  const [createActive, setCreateActive] = useState(true);
+  // as opposed to 'join' active instead
 
   // For setting room, name variable
   const handleNameChange = (e) => {
@@ -30,16 +30,18 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   }
 
   const handleBackButtonPressed = () => {
-    setActiveMenuComponent('buttons');
+    // setActiveMenuComponent('buttons');
+    setCreateActive(true);
   }
 
   // Specifically showing the ROOMCODE input box
-  const handleJoinButtonPressed = () => {
-    setActiveMenuComponent('join');
+  const handleJoinTransitionPressed = () => {
+    // setActiveMenuComponent('join');
+    setCreateActive(false);
   }
 
   // Specifically joining a room
-  const handleJoinRoomButtonPressed = () => {
+  const handleJoinRoomPressed = () => {
     handleJoin(roomCode, name)
   }
 
@@ -47,6 +49,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   return (
     <div className={`${styles.menu} ${isActive ? styles.active : ""}`}>
 
+      <div className={styles.menuInteractable}>
           <p> INSIDER </p>
 
           
@@ -55,20 +58,30 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
             <input onChange={handleNameChange}></input>
           </div>
 
-          <MenuButtons
-            isActiveComponent={activeComponent==='buttons'}
-            handleCreateButtonPressed={handleCreateButtonPressed}
-            handleJoinButtonPressed={handleJoinButtonPressed}
-          />
 
-          <MenuJoin 
-            isActiveComponent={activeComponent==='join'}
-            roomCode={roomCode}
-            setRoomCode={setRoomCode}
-            handleBackButtonPressed={handleBackButtonPressed}
-            handleJoinRoomButtonPressed={handleJoinRoomButtonPressed}
-            onRoomCodeChange={onRoomCodeChange}
-          />
+          {/* Make two divs - one for buttons and join */}
+          {/* Each div should have an active an inactive */}
+          {/* Each should have the buttons within */}
+
+          {/* First Div */}
+          <div className = {`${styles.buttonBox} ${createActive ? styles.active : ""}`}>
+
+            <MenuButton children="create" onClick={handleCreateButtonPressed}/>
+            <MenuButton children="join" onClick={handleJoinTransitionPressed}/>
+          </div>
+
+
+          {/* Second Div */}
+          <div className = {`${styles.buttonBox} ${createActive ? "" : styles.active}`}>
+
+            <MenuButton children="back" onClick={handleBackButtonPressed}/>
+            <p> or join one </p>
+            <input onChange={onRoomCodeChange}></input>
+            <MenuButton children="join" onClick={handleJoinRoomPressed}/>
+
+          </div>
+
+      </div>
     </div>
   );
 }

@@ -1,12 +1,23 @@
 .menu {
+  /* This is the vertical column */
   height: 100vh;
-  background-color:lightgray;
+  background-color:rgb(20, 20, 20);
+
+  /* Drop shadow */
+  box-shadow: 0 0 60px rgba(60, 60, 60, 0.6), inset 0 0 15px rgba(60,60,60,0.6);
+}
+
+.menuInteractable {
+  /* This is a subsectinon of the vertical column */
+  margin-left: auto;
+  margin-right: auto;
+  color: rgb(40,40,40);
   display:flex;
   flex-direction: column;
   align-items:center;
-  justify-content:center;
   gap: 50px;
-  /* Add menu-specific styles here */
+  justify-content:center;
+  color: white;
 }
 
 .menu.active {
@@ -20,6 +31,11 @@
 }
 
 .buttonBox {
+  display: none;
+}
+
+.buttonBox.active {
+  display: flex;
 }
 
 .inputBox {

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 import { socket } from "../socket.js";
 
@@ -17,6 +19,8 @@ export default function Home() {
 
     // information that the user should know
     const [roomPlayers, setRoomPlayers] = useState();
+
+    // Unsure if needed
     const [activePlayerName, setActivePlayerName] = useState();
 
     // this runs when the "create" button is hit
