@@ -92,7 +92,7 @@ app.prepare().then(() => {
             
             room.addPlayer(player)
             socket.join(roomCode);
-
+            // Need to update this somehow
             io.to(roomCode).emit("playersUpdated", room.toDTOPlayers());
         })
 

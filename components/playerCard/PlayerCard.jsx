@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { socket } from "../../socket.js";
 import styles from "./PlayerCard.module.css";
+import Roles from "../constants/rolesEnum.js"
 
 export default function PlayerCard() { // Arguments needed here in for loop
   const [playerList, setPlayerList] = useState({
@@ -32,12 +33,22 @@ export default function PlayerCard() { // Arguments needed here in for loop
   for (let i = 0; i < playerList.players.length; i++) {
     const player = playerList.players[i];
     
-    
-    items.push(
+    if (player.role === Roles.ROOM_LEADER) {
+      items.push(
       <div key={player.id} className={styles.squircle}>
-        Player {i + 1} : {player.name} : role : {player.role}
+        Player KING : {player.name} : role : {player.role}
       </div>
-    );
+      )
+    }
+    else {
+      items.push(
+        <div key={player.id} className={styles.squircle}>
+          Player {i + 1} : {player.name} : role : {player.role}
+        </div>
+      );
+    }
+
+
   }
 
   for (let i = 0; i < 3; i++) { // Need to change out with max players later on
@@ -48,5 +59,6 @@ export default function PlayerCard() { // Arguments needed here in for loop
     );
   } 
 
-  return <div className="column">{items}</div>;
+  return <div className="column">
+    {items}</div>;
 }

@@ -54,7 +54,7 @@
 
 .button::before{
   content: "";
-  position: absolute;
+  position: toDTOP;
   left: 0;
   top:-100%;
   width: 100%;

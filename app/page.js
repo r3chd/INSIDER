@@ -72,10 +72,6 @@ export default function Home() {
           console.log(data);
           // Need to display the data somewhere
         });
-        
-        socket.on("Players", (room) => {
-          // Code should simply 'get' the players list from the backend.
-        })
 
         // Disables these codes i guess
         return () => {
