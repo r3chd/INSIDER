@@ -20,12 +20,12 @@ export default function PlayerCard() { // Arguments needed here in for loop
 
     useEffect(() => {
 
-        const handleUpdate = (data) => {
+        const handlePlayerUpdate = (data) => {
             console.log("socket update, data", data);
             setPlayerList(parseDTOPlayers(data));
         }
 
-        socket.on("playersUpdated", handleUpdate);
+        socket.on("playersUpdated", handlePlayerUpdate);
     }, []);
 
 
@@ -39,6 +39,14 @@ export default function PlayerCard() { // Arguments needed here in for loop
       </div>
     );
   }
+
+  for (let i = 0; i < 3; i++) { // Need to change out with max players later on
+    items.push(
+      <div key={i} className={styles.squircle}>
+        Waiting for player..
+      </div>
+    );
+  } 
 
   return <div className="column">{items}</div>;
 }

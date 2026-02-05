@@ -5,8 +5,6 @@ import styles from "./Menu.module.css";
 import MenuButton from "./MenuButton";
 
 export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin}) {
-  if (!isActive) return null;
-
   const [name, setName] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
@@ -30,13 +28,11 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   }
 
   const handleBackButtonPressed = () => {
-    // setActiveMenuComponent('buttons');
     setCreateActive(true);
   }
 
   // Specifically showing the ROOMCODE input box
   const handleJoinTransitionPressed = () => {
-    // setActiveMenuComponent('join');
     setCreateActive(false);
   }
 
@@ -50,7 +46,6 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
     <div className={`${styles.menu} ${isActive ? styles.active : ""}`}>
 
       <div className={styles.menuInteractable}>
-          <p> INSIDER </p>
 
           
           <div className = {styles.inputBox}>
@@ -74,8 +69,8 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
           {/* Second Div */}
           <div className = {`${styles.buttonBox} ${createActive ? "" : styles.active}`}>
 
-            <MenuButton children="back" onClick={handleBackButtonPressed}/>
-            <p> or join one </p>
+            <MenuButton children="X" onClick={handleBackButtonPressed}/>
+            <p> .. </p>
             <input onChange={onRoomCodeChange}></input>
             <MenuButton children="join" onClick={handleJoinRoomPressed}/>
 

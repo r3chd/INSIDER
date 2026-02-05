@@ -22,14 +22,12 @@ export default class Room {
         return this.#connectedPlayers.has(playerId);
     }
 
-    toDTOCode() { // Function converts to JSON for front end
-        return {
-            roomCode: this.#code,
-        };
+    get code() { 
+        return this.#code
     }
 
     toDTOPlayers() {
-        return {
+        return { // Function converts to JSON for front end
             players: Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,

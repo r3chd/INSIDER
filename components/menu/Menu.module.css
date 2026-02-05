@@ -1,28 +1,26 @@
 .menu {
   /* This is the vertical column */
-  height: 100vh;
-  background-color:rgb(20, 20, 20);
+  height: 100%;
+  display:none;
+}
 
-  /* Drop shadow */
-  box-shadow: 0 0 60px rgba(60, 60, 60, 0.6), inset 0 0 15px rgba(60,60,60,0.6);
+.menu.active {
+  display: flex;
 }
 
 .menuInteractable {
   /* This is a subsectinon of the vertical column */
-  margin-left: auto;
-  margin-right: auto;
-  color: rgb(40,40,40);
+
+  width:100%;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 30px 0px 30px 0px;
   display:flex;
   flex-direction: column;
   align-items:center;
   gap: 50px;
   justify-content:center;
   color: white;
-}
-
-.menu.active {
-  display: flex;
-
 }
 
 .centerMain {
@@ -32,10 +30,46 @@
 
 .buttonBox {
   display: none;
+  width:inherit;
 }
 
 .buttonBox.active {
   display: flex;
+}
+
+.button {
+  width: 50%;
+  border:none;
+  background-color: rgb(54, 54, 54);
+  color:white;
+  cursor: pointer;
+  padding: 12px 0;
+
+  /* For transition */
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  transition: color 0.1s ease-in-out;
+}
+
+.button::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top:-100%;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: rgb(0, 0, 0);
+  transition: all 0.1s ease-in-out;
+}
+
+.button:hover::before {
+  top: 0;
+}
+
+.button:hover{ 
+  color: white;
 }
 
 .inputBox {

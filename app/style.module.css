@@ -18,5 +18,30 @@
 
 .main {
     width: 500px;
-    background-color:aqua;
+    height:100vh;
+    background-color: rgb(20,20,20);
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 60px rgba(60, 60, 60, 0.6);
+
+}
+
+.logo {
+    display:flex; 
+    flex-direction: column;
+    color:white;
+    /* temp, move title with logo */
+    width:30%;
+    height: auto;
+    align-items:center;
+
+    /* for spacing */
+    margin-bottom:0.5rem;
+}
+
+.content {
+  width: 100%;
+  justify-content: center; /* center content vertically in its own space */
 }

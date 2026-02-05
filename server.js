@@ -66,7 +66,8 @@ app.prepare().then(() => {
             socket.join(roomCode); // Set current connection to the roomCode
             
             console.log(`${roomCode} is made`);
-            io.to(roomCode).emit("playersUpdated", room.toDTOPlayers())
+            io.to(roomCode).emit("roomCreated", room.code);
+            io.to(roomCode).emit("playersUpdated", room.toDTOPlayers());
         });
 
         // On room being joined

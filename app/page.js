@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { socket } from "../socket.js";
 
 import Menu from '../components/menu/Menu.jsx';
-import Game from '../components/game/Game.jsx';
-import Status from '../components/Status.jsx';
+import Lobby from '../components/game/Lobby.jsx';
 import styles from './style.module.css';
 
 export default function Home() {
@@ -30,7 +29,7 @@ export default function Home() {
 
       // repetition here
       setActivePlayerName(playerName);
-      setActiveView("game");
+      setActiveView('lobby');
     };
 
     const handleJoin = (roomCode, playerName) => {
@@ -38,7 +37,7 @@ export default function Home() {
       socket.emit("joinRoom", {roomCode, playerName})
 
       setActivePlayerName(playerName);
-      setActiveView("game");
+      setActiveView('lobby');
     }
 
     // Connectivity code (connection and socket receiving)
@@ -90,18 +89,19 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-          <Menu isActive={activeView === "menu"} 
+          <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
+        
+        <div className={styles.content}>
+          <Menu isActive={activeView === 'menu'}  
             handleCreate={handleCreate} 
             handleJoin={handleJoin} /> 
-          <Game 
-            isActive={activeView === "game"} 
+          <Lobby 
+            isActive={activeView === 'lobby'} 
           />
-          <Status 
-            isConnected = { isConnected } 
-            players =  { roomPlayers }
-            // Want to pass backend to frontend
-          />
-        <p>Transport: { transport }</p>
+
+          <p>Transport: { transport }</p>
+        </div>
+
       </div>
     </div>
   );
