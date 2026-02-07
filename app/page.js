@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { socket } from "../socket.js";
 
 import Menu from '../components/menu/Menu.jsx';
-import Lobby from '../components/game/Lobby.jsx';
+import Lobby from '../components/Lobby/Lobby.jsx';
 import styles from './style.module.css';
 
 export default function Home() {
@@ -33,11 +33,10 @@ export default function Home() {
     };
 
     const handleJoin = (roomCode, playerName) => {
-      socket.emit("console", roomCode); // Did this fix it? Unsure.
       socket.emit("joinRoom", {roomCode, playerName})
 
       setActivePlayerName(playerName);
-      setActiveView('lobby');
+      setActiveView('lobby'); // Change to game HERE
     }
 
     // Connectivity code (connection and socket receiving)
@@ -61,23 +60,20 @@ export default function Home() {
         }
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
-        socket.on("updatePlayers", (players) => {
-            console.log("HELLO FUCKING LOW?")
-            setRoomPlayers(players);
-            socket.emit("console", players);
-            console.log("WHAT THE FUCK") // lmao richard
-        });
 
         socket.on("roomUpdated", (data) => {
           console.log(data);
           // Need to display the data somewhere
         });
 
+        socket.on("gameStarted", () => {
+          setActiveView('menu');
+        })
+
         // Disables these codes i guess
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
-            socket.off("updatePlayers")
         };
         
     }, []);

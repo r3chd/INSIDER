@@ -1,8 +1,8 @@
 import styles from './MenuButton.module.css';
 
-export default function MenuButton({ children, onClick, half, clickable=true }) {
+export default function MenuButton({ children, onClick, half }) {
   return (
-  <button className={`${styles.button} ${half ? styles.buttonHalf : styles.buttonFull} ${clickable ? styles.clickable : styles.unclickable}`} onClick={onClick} disabled={!clickable}>
+  <button className={`${styles.button} ${half ? styles.buttonHalf : styles.buttonFull} `} onClick={onClick} >
     {children}
   </button>
   );

@@ -94,6 +94,12 @@ app.prepare().then(() => {
             io.to(roomCode).emit("roomUpdated", room.toDTO());
         })
 
+        // On start button pressed
+
+        socket.on("startGame", (roomCode) => {
+            io.to(roomCode).emit("gameStarted")
+        })
+
 
         // DISCONNECT CODE
         socket.on("disconnect", () => {
