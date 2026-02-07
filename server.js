@@ -66,8 +66,7 @@ app.prepare().then(() => {
             socket.join(roomCode); // Set current connection to the roomCode
             
             console.log(`${roomCode} is made`);
-            io.to(roomCode).emit("roomCreated", room.code);
-            io.to(roomCode).emit("playersUpdated", room.toDTOPlayers());
+            io.to(roomCode).emit("roomUpdated", room.toDTO());
         });
 
         // On room being joined
@@ -78,7 +77,6 @@ app.prepare().then(() => {
                 return;
             } else {
                 console.log("room found!")
-                room.printRoom();
             }
 
             if (room.connectedPlayers.has(socket.id)) {
@@ -93,7 +91,7 @@ app.prepare().then(() => {
             room.addPlayer(player)
             socket.join(roomCode);
             // Need to update this somehow
-            io.to(roomCode).emit("playersUpdated", room.toDTOPlayers());
+            io.to(roomCode).emit("roomUpdated", room.toDTO());
         })
 
 

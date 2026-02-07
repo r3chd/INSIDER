@@ -1,3 +1,5 @@
+import Roles from "../components/constants/rolesEnum.js";
+
 export default class Room {
 
     #code = "";
@@ -22,19 +24,18 @@ export default class Room {
         return this.#connectedPlayers.has(playerId);
     }
 
-    get code() { 
-        return this.#code
-    }
-
-    toDTOPlayers() {
-        return { // Function converts to JSON for front end
-            players: Array.from(this.#connectedPlayers.values()).map(p => ({
+    toDTO() {
+        const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
                 role: p.role
             }))
+        const hostPlayer = players.find(p => p.role === Roles.ROOM_LEADER);
+        return {
+            code: this.#code,
+            players,
+            hostId: hostPlayer ? hostPlayer.id : null
         }
-
     }
 
     printRoom() {

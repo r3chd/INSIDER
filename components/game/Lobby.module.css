@@ -7,8 +7,7 @@
 
 .lobbyInteractable {
   width:100%;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin: auto;
 }
 
 .lobby.active {
