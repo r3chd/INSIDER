@@ -5,7 +5,7 @@ import styles from "./Lobby.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import MenuButton from "../menu/MenuButton.jsx";
 
-export default function Game({ isActive }) {
+export default function Lobby({ isActive }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState(null);
 

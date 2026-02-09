@@ -1,4 +1,5 @@
 import Roles from "../components/constants/rolesEnum.js";
+import Game from "./Game.js";
 
 export default class Room {
 
@@ -15,8 +16,8 @@ export default class Room {
         console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.role}`)
     }
 
-    removePlayer(playerId) {
-        this.#connectedPlayers.delete(playerId);
+    removePlayer(player) {
+        this.#connectedPlayers.delete(player.id);
 
     }
 
@@ -51,7 +52,15 @@ export default class Room {
 
     }
 
+    get code() {
+        return this.#code;
+    }
+
     get connectedPlayers() {
         return this.#connectedPlayers;
+    }
+
+    start() {
+        const game = new Game(this.#code);
     }
 }

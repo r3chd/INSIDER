@@ -9,6 +9,7 @@ import Roles from './components/constants/rolesEnum.js';
 // Player and room classes
 import Player from "./models/Player.js"
 import Room from "./models/Room.js"
+import RoomManager from "./models/RoomManager.js";
 
 // Roomcode
 import { generateRoomCode } from "./utils/roomCode.js";
@@ -23,6 +24,8 @@ const handler = app.getRequestHandler();
 // used to track all players
 const players = new Map();
 const rooms = new Map();
+
+const roomManager = new RoomManager
 
 app.prepare().then(() => {
 
@@ -45,41 +48,36 @@ app.prepare().then(() => {
 
         // On room being created
         socket.on("createRoom", (playerName) => {
-            let roomCode;
-
-            // enforce uniqueness
-            do {
-                roomCode = generateRoomCode();
-            } while (rooms.has(roomCode))
             
-            const room = new Room(roomCode);
-            rooms.set(roomCode, room);
-
+            const createdRoom = roomManager.createRoom();
+            const roomCode = createdRoom.code;
             // Make the player proper
             const player = new Player(socket.id, playerName);
+            
+            // Player manager?
             player.role = Roles.ROOM_LEADER;
             players.set(socket.id, player);
 
-
             // Interaction between the two
-            room.addPlayer(player);
+            roomManager.addPlayer(createdRoom, player)
+
             socket.join(roomCode); // Set current connection to the roomCode
             
             console.log(`${roomCode} is made`);
-            io.to(roomCode).emit("roomUpdated", room.toDTO());
+            io.to(roomCode).emit("roomUpdated", createdRoom.toDTO());
         });
 
         // On room being joined
         socket.on("joinRoom", ({ roomCode, playerName }) => {
-            const room = rooms.get(roomCode);
-            if (!room) {
+            const targetRoom = roomManager.getRoom(roomCode);
+            if (!targetRoom) {
                 console.log("room not found!")
                 return;
             } else {
                 console.log("room found!")
             }
 
-            if (room.connectedPlayers.has(socket.id)) {
+            if (targetRoom.connectedPlayers.has(socket.id)) {
                 console.log("player already in room");
                 return;
             }
@@ -88,16 +86,19 @@ app.prepare().then(() => {
             player.role = Roles.ROOM_MEMBER;
             console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
             
-            room.addPlayer(player)
+            roomManager.addPlayer(targetRoom, player)
             socket.join(roomCode);
             // Need to update this somehow
-            io.to(roomCode).emit("roomUpdated", room.toDTO());
+            console.log(targetRoom.toDTO());
+            io.to(roomCode).emit("roomUpdated", targetRoom.toDTO());
         })
 
         // On start button pressed
 
         socket.on("startGame", (roomCode) => {
-            io.to(roomCode).emit("gameStarted")
+            const startingRoom = roomManager.getRoom(roomCode)
+            startingRoom.start();
+        
         })
 
 
