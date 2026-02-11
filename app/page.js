@@ -5,6 +5,7 @@ import { socket } from "../socket.js";
 
 import Menu from '../components/menu/Menu.jsx';
 import Lobby from '../components/Lobby/Lobby.jsx';
+import Game from '../components/Game/Game.jsx';
 import styles from './style.module.css';
 
 export default function Home() {
@@ -67,7 +68,7 @@ export default function Home() {
         });
 
         socket.on("gameStarted", () => {
-          setActiveView('menu');
+          setActiveView('game');
         })
 
         // Disables these codes i guess
@@ -90,6 +91,7 @@ export default function Home() {
           <Lobby 
             isActive={activeView === 'lobby'} 
           />
+          <Game isActive={activeView === 'game'} />
 
           <p>Transport: { transport }</p>
         </div>

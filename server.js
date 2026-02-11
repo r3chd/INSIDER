@@ -5,6 +5,7 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import Roles from './components/constants/rolesEnum.js';
+import {setIo} from "./io.js";
 
 // Player and room classes
 import Player from "./models/Player.js"
@@ -23,7 +24,6 @@ const handler = app.getRequestHandler();
 
 // used to track all players
 const players = new Map();
-const rooms = new Map();
 
 const roomManager = new RoomManager
 
@@ -31,6 +31,7 @@ app.prepare().then(() => {
 
     const httpServer = createServer(handler);
     const io = new Server(httpServer);
+    setIo(io);
 
     io.on("connection", (socket) => {
 
