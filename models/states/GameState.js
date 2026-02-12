@@ -1,10 +1,5 @@
 export class GameState {
-    constructor(game) {
-        this.game = game;
-    }
-
-    enter() {}
-    exit() {}
-    update() {}
-    handleEvent(event, payload) {}
+    enter(game) {}
+    exit(game) {}
+    onPlayerAction(game, socket, data) {}
 }

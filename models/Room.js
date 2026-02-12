@@ -5,6 +5,7 @@ export default class Room {
 
     #code = "";
     #connectedPlayers = new Map();
+    #game = null;
 
     constructor(code) {
         this.#code = code; // 5 Digit alphanumeric string
@@ -60,7 +61,9 @@ export default class Room {
         return this.#connectedPlayers;
     }
 
-    start() {
-        const game = new Game(this.#code);
+    start(io) {
+        if (this.#game) return;
+        this.#game = new Game(this.#code, io, this.#connectedPlayers);
+        this.#game.start();
     }
 }

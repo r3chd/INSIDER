@@ -31,7 +31,7 @@ export default function Lobby({ isActive }) {
       <div className={styles.lobbyInteractable}>
 
         <h1 className={styles.h1}>lobby code: {roomCode} </h1>
-        <PlayerDisplay />
+        <PlayerDisplay showEmpty={true}/>
 
 
         {hostId === socket.id && (

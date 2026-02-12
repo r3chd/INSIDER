@@ -6,7 +6,7 @@ import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
 
 
-export default function PlayerCard() { // Arguments needed here in for loop
+export default function PlayerCard({showEmpty=true}) { // Arguments needed here in for loop
   const [playerList, setPlayerList] = useState({
     players: [],
   });
@@ -56,14 +56,16 @@ export default function PlayerCard() { // Arguments needed here in for loop
       );
     }
   }
+  if (showEmpty) {
+    for (let i = 0; i < MAX_PLAYERS - playerList.players.length; i++) { // Need to change out with max players later on
+      items.push(
+        <div key={i} className={`${styles.squircle} ${styles.squircleEmpty}`}>
+          Waiting for player..
+        </div>
+      );
+    } 
+  }
 
-  for (let i = 0; i < MAX_PLAYERS - playerList.players.length; i++) { // Need to change out with max players later on
-    items.push(
-      <div key={i} className={`${styles.squircle} ${styles.squircleEmpty}`}>
-        Waiting for player..
-      </div>
-    );
-  } 
 
   return <div className={styles.column}>
     {items}</div>;
