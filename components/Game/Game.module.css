@@ -22,7 +22,7 @@
 .overlay {
   display: none;
   margin:auto;
-  color: rgba(103, 103, 103, 0.527);
+  background-color: rgba(29, 29, 29, 0.836);
   position:absolute;
   inset:0;
   z-index:10;
@@ -30,4 +30,21 @@
 
 .overlay.active {
   display: flex;
+}
+
+.overlayButtonBox {
+    margin: auto;
+    display: flex;
+    gap: 5px;
+    color:black;
+}
+
+
+.overlayBox {
+    display:flex;
+    flex-direction:column;
+    color:white;
+    gap:20px;
+    margin: auto;
+    align-items:center;
 }

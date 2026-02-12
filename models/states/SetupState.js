@@ -1,23 +1,35 @@
 import { GameState } from "./GameState.js";
 import Roles from "../../components/constants/rolesEnum.js";
-
+import TEXT from "../../components/constants/text.js";
 import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     enter(game) {
-        const masterPlayer = this.assignRoles(game); // roles assigned
-        // show three options to master
-        
+        // Set roles to each player, get the master role
+        this.assignRoles(game); 
+
+
+        for (const player of game.players.values()) {
+            if (player.role === Roles.MASTER) {
+                game.emitToPlayer(player.id, "showRandomWords", {
+                    words: generateRandomWords()
+                })
+            } else if (player.role === Roles.COMMONER) {
+                game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.commoner);
+            } else if (player.role === Roles.INSIDER) {
+                game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.insider);
+            }
+        }
+        // Show the random words to player
         game.emitToPlayer(masterPlayer.id, "showRandomWords", {
             words: generateRandomWords()
         });
 
         const io = getIo();
         const masterSocket = io.sockets.sockets.get(masterPlayer.id);
-        console.log(masterPlayer.id);
-        console.log(masterSocket);
 
+        // On a word being selected
         masterSocket.once("wordSelected", (word) => {
             for (const player of game.players.values()) {
                 if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
@@ -63,8 +75,7 @@ export class SetupState extends GameState {
             const player = playersArray[i];
             if (i === game.roundCount) {
                 player.role = Roles.MASTER;
-                console.log("player set to master");
-                masterPlayer = player;    
+                console.log("player set to master"); 
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
                 console.log("player set to master");
@@ -78,7 +89,6 @@ export class SetupState extends GameState {
                 role: player.role
             });
         }
-        return masterPlayer;
     }
 
 

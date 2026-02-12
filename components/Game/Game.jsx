@@ -15,7 +15,8 @@ export default function Lobby({ isActive }) {
   const [wordOptions, setWordOptions] = useState([]);
   const [targetWord, setTargetWord] = useState(null);
 
-  
+  // Overlay variables
+  const [overlayMessage, setOverlayMessage] = useState("DEBUG message");
   const [showOverlay, setShowOverlay] = useState(false);
 
   // For when one of the buttons is pressed
@@ -42,9 +43,15 @@ export default function Lobby({ isActive }) {
       setWordOptions(data.words);
     }
 
+    const handleOverlayMessage = (message) => {
+        setShowOverlay(true);
+        setOverlayMessage(message);
+    }
+
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
-    socket.on("showRandomWords", handleSelectWord)
+    socket.on("showOverlayMessage", handleOverlayMessage);
+    socket.on("showRandomWords", handleSelectWord);
   })
 
 
@@ -53,16 +60,23 @@ export default function Lobby({ isActive }) {
     
     <div className={`${styles.game} ${isActive ? styles.active : ""}`}>
         <div className={`${styles.overlay} ${showOverlay ? styles.active : ""}`}>
+            <div className={styles.overlayBox}>
+                <h1>{overlayMessage}</h1>
 
-          {wordOptions.map((word, i) => (
-            <WordButton key={word} word={word} onSelect={handleWordSelect} />
-          ))}
+                <div className={styles.overlayButtonBox}>
+                    {wordOptions.map((word, i) => (
+                        <WordButton key={word} word={word} onSelect={handleWordSelect} />
+                    ))}
+                </div>
+            </div>
+            
+
         </div>
-      <div className={styles.gameInteractable}>
-        <h1 className={styles.h1}> {currentPlayerRole} </h1>e
-        <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
-        <PlayerDisplay showEmpty={false}/>
-      </div>
+        <div className={styles.gameInteractable}>
+            <h1 className={styles.h1}> {currentPlayerRole} </h1>e
+            <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
+            <PlayerDisplay showEmpty={false}/>
+        </div>
     </div>
   );
 }
