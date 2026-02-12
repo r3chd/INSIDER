@@ -6,25 +6,49 @@ import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     enter(game) {
-        // Set roles to each player, get the master role
-        this.assignRoles(game); 
+        // Set roles to each player
+        let masterPlayer = this.assignRoles(game); 
 
-
+        // Show the overlay to all players
         for (const player of game.players.values()) {
-            if (player.role === Roles.MASTER) {
-                game.emitToPlayer(player.id, "showRandomWords", {
-                    words: generateRandomWords()
-                })
-            } else if (player.role === Roles.COMMONER) {
-                game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.commoner);
-            } else if (player.role === Roles.INSIDER) {
-                game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.insider);
+
+            let overlayMessage = null;
+            let words = [];
+            switch(player.role) {
+                case Roles.MASTER:
+                    words = generateRandomWords();
+                    overlayMessage = TEXT.overlay.master;
+                    break;
+                case Roles.COMMONER:
+                    overlayMessage = TEXT.overlay.commoner;
+                    break;
+
+                case Roles.INSIDER:
+                    overlayMessage = TEXT.overlay.insider;
+                    break;
             }
+
+            game.emitToPlayer(player.id, "showOverlayMessage", {
+                words: words,
+                overlayMessage: overlayMessage,
+                masterPlayer: masterPlayer.name
+            })
+
+
+            // if (player.role === Roles.MASTER) {
+            //     game.emitToPlayer(player.id, "showRandomWords", {
+            //         words: generateRandomWords()
+            //     })
+            // } else if (player.role === Roles.COMMONER) {
+            //     game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.commoner);
+            // } else if (player.role === Roles.INSIDER) {
+            //     game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.insider);
+            // }
         }
         // Show the random words to player
-        game.emitToPlayer(masterPlayer.id, "showRandomWords", {
-            words: generateRandomWords()
-        });
+        // game.emitToPlayer(masterPlayer.id, "showRandomWords", {
+        //     words: generateRandomWords()
+        // });
 
         const io = getIo();
         const masterSocket = io.sockets.sockets.get(masterPlayer.id);
@@ -76,6 +100,7 @@ export class SetupState extends GameState {
             if (i === game.roundCount) {
                 player.role = Roles.MASTER;
                 console.log("player set to master"); 
+                masterPlayer = player;
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
                 console.log("player set to master");
@@ -89,6 +114,7 @@ export class SetupState extends GameState {
                 role: player.role
             });
         }
+        return masterPlayer;
     }
 
 

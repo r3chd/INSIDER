@@ -43,15 +43,18 @@ export default function Lobby({ isActive }) {
       setWordOptions(data.words);
     }
 
-    const handleOverlayMessage = (message) => {
+    const handleOverlay = (data) => {
         setShowOverlay(true);
-        setOverlayMessage(message);
+        setOverlayMessage(data.overlayMessage.replace("{{name}}", data.masterPlayer));
+        if (data.words !== null) {
+            setWordOptions(data.words);
+        }
+
     }
 
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
-    socket.on("showOverlayMessage", handleOverlayMessage);
-    socket.on("showRandomWords", handleSelectWord);
+    socket.on("showOverlayMessage", handleOverlay);
   })
 
 
