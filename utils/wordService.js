@@ -4,7 +4,19 @@ const words = fs.readFileSync(new URL("../public/assets/words.txt", import.meta.
   .trim()
   .split(/\r?\n/); // Array from the start
 
-export default function getRandomWord() {
+function getRandomWord() {
     const randomIndex = Math.floor(Math.random() * words.length);
     return words[randomIndex];
+}
+
+export default function generateRandomWords() {
+    let words = [];
+    while (words.length < 3) {
+        const randomWord = getRandomWord();
+        if (!words.includes(randomWord)) {
+        words.push(randomWord);
+        }
+    }
+
+    return words;
 }

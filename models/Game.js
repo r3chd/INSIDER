@@ -35,10 +35,6 @@ export default class Game {
         this.state.enter();
     }
 
-    handleEvent(event, payload) {
-        this.state.handleEvent?.(event, payload);
-    }
-
     emit(event, data) { // To a room - everyone should know
         this.#io.to(this.#code).emit(event, data);
     }

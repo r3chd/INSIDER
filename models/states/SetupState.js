@@ -1,26 +1,35 @@
 import { GameState } from "./GameState.js";
 import Roles from "../../components/constants/rolesEnum.js";
 
-import getRandomWord from "../../utils/wordService.js";
-
+import generateRandomWords from "../../utils/wordService.js";
+import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     enter(game) {
-        this.assignRoles(game);
-        const randomWord = getRandomWord();
-        game.targetWord = getRandomWord();
-        console.log(game.targetWord);
-        for (const player of game.players.values()) {
-            if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
-                console.log("sending to ", player.role);
-                game.emitToPlayer(player.id, "wordAssigned", {
-                    word: randomWord
-                });
+        const masterPlayer = this.assignRoles(game); // roles assigned
+        // show three options to master
+        
+        game.emitToPlayer(masterPlayer.id, "showRandomWords", {
+            words: generateRandomWords()
+        });
+
+        const io = getIo();
+        const masterSocket = io.sockets.sockets.get(masterPlayer.id);
+        console.log(masterPlayer.id);
+        console.log(masterSocket);
+
+        masterSocket.once("wordSelected", (word) => {
+            for (const player of game.players.values()) {
+                if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
+                    console.log("sending to ", player.role);
+                    game.emitToPlayer(player.id, "wordAssigned", {
+                        word: word
+                    });
+                }
             }
-        }
+        });
 
 
-        return;
         for (const [socketId, player] of game.players) {
             console.log(socketId);
             console.log(player.name);
@@ -35,9 +44,10 @@ export class SetupState extends GameState {
     
     assignRoles(game) {
 
-        console.log(game.players);
+        // Convert to array
         const playersArray = Array.from(game.players.values());
-
+        
+        // Random number selection
         let insider_num = -1;
         if (playersArray.size <= 2) {
             return; // Temporary break condition to prevent infinite loop.
@@ -46,15 +56,19 @@ export class SetupState extends GameState {
             insider_num = Math.floor(Math.random() * playersArray.length) // If 4 ppl; then [0-4)
         } while (insider_num === game.roundCount);
 
+        // Role assignment
+        let masterPlayer = null;
+
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             if (i === game.roundCount) {
                 player.role = Roles.MASTER;
                 console.log("player set to master");
-                
+                masterPlayer = player;    
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
                 console.log("player set to master");
+            
             } else {
                 player.role = Roles.COMMONER;
                 console.log("player set to commoner");
@@ -64,16 +78,11 @@ export class SetupState extends GameState {
                 role: player.role
             });
         }
-        console.log(playersArray);
-
+        return masterPlayer;
     }
 
 
     exit (game) {
 
-    }
-
-    handleEvent(event) {
-        // this.game.setState(new );
     }
 }

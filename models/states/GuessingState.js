@@ -9,7 +9,4 @@ export class GuessingState extends GameState {
 
     }
 
-    handleEvent(event) {
-        
-    }
 }
