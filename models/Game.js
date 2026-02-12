@@ -10,9 +10,11 @@ export default class Game {
 
     constructor(code) { // add #io to constructor
         this.#code = code;
-        this.#state = setState(new SetupState(this));
+        this.#state = this.setState(new SetupState(this));
         this.#io = getIo();
 
+
+        
 
         // start the game
         
