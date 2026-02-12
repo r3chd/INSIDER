@@ -17,6 +17,7 @@ export default class Game {
         this.#io = io;
         this.#state = new SetupState();
         this.#roundCount = this.#players.size - 1; // 0 index
+        this.#targetWord = "not yet chosen"; // TEMP
     }
 
     start() {

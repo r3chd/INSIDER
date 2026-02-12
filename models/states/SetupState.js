@@ -7,14 +7,14 @@ export class SetupState extends GameState {
 
     enter(game) {
         this.assignRoles(game);
-
+        const randomWord = getRandomWord();
         game.targetWord = getRandomWord();
         console.log(game.targetWord);
         for (const player of game.players.values()) {
             if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
                 console.log("sending to ", player.role);
                 game.emitToPlayer(player.id, "wordAssigned", {
-                    word: game.targetWord
+                    word: randomWord
                 });
             }
         }

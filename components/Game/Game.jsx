@@ -29,8 +29,8 @@ export default function Lobby({ isActive }) {
   return (
     <div className={`${styles.game} ${isActive ? styles.active : ""}`}>
       <div className={styles.gameInteractable}>
-        <h1 className={styles.h1}> {currentPlayerRole} </h1>
-        <h1 className={styles.h1}> {`you're target is: ${targetWord ? {targetWord} : ""}`}</h1>
+        <h1 className={styles.h1}> {currentPlayerRole} </h1>e
+        <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
         <PlayerDisplay showEmpty={false}/>
       </div>
     </div>
