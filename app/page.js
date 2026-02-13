@@ -81,21 +81,22 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.main}>
-          <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
-        
-        <div className={styles.content}>
-          <Menu isActive={activeView === 'menu'}  
-            handleCreate={handleCreate} 
-            handleJoin={handleJoin} /> 
-          <Lobby 
-            isActive={activeView === 'lobby'} 
-          />
-          <Game isActive={activeView === 'game'} />
+      <div className={styles.timer}>
+        <div className={styles.main}>
+            <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
+          
+          <div className={styles.content}>
+            <Menu isActive={activeView === 'menu'}  
+              handleCreate={handleCreate} 
+              handleJoin={handleJoin} /> 
+            <Lobby 
+              isActive={activeView === 'lobby'} 
+            />
+            <Game isActive={activeView === 'game'} />
 
-          <p>Transport: { transport }</p>
+            <p>Transport: { transport }</p>
+          </div>
         </div>
-
       </div>
     </div>
   );

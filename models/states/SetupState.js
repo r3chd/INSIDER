@@ -34,21 +34,7 @@ export class SetupState extends GameState {
                 masterPlayer: masterPlayer.name
             })
 
-
-            // if (player.role === Roles.MASTER) {
-            //     game.emitToPlayer(player.id, "showRandomWords", {
-            //         words: generateRandomWords()
-            //     })
-            // } else if (player.role === Roles.COMMONER) {
-            //     game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.commoner);
-            // } else if (player.role === Roles.INSIDER) {
-            //     game.emitToPlayer(player.id, "showOverlayMessage", TEXT.overlay.insider);
-            // }
         }
-        // Show the random words to player
-        // game.emitToPlayer(masterPlayer.id, "showRandomWords", {
-        //     words: generateRandomWords()
-        // });
 
         const io = getIo();
         const masterSocket = io.sockets.sockets.get(masterPlayer.id);
@@ -63,7 +49,15 @@ export class SetupState extends GameState {
                     });
                 }
             }
+
+
+            game.emit("hideOverlay");
+
         });
+
+        // Disable overlay for all
+
+
 
 
         for (const [socketId, player] of game.players) {

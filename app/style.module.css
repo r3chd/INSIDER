@@ -24,7 +24,6 @@
     flex-direction:column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 60px rgba(60, 60, 60, 0.6);
 
     position: relative;
 
@@ -46,4 +45,13 @@
 .content {
   width: 100%;
   justify-content: center; /* center content vertically in its own space */
+}
+
+.timer {
+    display: flex;
+    width: 530px;
+    justify-content:center;
+    background-color:rgb(20, 20, 20);
+
+    box-shadow: 0 0 60px rgba(60, 60, 60, 0.6);
 }

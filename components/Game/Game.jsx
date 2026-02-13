@@ -24,7 +24,6 @@ export default function Lobby({ isActive }) {
     console.log(word);
     socket.emit("wordSelected", word);
 
-    setShowOverlay(false);
   }
 
 
@@ -38,23 +37,22 @@ export default function Lobby({ isActive }) {
       console.log(data.word);
     }
 
-    const handleSelectWord = (data) => {
-      setShowOverlay(true);
-      setWordOptions(data.words);
-    }
-
-    const handleOverlay = (data) => {
+    const handleShowOverlay = (data) => {
         setShowOverlay(true);
         setOverlayMessage(data.overlayMessage.replace("{{name}}", data.masterPlayer));
         if (data.words !== null) {
-            setWordOptions(data.words);
+            setWordOptions(data.words);n
         }
+    }
 
+    const handleHideOverlay = () => {
+        setShowOverlay(false);
     }
 
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
-    socket.on("showOverlayMessage", handleOverlay);
+    socket.on("showOverlayMessage", handleShowOverlay);
+    socket.on("hideOverlay", handleHideOverlay)
   })
 
 

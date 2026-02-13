@@ -36,6 +36,10 @@ export default class Game {
     }
 
     emit(event, data) { // To a room - everyone should know
+        if (data === undefined) {
+            this.#io.to(this.#code).emit(event); // Where data is not necessary
+        }
+        
         this.#io.to(this.#code).emit(event, data);
     }
 
