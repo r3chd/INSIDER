@@ -76,7 +76,7 @@ export default function Game({ isActive, fillRef }) {
   }
 
   const handleButtonPressed = () => {
-    console.log("skibid");
+    socket.emit("guessMade");
   }
 
 
@@ -105,11 +105,16 @@ export default function Game({ isActive, fillRef }) {
       startTimer(data.startTime, data.endTime);
     }
 
+    const handleShowButton = (data) => {
+      setButtonMessage(data.text);
+    }
+
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("startGuessingState", handleGuessingState)
+    socket.on("youAreGuessing", handleShowButton)
   })
 
 
