@@ -12,6 +12,7 @@ export default class Game {
     #roundCount;
     #targetWord;
 
+    
     constructor(code, io, players) { // add #io to constructor
         this.#code = code;
         this.#players = players;

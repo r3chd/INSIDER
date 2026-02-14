@@ -27,6 +27,7 @@ export default function Game({ isActive, fillRef }) {
   const [timerFill, setTimerFill] = useState(null);
 
   // Main Button variables
+  const [buttonActive, setButtonActive] = useState(false);
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
 
   useEffect(() => {
@@ -107,6 +108,7 @@ export default function Game({ isActive, fillRef }) {
 
     const handleShowButton = (data) => {
       setButtonMessage(data.text);
+      setButtonActive(true);
     }
 
     socket.on("roleAssigned", handleSetRole);
@@ -139,7 +141,7 @@ export default function Game({ isActive, fillRef }) {
             <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <PlayerDisplay showEmpty={false}/>
-            <MenuButton children={buttonMessage} onClick={handleButtonPressed}/>
+            <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive}/>
         </div>
     </div>
   );
