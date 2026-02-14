@@ -5,7 +5,7 @@ import styles from "./Game.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import WordButton from "../WordButton/WordButton.jsx";
 
-export default function Lobby({ isActive }) {
+export default function Game({ isActive, fillRef }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState("not assigned");
 
@@ -19,11 +19,43 @@ export default function Lobby({ isActive }) {
   const [overlayMessage, setOverlayMessage] = useState("DEBUG message");
   const [showOverlay, setShowOverlay] = useState(false);
 
+  // Timer
+  let timerRunning = true;
+  const timerFill = fillRef.current; // Get the timer element
+
+  function startTimer(start, end) {
+    
+    if (!timerFill) return;
+
+    const animate = () => {
+      if (!timerRunning) return;
+
+      const now = Date.now();
+      const progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
+    
+      timerFill.style.height = `${progress * 100}%`;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate); // Keep mainloop going
+      } else {
+        socket.emit("Something")
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  function endTimerEarly() {
+    timerRunning = false;
+    if (fillRef.current) {
+      fillRef.current.style.height = "100%";
+    }
+  }
+
   // For when one of the buttons is pressed
   const handleWordSelect = (word) => {
     console.log(word);
     socket.emit("wordSelected", word);
-
   }
 
 
@@ -37,21 +69,30 @@ export default function Lobby({ isActive }) {
       console.log(data.word);
     }
 
-    const handleShowOverlay = (data) => {
+    const handleSetupState = (data) => {
+        // Everyone gets overlay
         setShowOverlay(true);
+
+        // Everyone gets custom message
         setOverlayMessage(data.overlayMessage.replace("{{name}}", data.masterPlayer));
+        
+        // Show words only to master
         if (data.words !== null) {
-            setWordOptions(data.words);n
+            setWordOptions(data.words);
         }
+
+        // Start timer
+        startTimer(data.startTime, data.endTime)
     }
 
     const handleHideOverlay = () => {
         setShowOverlay(false);
+        endTimerEarly();
     }
 
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
-    socket.on("showOverlayMessage", handleShowOverlay);
+    socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay)
   })
 

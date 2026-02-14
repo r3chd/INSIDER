@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { socket } from "../socket.js";
 
 import Menu from '../components/menu/Menu.jsx';
@@ -9,7 +9,6 @@ import Game from '../components/Game/Game.jsx';
 import styles from './style.module.css';
 
 export default function Home() {
-
     // State of connectivity
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
@@ -17,8 +16,8 @@ export default function Home() {
     // views
     const [activeView, setActiveView] = useState('menu');
 
-    // information that the user should know
-    const [roomPlayers, setRoomPlayers] = useState();
+    // Timer information
+    const timerFillRef = useRef(null);
 
     // Unsure if needed
     const [activePlayerName, setActivePlayerName] = useState();
@@ -81,20 +80,24 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.timer}>
-        <div className={styles.main}>
-            <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
-          
-          <div className={styles.content}>
-            <Menu isActive={activeView === 'menu'}  
-              handleCreate={handleCreate} 
-              handleJoin={handleJoin} /> 
-            <Lobby 
-              isActive={activeView === 'lobby'} 
-            />
-            <Game isActive={activeView === 'game'} />
+      <div className={styles.timerBack}>
+        <div ref={timerFillRef} className={styles.timerFill}>
+        {/* This is the timer fill */}
+          <div className={styles.main}>
+              <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
+            
+            <div className={styles.content}>
+              <Menu isActive={activeView === 'menu'}  
+                handleCreate={handleCreate} 
+                handleJoin={handleJoin} /> 
+              <Lobby 
+                isActive={activeView === 'lobby'} 
+              />
+              <Game isActive={activeView === 'game'} 
+                fillRef = {timerFillRef} />
 
-            <p>Transport: { transport }</p>
+              <p>Transport: { transport }</p>
+            </div>
           </div>
         </div>
       </div>

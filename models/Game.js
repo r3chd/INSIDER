@@ -1,5 +1,6 @@
 import { socket } from "../socket.js"
 import { SetupState } from "./states/SetupState.js";
+import { GuessingState } from "./states/GuessingState.js"
 
 
 export default class Game {
@@ -33,6 +34,12 @@ export default class Game {
         this.state.exit?.();
         this.state = newState;
         this.state.enter();
+    }
+
+    nextState() {
+        if (this.state instanceof SetupState) {
+            this.setState(new GuessingState(this));
+        }
     }
 
     emit(event, data) { // To a room - everyone should know

@@ -5,18 +5,21 @@ import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
+    #duration = 3000;
+
     enter(game) {
+        // Timer
+        let generatedWords = generateRandomWords();
+
         // Set roles to each player
         let masterPlayer = this.assignRoles(game); 
 
         // Show the overlay to all players
         for (const player of game.players.values()) {
-
             let overlayMessage = null;
-            let words = [];
+            let startTime = Date.now();
             switch(player.role) {
                 case Roles.MASTER:
-                    words = generateRandomWords();
                     overlayMessage = TEXT.overlay.master;
                     break;
                 case Roles.COMMONER:
@@ -28,19 +31,32 @@ export class SetupState extends GameState {
                     break;
             }
 
-            game.emitToPlayer(player.id, "showOverlayMessage", {
-                words: words,
+            game.emitToPlayer(player.id, "startSetupState", {
+                words: player.role === Roles.MASTER ? generatedWords : [],
                 overlayMessage: overlayMessage,
-                masterPlayer: masterPlayer.name
+                masterPlayer: masterPlayer.name,
+                startTime: Date.now(),
+                endTime: startTime + this.#duration
             })
 
         }
 
+        // --------------- WORD SELECTION --------------- //
         const io = getIo();
         const masterSocket = io.sockets.sockets.get(masterPlayer.id);
 
-        // On a word being selected
-        masterSocket.once("wordSelected", (word) => {
+        let wordChosen = false;
+        masterSocket.once("wordSelected", (word) => assignWord(word));
+        setTimeout(() => {
+            if (!wordChosen) {
+                const randomWord = generatedWords[Math.floor(Math.random() * generatedWords.length)];
+                assignWord(randomWord);
+            }
+
+        }, this.#duration)
+
+        function assignWord(word) {
+            wordChosen = true;
             for (const player of game.players.values()) {
                 if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
                     console.log("sending to ", player.role);
@@ -50,30 +66,13 @@ export class SetupState extends GameState {
                 }
             }
 
-
-            game.emit("hideOverlay");
-
-        });
-
-        // Disable overlay for all
-
-
-
-
-        for (const [socketId, player] of game.players) {
-            console.log(socketId);
-            console.log(player.name);
-            console.log(player.role);
-            console.log(game.roundCount);
+            // Assignment of words indicates start of next state
+            game.nextState();
         }
-        // Assign roles by game.players
-        // emit things
-        // Select random word specifically for the main guy
     }
     
     
     assignRoles(game) {
-
         // Convert to array
         const playersArray = Array.from(game.players.values());
         
@@ -93,15 +92,11 @@ export class SetupState extends GameState {
             const player = playersArray[i];
             if (i === game.roundCount) {
                 player.role = Roles.MASTER;
-                console.log("player set to master"); 
                 masterPlayer = player;
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
-                console.log("player set to master");
-            
             } else {
                 player.role = Roles.COMMONER;
-                console.log("player set to commoner");
             }
             console.log(player.id);
             game.emitToPlayer(player.id, "roleAssigned", {
@@ -113,6 +108,7 @@ export class SetupState extends GameState {
 
 
     exit (game) {
-
+        // Reset variables for next round
+        game.emit("hideOverlay");
     }
 }

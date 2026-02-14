@@ -47,11 +47,18 @@
   justify-content: center; /* center content vertically in its own space */
 }
 
-.timer {
-    display: flex;
+.timerBack {
     width: 530px;
-    justify-content:center;
     background-color:rgb(20, 20, 20);
 
     box-shadow: 0 0 60px rgba(60, 60, 60, 0.6);
+}
+
+.timerFill {
+    display:flex;
+    justify-content:center;
+    width: 100%;
+    height: 0%;
+    background-color: white;
+    transition: 0.018s linear;
 }
