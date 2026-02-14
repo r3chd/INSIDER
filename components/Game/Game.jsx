@@ -20,7 +20,7 @@ export default function Game({ isActive, fillRef }) {
   const [showOverlay, setShowOverlay] = useState(false);
 
   // Timer
-  let timerRunning = true;
+  let timerCanRun = true;
   const timerFill = fillRef.current; // Get the timer element
 
   function startTimer(start, end) {
@@ -28,7 +28,7 @@ export default function Game({ isActive, fillRef }) {
     if (!timerFill) return;
 
     const animate = () => {
-      if (!timerRunning) return;
+      if (!timerCanRun) return;
 
       const now = Date.now();
       const progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
@@ -38,7 +38,7 @@ export default function Game({ isActive, fillRef }) {
       if (progress < 1) {
         requestAnimationFrame(animate); // Keep mainloop going
       } else {
-        socket.emit("Something")
+        socket.emit("timerExpired"); // Backup timer expiration
       }
     }
 
@@ -46,7 +46,7 @@ export default function Game({ isActive, fillRef }) {
   }
 
   function endTimerEarly() {
-    timerRunning = false;
+    timerCanRun = false;
     if (fillRef.current) {
       fillRef.current.style.height = "100%";
     }
@@ -90,10 +90,16 @@ export default function Game({ isActive, fillRef }) {
         endTimerEarly();
     }
 
+    const handleGuessingState = (data) => {
+      timerCanRun = true;
+      startTimer(data.startTime, data.endTime);
+    }
+
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
-    socket.on("hideOverlay", handleHideOverlay)
+    socket.on("hideOverlay", handleHideOverlay);
+    socket.on("startGuessingState", handleGuessingState)
   })
 
 

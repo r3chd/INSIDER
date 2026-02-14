@@ -31,13 +31,13 @@ export default class Game {
     
 
     setState(newState) {
-        this.state.exit?.();
-        this.state = newState;
-        this.state.enter();
+        this.#state.exit?.(this);
+        this.#state = newState;
+        this.#state.enter(this);
     }
 
     nextState() {
-        if (this.state instanceof SetupState) {
+        if (this.#state instanceof SetupState) {
             this.setState(new GuessingState(this));
         }
     }

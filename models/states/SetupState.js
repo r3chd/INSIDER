@@ -1,13 +1,16 @@
+import { useEffect } from 'react';
 import { GameState } from "./GameState.js";
 import Roles from "../../components/constants/rolesEnum.js";
 import TEXT from "../../components/constants/text.js";
 import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
+import { socket } from "../../socket.js";
 export class SetupState extends GameState {
 
     #duration = 3000;
-
+    
     enter(game) {
+
         // Timer
         let generatedWords = generateRandomWords();
 
@@ -35,7 +38,7 @@ export class SetupState extends GameState {
                 words: player.role === Roles.MASTER ? generatedWords : [],
                 overlayMessage: overlayMessage,
                 masterPlayer: masterPlayer.name,
-                startTime: Date.now(),
+                startTime: startTime,
                 endTime: startTime + this.#duration
             })
 
@@ -46,17 +49,27 @@ export class SetupState extends GameState {
         const masterSocket = io.sockets.sockets.get(masterPlayer.id);
 
         let wordChosen = false;
-        masterSocket.once("wordSelected", (word) => assignWord(word));
-        setTimeout(() => {
+
+        const handleTimerExpired = () => {
             if (!wordChosen) {
                 const randomWord = generatedWords[Math.floor(Math.random() * generatedWords.length)];
                 assignWord(randomWord);
             }
+        }
 
-        }, this.#duration)
+        masterSocket.once("wordSelected", (word) => assignWord(word));
+        masterSocket.once("timerExpired", handleTimerExpired)
+        
+        
+        // Backup method
+        this.timeoutId = setTimeout(() => {
+            handleTimerExpired();
+        }, this.#duration);
 
         function assignWord(word) {
+            if (wordChosen) return;
             wordChosen = true;
+
             for (const player of game.players.values()) {
                 if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
                     console.log("sending to ", player.role);
@@ -65,7 +78,6 @@ export class SetupState extends GameState {
                     });
                 }
             }
-
             // Assignment of words indicates start of next state
             game.nextState();
         }
@@ -107,7 +119,7 @@ export class SetupState extends GameState {
     }
 
 
-    exit (game) {
+    exit(game) {
         // Reset variables for next round
         game.emit("hideOverlay");
     }
