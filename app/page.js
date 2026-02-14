@@ -81,7 +81,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.timerBack}>
-        <div ref={timerFillRef} className={styles.timerFill}>
+        <div ref={timerFillRef} className={styles.timerFill}> </div>
         {/* This is the timer fill */}
           <div className={styles.main}>
               <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
@@ -99,7 +99,6 @@ export default function Home() {
               <p>Transport: { transport }</p>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

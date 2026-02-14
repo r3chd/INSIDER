@@ -6,7 +6,6 @@ export class GuessingState extends GameState {
     enter(game) {
         console.log("entering guessing state");
         // Start timer
-
         let startTime = Date.now();
         game.emit("startGuessingState", 
             {
@@ -14,6 +13,12 @@ export class GuessingState extends GameState {
                 endTime: startTime + this.#duration
             }
         )
+
+        // emit to ONE person the button
+        let playerCount = game.players.values().length
+        console.log(playerCount);
+        
+
         // enable button to first player that isn't master
         // when button is pressed move to the next guy
     }

@@ -4,6 +4,8 @@ import { socket } from "../../socket.js";
 import styles from "./Game.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import WordButton from "../WordButton/WordButton.jsx";
+import MenuButton from "../menu/MenuButton.jsx"
+
 
 export default function Game({ isActive, fillRef }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
@@ -21,19 +23,42 @@ export default function Game({ isActive, fillRef }) {
 
   // Timer
   let timerCanRun = true;
-  const timerFill = fillRef.current; // Get the timer element
+  const [timerWhiteout, setTimerWhiteout] = useState(true);
+  const [timerFill, setTimerFill] = useState(null);
+
+  // Main Button variables
+  const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
+
+  useEffect(() => {
+    if (fillRef.current) {
+      setTimerFill(fillRef.current);
+    }
+  }, [fillRef])
 
   function startTimer(start, end) {
     
     if (!timerFill) return;
+    // invert whiteout
+    setTimerWhiteout(!timerWhiteout);
+
 
     const animate = () => {
       if (!timerCanRun) return;
+      const isWhiteout = timerWhiteout;
 
       const now = Date.now();
       const progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
     
-      timerFill.style.height = `${progress * 100}%`;
+      let topValue;
+      // timerFill.style.top = `${progress * 100}%`;
+      if (isWhiteout) {
+        // -100% -> 0%
+        topValue = -100 + progress * 100;
+      } else {
+        topValue = progress * 100;
+      }
+      timerFill.style.top = `${topValue}%`;
+
 
       if (progress < 1) {
         requestAnimationFrame(animate); // Keep mainloop going
@@ -45,30 +70,20 @@ export default function Game({ isActive, fillRef }) {
     requestAnimationFrame(animate);
   }
 
-  function endTimerEarly() {
-    timerCanRun = false;
-    if (fillRef.current) {
-      fillRef.current.style.height = "100%";
-    }
-  }
-
   // For when one of the buttons is pressed
   const handleWordSelect = (word) => {
-    console.log(word);
     socket.emit("wordSelected", word);
+  }
+
+  const handleButtonPressed = () => {
+    console.log("skibid");
   }
 
 
   useEffect(() => {
-    const handleSetRole = (data) => {
-      setCurrentPlayerRole(data.role);
-    }
-
-    const handleSetWord = (data) => {
-      setTargetWord(data.word);
-      console.log(data.word);
-    }
-
+    const handleSetRole = (data) => setCurrentPlayerRole(data.role);
+    const handleSetWord = (data) => setTargetWord(data.word);
+    const handleHideOverlay = () => setShowOverlay(false);
     const handleSetupState = (data) => {
         // Everyone gets overlay
         setShowOverlay(true);
@@ -83,11 +98,6 @@ export default function Game({ isActive, fillRef }) {
 
         // Start timer
         startTimer(data.startTime, data.endTime)
-    }
-
-    const handleHideOverlay = () => {
-        setShowOverlay(false);
-        endTimerEarly();
     }
 
     const handleGuessingState = (data) => {
@@ -124,6 +134,7 @@ export default function Game({ isActive, fillRef }) {
             <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <PlayerDisplay showEmpty={false}/>
+            <MenuButton children={buttonMessage} onClick={handleButtonPressed}/>
         </div>
     </div>
   );

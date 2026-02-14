@@ -4,7 +4,6 @@ import Roles from "../../components/constants/rolesEnum.js";
 import TEXT from "../../components/constants/text.js";
 import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
-import { socket } from "../../socket.js";
 export class SetupState extends GameState {
 
     #duration = 3000;
