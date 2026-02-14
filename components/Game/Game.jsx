@@ -114,7 +114,7 @@ export default function Game({ isActive, fillRef }) {
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("startGuessingState", handleGuessingState)
-    socket.on("youAreGuessing", handleShowButton)
+    socket.on("showButton", handleShowButton)
   })
 
 

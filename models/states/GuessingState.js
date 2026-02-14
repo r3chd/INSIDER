@@ -1,9 +1,15 @@
 import { GameState } from "./GameState.js";
 import { getIo } from "../../io.js";
+import Roles from "../../components/constants/rolesEnum.js";
 export class GuessingState extends GameState {
 
+    #currentPlayerIndex = 0;
+    #lobbySize;
     #duration = 18000;
     enter(game) {
+
+        const io = getIo();
+
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
@@ -13,31 +19,22 @@ export class GuessingState extends GameState {
                 endTime: startTime + this.#duration
             }
         )
+        // Get the player
 
-        const playersArr = Array.from(game.players.values());
-        const playerCount = playersArr.length;
-
-        let canGuess = true;
-        while (canGuess) {
-            let guessingIndex = 0;
-
-            if (playersArr[guessingIndex].role === Roles.MASTER) {
-                guessingIndex++;
-                continue;
-            } else {
-                game.emitToPlayer(player.id, "youAreGuessing", {
-                    text: "text"
-                })
-            }
-        }
-
-        // emit to ONE person the button
-        console.log(game.players.values());
+        this.#lobbySize = game.players.size;
+        const playerArr = [...game.players.values()];
         
-
-        // enable button to first player that isn't master
-        // when button is pressed move to the next guy
+        // TEMP there is some way to write this better i swear
+        if (playerArr[this.#currentPlayerIndex].role === Roles.MASTER) {
+            this.#currentPlayerIndex = this.#currentPlayerIndex += 1 % this.#lobbySize;
+        }
+        // Also probably a good idea to put the current master as the host of a room for some reason
+        // I think itd be easier to control
+        game.emitToPlayer(playerArr[this.#currentPlayerIndex].id, "showButton", {
+            text: "OK ITS ON ITS UP TO YOU"
+        });
     }
+
 
     exit () {
 

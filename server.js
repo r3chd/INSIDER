@@ -10,11 +10,7 @@ import{ setIo } from "./io.js";
 
 // Player and room classes
 import Player from "./models/Player.js"
-import Room from "./models/Room.js"
 import RoomManager from "./models/RoomManager.js";
-
-// Roomcode
-import { generateRoomCode } from "./utils/roomCode.js";
 
 // Server
 const dev = process.env.NODE_ENV !== "production";
@@ -100,7 +96,6 @@ app.prepare().then(() => {
         socket.on("startGame", (roomCode) => {
             const startingRoom = roomManager.getRoom(roomCode)
             startingRoom.start(io);
-        
         })
 
 

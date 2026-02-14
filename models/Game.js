@@ -51,6 +51,10 @@ export default class Game {
     }
 
     emitToPlayer(socketId, event, data) { // To a person - only they should know
+        if (data === undefined) {
+            this.#io.to(socketId).emit(event); // Where data is not necessary
+        }
+        
         this.#io.to(socketId).emit(event, data);
     }
 
