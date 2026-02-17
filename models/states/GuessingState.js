@@ -18,8 +18,17 @@ export class GuessingState extends GameState {
                 endTime: startTime + this.#duration
             }
         )
-        // Get the player
+        // On timer running out
 
+        const handleTimerExpired = () => {
+            return;
+        }
+
+        this.timeoutId = setTimeout(() => {
+            handleTimerExpired();
+        }, this.#duration);
+
+        // Get the player
         this.#lobbySize = game.players.size;
         const playerArr = [...game.players.values()];
 
