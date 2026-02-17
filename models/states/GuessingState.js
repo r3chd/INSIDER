@@ -6,10 +6,9 @@ export class GuessingState extends GameState {
     #currentPlayerIndex = 0;
     #lobbySize;
     #duration = 18000;
+    #activePlayer;
+
     enter(game) {
-
-        const io = getIo();
-
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
@@ -23,21 +22,45 @@ export class GuessingState extends GameState {
 
         this.#lobbySize = game.players.size;
         const playerArr = [...game.players.values()];
-        
-        // TEMP there is some way to write this better i swear
-        if (playerArr[this.#currentPlayerIndex].role === Roles.MASTER) {
-            this.#currentPlayerIndex = this.#currentPlayerIndex += 1 % this.#lobbySize;
+
+        let currentPlayer = null;
+
+        const handlePlayerTurn = () => {
+            if ('a' !== 'a') { // change condition soon
+                return;
+            }
+            // Get sequential non master player index
+            do {
+                this.#currentPlayerIndex = (this.#currentPlayerIndex + 1) % this.#lobbySize;
+            } while (playerArr[this.#currentPlayerIndex] === game.masterPlayer);
+            // Convert to player
+            currentPlayer = playerArr[this.#currentPlayerIndex];
+            this.#activePlayer = currentPlayer; // for disabling
+            // Emit to target player
+            game.emitToPlayer(currentPlayer.id, "showButton", {
+                text: "OK ITS ON ITS UP TO YOU"
+            });
+
+            currentPlayer.socket.once("nextTurn", handlePlayerTurn);
         }
-        // Also probably a good idea to put the current master as the host of a room for some reason
-        // I think itd be easier to control
-        game.emitToPlayer(playerArr[this.#currentPlayerIndex].id, "showButton", {
-            text: "OK ITS ON ITS UP TO YOU"
-        });
+
+        handlePlayerTurn();
+        // Cycling works
+
+
+        // on the player hitting the button
+        // update their ui to hide the button
+        // emit to the next player the button
+
+        // end condition occurs when the master hits their button, or when time expires
+
     }
 
 
     exit () {
-
+        if (this.#activePlayer) {
+            this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);
+        }
     }
 
 }

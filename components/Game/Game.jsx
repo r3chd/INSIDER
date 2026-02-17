@@ -77,7 +77,8 @@ export default function Game({ isActive, fillRef }) {
   }
 
   const handleButtonPressed = () => {
-    socket.emit("guessMade");
+    setButtonActive(false);
+    socket.emit("nextTurn");
   }
 
 
