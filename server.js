@@ -50,7 +50,7 @@ app.prepare().then(() => {
             const createdRoom = roomManager.createRoom();
             const roomCode = createdRoom.code;
             // Make the player proper
-            const player = new Player(socket.id, playerName);
+            const player = new Player(socket, playerName);
             
             // Player manager?
             player.role = Roles.ROOM_LEADER;
@@ -80,7 +80,7 @@ app.prepare().then(() => {
                 return;
             }
 
-            const player = new Player(socket.id, playerName);
+            const player = new Player(socket, playerName);
             player.role = Roles.ROOM_MEMBER;
             console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
             

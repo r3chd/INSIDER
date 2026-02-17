@@ -2,13 +2,15 @@ import Roles from '../components/constants/rolesEnum.js';
 
 export default class Player {
     
-    #id = null;
+    #id = null; // text of the socket
     #name = "";
     #role = Roles.UNDEFINED;
+    #socket = null; // socket itself
 
-    constructor(id, name) {
-        this.#id = id;
+    constructor(socket, name) {
+        this.#id = socket.id;
         this.#name = name;
+        this.#socket = socket;
     }
 
     set name(name) {
@@ -29,5 +31,9 @@ export default class Player {
 
     get role() {
         return this.#role;
+    }
+
+    get socket() {
+        return this.#socket;
     }
 }

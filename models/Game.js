@@ -11,6 +11,7 @@ export default class Game {
     #state;
     #roundCount;
     #targetWord;
+    #masterPlayer;
 
     
     constructor(code, io, players) { // add #io to constructor
@@ -69,5 +70,13 @@ export default class Game {
 
     set targetWord(targetWord){
         this.#targetWord = targetWord;
+    }
+
+    set masterPlayer(masterPlayer) {
+        this.#masterPlayer = masterPlayer;
+    }
+
+    get masterPlayer() {
+        return this.#masterPlayer;
     }
 }

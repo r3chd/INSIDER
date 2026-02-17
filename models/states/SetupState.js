@@ -14,7 +14,7 @@ export class SetupState extends GameState {
         let generatedWords = generateRandomWords();
 
         // Set roles to each player
-        let masterPlayer = this.assignRoles(game); 
+        this.assignRoles(game); 
 
         // Show the overlay to all players
         for (const player of game.players.values()) {
@@ -27,7 +27,6 @@ export class SetupState extends GameState {
                 case Roles.COMMONER:
                     overlayMessage = TEXT.overlay.commoner;
                     break;
-
                 case Roles.INSIDER:
                     overlayMessage = TEXT.overlay.insider;
                     break;
@@ -36,7 +35,7 @@ export class SetupState extends GameState {
             game.emitToPlayer(player.id, "startSetupState", {
                 words: player.role === Roles.MASTER ? generatedWords : [],
                 overlayMessage: overlayMessage,
-                masterPlayer: masterPlayer.name,
+                masterPlayer: game.masterPlayer.name,
                 startTime: startTime,
                 endTime: startTime + this.#duration
             })
@@ -44,8 +43,7 @@ export class SetupState extends GameState {
         }
 
         // --------------- WORD SELECTION --------------- //
-        const io = getIo();
-        const masterSocket = io.sockets.sockets.get(masterPlayer.id);
+        const masterSocket = game.masterPlayer.socket;
 
         let wordChosen = false;
 
@@ -97,13 +95,12 @@ export class SetupState extends GameState {
         } while (insider_num === game.roundCount);
 
         // Role assignment
-        let masterPlayer = null;
 
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             if (i === game.roundCount) {
                 player.role = Roles.MASTER;
-                masterPlayer = player;
+                game.masterPlayer = player;
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
             } else {
@@ -114,7 +111,6 @@ export class SetupState extends GameState {
                 role: player.role
             });
         }
-        return masterPlayer;
     }
 
 
