@@ -95,7 +95,6 @@ export class SetupState extends GameState {
         } while (insider_num === game.roundCount);
 
         // Role assignment
-
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             if (i === game.roundCount) {

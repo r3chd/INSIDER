@@ -11,6 +11,9 @@ export default function Game({ isActive, fillRef }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState("not assigned");
 
+  // Socket
+  const [youSocket, setYouSocket] = useState(null);
+
   const [currentPlayerRole, setCurrentPlayerRole] = useState("not assigned");
   
   // setting the word
@@ -29,6 +32,22 @@ export default function Game({ isActive, fillRef }) {
   // Main Button variables
   const [buttonActive, setButtonActive] = useState(false);
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
+  const [isMasterButton, setIsMasterButton] = useState(false);
+
+  // set socket on initialization
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleConnect = () => {
+      setYouSocket(socket.id);
+    }
+
+    socket.on("connect", handleConnect);
+
+    return () => {
+      socket.off("connect", handleConnect);
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (fillRef.current) {
@@ -78,7 +97,12 @@ export default function Game({ isActive, fillRef }) {
 
   const handleButtonPressed = () => {
     setButtonActive(false);
-    socket.emit("nextTurn");
+    if (isMasterButton) {
+      // Socket.emit end round ...
+    } else {
+      socket.emit("nextTurn");
+    }
+    
   }
 
 
@@ -109,6 +133,7 @@ export default function Game({ isActive, fillRef }) {
 
     const handleShowButton = (data) => {
       setButtonMessage(data.text);
+      setIsMasterButton(data.master);
       setButtonActive(true);
     }
 
@@ -141,8 +166,8 @@ export default function Game({ isActive, fillRef }) {
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
-            <PlayerDisplay showEmpty={false}/>
-            <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive}/>
+            <PlayerDisplay showEmpty={false} youSocketId={youSocket} />
+            <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>
   );

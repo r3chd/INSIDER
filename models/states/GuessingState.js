@@ -23,28 +23,29 @@ export class GuessingState extends GameState {
         this.#lobbySize = game.players.size;
         const playerArr = [...game.players.values()];
 
-        let currentPlayer = null;
-
         const handlePlayerTurn = () => {
-            if ('a' !== 'a') { // change condition soon
-                return;
-            }
-            // Get sequential non master player index
+            // TEMP may need some kind of check to authorise who is clicking the button
+            // otherwise game could be manipulated.
             do {
                 this.#currentPlayerIndex = (this.#currentPlayerIndex + 1) % this.#lobbySize;
             } while (playerArr[this.#currentPlayerIndex] === game.masterPlayer);
             // Convert to player
-            currentPlayer = playerArr[this.#currentPlayerIndex];
-            this.#activePlayer = currentPlayer; // for disabling
+            const nextPlayer = playerArr[this.#currentPlayerIndex];
+            this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
-            game.emitToPlayer(currentPlayer.id, "showButton", {
-                text: "OK ITS ON ITS UP TO YOU"
+            game.emitToPlayer(nextPlayer.id, "showButton", {
+                text: "OK ITS ON ITS UP TO YOU",
+                master: false
             });
 
-            currentPlayer.socket.once("nextTurn", handlePlayerTurn);
+            nextPlayer.socket.once("nextTurn", handlePlayerTurn);
         }
 
         handlePlayerTurn();
+        game.emitToPlayer(game.masterPlayer.id, "showButton", {
+            text: "They've got it!",
+            master: true
+        })
         // Cycling works
 
 
