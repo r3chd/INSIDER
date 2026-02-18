@@ -7,6 +7,7 @@ export class GuessingState extends GameState {
     #lobbySize;
     #duration = 18000;
     #activePlayer;
+    #wordFound = false;
 
     enter(game) {
         console.log("entering guessing state");
@@ -20,13 +21,25 @@ export class GuessingState extends GameState {
         )
         // On timer running out
 
+        const masterSocket = game.masterPlayer.socket;
+
         const handleTimerExpired = () => {
-            return;
+            if (!this.#wordFound) {
+                game.wordFound = false;
+            } else {
+                game.wordFound = true;
+            }
+            game.nextState();
         }
 
         this.timeoutId = setTimeout(() => {
             handleTimerExpired();
         }, this.#duration);
+
+        masterSocket.once("wordFound", () => {
+            this.#wordFound = true;
+            handleTimerExpired();
+        })
 
         // Get the player
         this.#lobbySize = game.players.size;
@@ -68,9 +81,10 @@ export class GuessingState extends GameState {
 
 
     exit () {
-        if (this.#activePlayer) {
-            this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);
-        }
+        // Reset variables here
+        // if (this.#activePlayer) {
+        //     this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);
+        // }
     }
 
 }

@@ -137,12 +137,17 @@ export default function Game({ isActive, fillRef }) {
       setButtonActive(true);
     }
 
+    const handleRevealState = (data) => {
+      setOverlayMessage(data ? "the word was found" : "the word was not found");
+    }
+
     socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
-    socket.on("startGuessingState", handleGuessingState)
-    socket.on("showButton", handleShowButton)
+    socket.on("startGuessingState", handleGuessingState);
+    socket.on("showButton", handleShowButton);
+    socket.on("startRevealState", handleRevealState);
   })
 
 

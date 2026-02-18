@@ -7,7 +7,7 @@ import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     #duration = 3000;
-    
+
     enter(game) {
 
         // Timer

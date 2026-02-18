@@ -1,7 +1,7 @@
 import { socket } from "../socket.js"
 import { SetupState } from "./states/SetupState.js";
 import { GuessingState } from "./states/GuessingState.js"
-
+import { RevealState } from "./states/RevealState.js"
 
 export default class Game {
     #code;
@@ -12,6 +12,7 @@ export default class Game {
     #roundCount;
     #targetWord;
     #masterPlayer;
+    #wordFound;
 
     
     constructor(code, io, players) { // add #io to constructor
@@ -41,6 +42,8 @@ export default class Game {
     nextState() {
         if (this.#state instanceof SetupState) {
             this.setState(new GuessingState(this));
+        } else if (this.#state instanceof GuessingState) {
+            this.setState(new RevealState(this));
         }
     }
 
@@ -78,5 +81,13 @@ export default class Game {
 
     get masterPlayer() {
         return this.#masterPlayer;
+    }
+
+    set wordFound(wordFound) {
+        this.#wordFound = wordFound;
+    }
+
+    get wordFound() {
+        return this.#wordFound;
     }
 }
