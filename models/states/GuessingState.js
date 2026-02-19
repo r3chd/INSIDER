@@ -5,15 +5,23 @@ export class GuessingState extends GameState {
 
     #currentPlayerIndex = 0;
     #lobbySize;
+
+    #game;
     #duration = 18000;
     #activePlayer;
     #wordFound = false;
 
-    enter(game) {
+    constructor(game) {
+        super();
+        this.#game = game;
+        this.#lobbySize = this.#game.players.size;
+    }
+
+    enter() {
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
-        game.emit("startGuessingState", 
+        this.#game.emit("startGuessingState", 
             {
                 startTime: startTime,
                 endTime: startTime + this.#duration
@@ -21,24 +29,21 @@ export class GuessingState extends GameState {
         )
 
         // On timer running out
-        const masterSocket = game.masterPlayer.socket;
+        const masterSocket = this.#game.masterPlayer.socket;
 
         setTimeout(() => {
-            handleTimerExpired();
+            this.handleTimerExpired();
         }, this.#duration);
 
         // Remove preexisting socket attachment
-        masterSocket.off("timerExpired", handleTimerExpired); // Clear preexisting
-        masterSocket.once("timerExpired", handleTimerExpired);
         
         masterSocket.once("wordFound", () => {
             this.#wordFound = true;
-            handleTimerExpired();
+            this.handleTimerExpired();
         })
 
         // Get the player
-        this.#lobbySize = game.players.size;
-        const playerArr = [...game.players.values()];
+        const playerArr = [...this.#game.players.values()];
 
         // Alternate between players
         const handlePlayerTurn = () => {
@@ -46,12 +51,12 @@ export class GuessingState extends GameState {
             // otherwise game could be manipulated.
             do {
                 this.#currentPlayerIndex = (this.#currentPlayerIndex + 1) % this.#lobbySize;
-            } while (playerArr[this.#currentPlayerIndex] === game.masterPlayer);
+            } while (playerArr[this.#currentPlayerIndex] === this.#game.masterPlayer);
             // Convert to player
             const nextPlayer = playerArr[this.#currentPlayerIndex];
             this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
-            game.emitToPlayer(nextPlayer.id, "showButton", {
+            this.#game.emitToPlayer(nextPlayer.id, "showButton", {
                 text: "OK ITS ON ITS UP TO YOU",
                 master: false
             });
@@ -60,7 +65,7 @@ export class GuessingState extends GameState {
         }
 
         handlePlayerTurn();
-        game.emitToPlayer(game.masterPlayer.id, "showButton", {
+        this.#game.emitToPlayer(this.#game.masterPlayer.id, "showButton", {
             text: "They've got it!",
             master: true
         })
@@ -69,11 +74,11 @@ export class GuessingState extends GameState {
 
     handleTimerExpired() {
         if (!this.#wordFound) {
-            game.wordFound = false;
+            this.#game.wordFound = false;
         } else {
-            game.wordFound = true;
+            this.#game.wordFound = true;
         }
-        game.nextState();
+        this.#game.nextState();
         console.log("GOING TO REVEAL STATE");
     }
 

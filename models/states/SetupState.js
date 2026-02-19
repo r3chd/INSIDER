@@ -123,7 +123,6 @@ export class SetupState extends GameState {
         // Reset variables for next round
 
         // Need to disable socket
-        // masterSocket.off("timesExpired", handleTimerExpired)
         this.#game.emit("hideOverlay");
     }
 }
