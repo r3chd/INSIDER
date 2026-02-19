@@ -11,9 +11,10 @@ export default function Game({ isActive, fillRef }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState("not assigned");
 
+  const [gameMessage, setGameMessage] = useState("not assigned");
+
   // Socket
   const [youSocket, setYouSocket] = useState(null);
-
   const [currentPlayerRole, setCurrentPlayerRole] = useState("not assigned");
   
   // setting the word
@@ -66,6 +67,12 @@ export default function Game({ isActive, fillRef }) {
     setTimerWhiteout(!timerWhiteout);
     let progress = 0;
 
+    // Disables animation to prevent jump from 100% to -100%
+    timerFill.style.transition = "none";
+    timerFill.style.top = timerWhiteout ? "-100%" : "0%";
+    void timerFill.offsetHeight;
+    timerFill.style.transition = "0.018s linear";
+
     const animate = () => {
       if (!timerCanRun) return;
       const isWhiteout = timerWhiteout;
@@ -78,6 +85,7 @@ export default function Game({ isActive, fillRef }) {
         // -100% -> 0%
         topValue = -100 + progress * 100;
       } else {
+        // 0 -> 100%
         topValue = progress * 100;
       }
       timerFill.style.top = `${topValue}%`;
@@ -87,7 +95,6 @@ export default function Game({ isActive, fillRef }) {
         requestAnimationFrame(animate); // Keep mainloop going
       }
     }
-
     requestAnimationFrame(animate);
   }
 
@@ -137,6 +144,7 @@ export default function Game({ isActive, fillRef }) {
     const handleGuessingState = (data) => {
       timerCanRun = true;
       startTimer(data.startTime, data.endTime);
+      setGameMessage("finding the word")
     }
 
     const handleShowButton = (data) => {
@@ -147,8 +155,14 @@ export default function Game({ isActive, fillRef }) {
 
     const handleRevealState = (data) => {
       setShowOverlay(true);
+      startTimer(data.startTime, data.endTime);
       // Could be replaced by some kind of animation
       setOverlayMessage(`The word was ${data.word} and it was ${data.success ? "found" : "not found"}`);
+    }
+
+    const handleVoteState = (data) => {
+      startTimer(data.startTime, data.endTime)
+      setGameMessage("vote for the guy")
     }
 
     socket.on("roleAssigned", handleSetRole);
@@ -158,6 +172,7 @@ export default function Game({ isActive, fillRef }) {
     socket.on("startGuessingState", handleGuessingState);
     socket.on("showButton", handleShowButton);
     socket.on("startRevealState", handleRevealState);
+    socket.on("startVoteState", handleVoteState);
   })
 
 
@@ -179,6 +194,7 @@ export default function Game({ isActive, fillRef }) {
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
+            <h1>{gameMessage}</h1>
             <PlayerDisplay showEmpty={false} youSocketId={youSocket} />
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>

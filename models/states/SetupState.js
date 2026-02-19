@@ -56,7 +56,7 @@ export class SetupState extends GameState {
         const masterSocket = this.#game.masterPlayer.socket;
 
         masterSocket.once("wordSelected", (word) => this.assignWord(word));         
-        // Backup method
+        // Backup method in instance of timeout
         setTimeout(() => {
             this.handleTimerExpired();
             console.log("duration has ended")

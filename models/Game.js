@@ -2,6 +2,7 @@ import { socket } from "../socket.js"
 import { SetupState } from "./states/SetupState.js";
 import { GuessingState } from "./states/GuessingState.js"
 import { RevealState } from "./states/RevealState.js"
+import { VoteState } from "./states/VoteState.js";
 
 export default class Game {
     #code;
@@ -11,8 +12,6 @@ export default class Game {
     #state;
     #roundCount;
     #targetWord;
-    #hostPlayer; // Created the lobby
-    #hostPlayerSocket;
     #masterPlayer; // Current leader of round
     #wordFound;
 
@@ -25,7 +24,6 @@ export default class Game {
         this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
 
-        this.#hostPlayer = hostPlayer;
 
 
     }
@@ -50,6 +48,8 @@ export default class Game {
             this.setState(new GuessingState(this));
         } else if (this.#state instanceof GuessingState) {
             this.setState(new RevealState(this));
+        } else if (this.#state instanceof RevealState) {
+            this.setState(new VoteState(this));
         }
     }
 
@@ -79,6 +79,10 @@ export default class Game {
 
     set targetWord(targetWord){
         this.#targetWord = targetWord;
+    }
+
+    get targetWord() {
+        return this.#targetWord;
     }
 
     set masterPlayer(masterPlayer) {
