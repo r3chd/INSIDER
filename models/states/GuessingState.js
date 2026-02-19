@@ -31,6 +31,7 @@ export class GuessingState extends GameState {
         // On timer running out
         const masterSocket = this.#game.masterPlayer.socket;
 
+        
         setTimeout(() => {
             this.handleTimerExpired();
         }, this.#duration);

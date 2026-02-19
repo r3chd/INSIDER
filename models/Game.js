@@ -27,12 +27,6 @@ export default class Game {
 
         this.#hostPlayer = hostPlayer;
 
-        // Set up timing cues
-        this.handleTimerExpired = this.handleTimerExpired.bind(this);
-
-        this.#hostPlayerSocket = hostPlayer.socket;
-        this.#hostPlayerSocket.off("timerExpired", this.handleTimerExpired);
-        this.#hostPlayerSocket.once("timerExpired", this.handleTimerExpired);
 
     }
 
@@ -49,10 +43,6 @@ export default class Game {
         this.#state.exit?.();
         this.#state = newState;
         this.#state.enter();
-    }
-
-    handleTimerExpired() {
-        this.#state.handleTimerExpired?.();
     }
 
     nextState() {

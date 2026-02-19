@@ -85,8 +85,6 @@ export default function Game({ isActive, fillRef }) {
 
       if (progress < 1) {
         requestAnimationFrame(animate); // Keep mainloop going
-      } else {
-        socket.emit("timerExpired"); // Backup timer expiration
       }
     }
 
@@ -149,7 +147,8 @@ export default function Game({ isActive, fillRef }) {
 
     const handleRevealState = (data) => {
       setShowOverlay(true);
-      setOverlayMessage(data ? "the word was found" : "the word was not found");
+      // Could be replaced by some kind of animation
+      setOverlayMessage(`The word was ${data.word} and it was ${data.success ? "found" : "not found"}`);
     }
 
     socket.on("roleAssigned", handleSetRole);

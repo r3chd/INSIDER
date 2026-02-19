@@ -1,12 +1,23 @@
 import { GameState } from "./GameState.js";
 
 export class RevealState extends GameState {
-    enter (game) {
-        console.log("reveal state has been entered");
-        game.emit("startRevealState", game.wordFound);
+    #game;
+    #duration = 5000;
+
+    constructor(game) {
+        super();
+        this.#game = game;
+    }
+    
+    enter () {
+        this.#game.emit("startRevealState",  {
+            success: this.#game.wordFound,
+            word: this.#game.targetWord
+        }
+        );
     }
 
-    exit (game) {
+    exit () {
 
     }
 }

@@ -59,16 +59,16 @@ export class SetupState extends GameState {
         // Backup method
         setTimeout(() => {
             this.handleTimerExpired();
+            console.log("duration has ended")
         }, this.#duration);
 
         
     }
 
     handleTimerExpired() {
-        if (!this.#wordChosen) {
-            const randomWord = this.#generatedWords[Math.floor(Math.random() * this.#generatedWords.length)];
-            this.assignWord(randomWord);
-        }
+        if (this.#wordChosen) return; // no need to run as word has chosen
+        const randomWord = this.#generatedWords[Math.floor(Math.random() * this.#generatedWords.length)];
+        this.assignWord(randomWord);
     }
     
     assignRoles() {
@@ -105,6 +105,8 @@ export class SetupState extends GameState {
     assignWord(word) {
         if (this.#wordChosen) return;
         this.#wordChosen = true;
+
+        this.#game.targetWord = word;
 
         for (const player of this.#game.players.values()) {
             if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
