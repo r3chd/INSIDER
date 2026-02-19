@@ -19,23 +19,18 @@ export class GuessingState extends GameState {
                 endTime: startTime + this.#duration
             }
         )
-        // On timer running out
 
+        // On timer running out
         const masterSocket = game.masterPlayer.socket;
 
-        const handleTimerExpired = () => {
-            if (!this.#wordFound) {
-                game.wordFound = false;
-            } else {
-                game.wordFound = true;
-            }
-            game.nextState();
-        }
-
-        this.timeoutId = setTimeout(() => {
+        setTimeout(() => {
             handleTimerExpired();
         }, this.#duration);
 
+        // Remove preexisting socket attachment
+        masterSocket.off("timerExpired", handleTimerExpired); // Clear preexisting
+        masterSocket.once("timerExpired", handleTimerExpired);
+        
         masterSocket.once("wordFound", () => {
             this.#wordFound = true;
             handleTimerExpired();
@@ -45,6 +40,7 @@ export class GuessingState extends GameState {
         this.#lobbySize = game.players.size;
         const playerArr = [...game.players.values()];
 
+        // Alternate between players
         const handlePlayerTurn = () => {
             // TEMP may need some kind of check to authorise who is clicking the button
             // otherwise game could be manipulated.
@@ -68,19 +64,21 @@ export class GuessingState extends GameState {
             text: "They've got it!",
             master: true
         })
-        // Cycling works
-
-
-        // on the player hitting the button
-        // update their ui to hide the button
-        // emit to the next player the button
-
-        // end condition occurs when the master hits their button, or when time expires
 
     }
 
+    handleTimerExpired() {
+        if (!this.#wordFound) {
+            game.wordFound = false;
+        } else {
+            game.wordFound = true;
+        }
+        game.nextState();
+        console.log("GOING TO REVEAL STATE");
+    }
 
     exit () {
+    
         // Reset variables here
         // if (this.#activePlayer) {
         //     this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);

@@ -26,8 +26,8 @@ export default function Game({ isActive, fillRef }) {
 
   // Timer
   let timerCanRun = true;
-  const [timerWhiteout, setTimerWhiteout] = useState(true);
-  const [timerFill, setTimerFill] = useState(null);
+  const [timerWhiteout, setTimerWhiteout] = useState(true); // Timer direction
+  const [timerFill, setTimerFill] = useState(null); // Timer element
 
   // Main Button variables
   const [buttonActive, setButtonActive] = useState(false);
@@ -49,25 +49,28 @@ export default function Game({ isActive, fillRef }) {
     };
   }, [socket]);
 
+  // --------------- TIMER --------------- //
+
+  // GET TIMER ELEMENT
   useEffect(() => {
     if (fillRef.current) {
       setTimerFill(fillRef.current);
     }
   }, [fillRef])
 
+  // TIMER ITSELF
   function startTimer(start, end) {
     
     if (!timerFill) return;
-    // invert whiteout
+    // invert whiteout on each run
     setTimerWhiteout(!timerWhiteout);
-
+    let progress = 0;
 
     const animate = () => {
       if (!timerCanRun) return;
       const isWhiteout = timerWhiteout;
-
       const now = Date.now();
-      const progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
+      progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
     
       let topValue;
       // timerFill.style.top = `${progress * 100}%`;
@@ -90,26 +93,33 @@ export default function Game({ isActive, fillRef }) {
     requestAnimationFrame(animate);
   }
 
-  // For when one of the buttons is pressed
+  // For when one of the three word options is pressed by the master
   const handleWordSelect = (word) => {
     socket.emit("wordSelected", word);
+    // Clear words
+    setWordOptions([]);
   }
 
+  // For the guess state - alternate or master submits
   const handleButtonPressed = () => {
     setButtonActive(false);
     if (isMasterButton) {
+      socket.emit("wordFound");
       // Socket.emit end round ...
     } else {
+      // Should play some kind of animation
       socket.emit("nextTurn");
     }
     
   }
 
-
+  // --------------- SOCKET RECEIVERS --------------- //
   useEffect(() => {
     const handleSetRole = (data) => setCurrentPlayerRole(data.role);
     const handleSetWord = (data) => setTargetWord(data.word);
     const handleHideOverlay = () => setShowOverlay(false);
+
+
     const handleSetupState = (data) => {
         // Everyone gets overlay
         setShowOverlay(true);
@@ -138,6 +148,7 @@ export default function Game({ isActive, fillRef }) {
     }
 
     const handleRevealState = (data) => {
+      setShowOverlay(true);
       setOverlayMessage(data ? "the word was found" : "the word was not found");
     }
 
@@ -152,8 +163,6 @@ export default function Game({ isActive, fillRef }) {
 
 
   return (
-
-    
     <div className={`${styles.game} ${isActive ? styles.active : ""}`}>
         <div className={`${styles.overlay} ${showOverlay ? styles.active : ""}`}>
             <div className={styles.overlayBox}>

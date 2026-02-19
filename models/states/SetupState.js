@@ -7,6 +7,13 @@ import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     #duration = 3000;
+    #game;
+
+    constructor(game) {
+        this.#game = game;
+    }
+
+
 
     enter(game) {
 
@@ -54,12 +61,13 @@ export class SetupState extends GameState {
             }
         }
 
+        masterSocket.off("timerExpired", handleTimerExpired); // Clear preexisting
         masterSocket.once("wordSelected", (word) => assignWord(word));
         masterSocket.once("timerExpired", handleTimerExpired)
         
         
         // Backup method
-        this.timeoutId = setTimeout(() => {
+        setTimeout(() => {
             handleTimerExpired();
         }, this.#duration);
 
@@ -77,6 +85,7 @@ export class SetupState extends GameState {
             }
             // Assignment of words indicates start of next state
             game.nextState();
+            console.log("GOING TO GUESSING STATE")
         }
     }
     
@@ -115,6 +124,9 @@ export class SetupState extends GameState {
 
     exit(game) {
         // Reset variables for next round
+
+        // Need to disable socket
+        // masterSocket.off("timesExpired", handleTimerExpired)
         game.emit("hideOverlay");
     }
 }
