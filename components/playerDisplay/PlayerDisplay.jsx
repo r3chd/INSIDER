@@ -4,9 +4,9 @@ import { socket } from "../../socket.js";
 import styles from "./PlayerDisplay.module.css";
 import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
+import PlayerCard from "./PlayerCard.jsx"
 
-
-export default function PlayerCard({showEmpty=true, youSocketId}) { // Arguments needed here in for loop
+export default function PlayerDisplay({showEmpty=true, youSocketId}) { // Arguments needed here in for loop
   const [playerList, setPlayerList] = useState({
     players: [],
   });
@@ -35,29 +35,19 @@ export default function PlayerCard({showEmpty=true, youSocketId}) { // Arguments
     const isYou = player.id === youSocketId;
     console.log(youSocketId);
     items.push(
-    <div key={player.id} className={`${styles.squircle} ${styles.squircleUsed}`}>
-  
-      Player {i + 1}: "{player.name}" {player.role === Roles.ROOM_LEADER || player.role === Roles.MASTER ? "leader" : ""}, {isYou ? "YOU" : ""} 
-
-      {player.role === Roles.ROOM_LEADER &&
-        (<img src="..\..\assets\roomLeader.svg" alt="icon" className={styles.icon}/>)
-      }
-        
-    </div>
+      <PlayerCard key={i} empty={false} player={player} isYou={isYou}/>
     )
   }
   // For leftovers
   if (showEmpty) {
-    for (let i = 0; i < MAX_PLAYERS - playerList.players.length; i++) { // Need to change out with max players later on
+    for (let i = playerList.players.length; i < MAX_PLAYERS; i++) { // Need to change out with max players later on
       items.push(
-        <div key={i} className={`${styles.squircle} ${styles.squircleEmpty}`}>
-          Waiting for player..
-        </div>
+        <PlayerCard key={i} empty={true} />
       );
     } 
   }
 
 
-  return <div className={styles.column}>
+  return <div className={styles.grid}>
     {items}</div>;
 }

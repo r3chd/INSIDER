@@ -70,6 +70,7 @@ export default function Game({ isActive, fillRef }) {
     // Disables animation to prevent jump from 100% to -100%
     timerFill.style.transition = "none";
     timerFill.style.top = timerWhiteout ? "-100%" : "0%";
+    
     void timerFill.offsetHeight;
     timerFill.style.transition = "0.018s linear";
 
@@ -80,7 +81,6 @@ export default function Game({ isActive, fillRef }) {
       progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
     
       let topValue;
-      // timerFill.style.top = `${progress * 100}%`;
       if (isWhiteout) {
         // -100% -> 0%
         topValue = -100 + progress * 100;

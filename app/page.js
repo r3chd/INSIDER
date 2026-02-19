@@ -20,22 +20,20 @@ export default function Home() {
     const timerFillRef = useRef(null);
 
     // Unsure if needed
-    const [activePlayerName, setActivePlayerName] = useState();
 
     // this runs when the "create" button is hit
     const handleCreate = (playerName) => { 
+      
       // creates in backend
       socket.emit("createRoom", playerName);
 
-      // repetition here
-      setActivePlayerName(playerName);
       setActiveView('lobby');
     };
 
     const handleJoin = (roomCode, playerName) => {
+
       socket.emit("joinRoom", {roomCode, playerName})
 
-      setActivePlayerName(playerName);
       setActiveView('lobby'); // Change to game HERE
     }
 
