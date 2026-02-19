@@ -11,17 +11,29 @@ export default class Game {
     #state;
     #roundCount;
     #targetWord;
-    #masterPlayer;
+    #hostPlayer; // Created the lobby
+    #hostPlayerSocket;
+    #masterPlayer; // Current leader of round
     #wordFound;
 
     
-    constructor(code, io, players) { // add #io to constructor
+    constructor(code, io, players, hostPlayer) { // add #io to constructor
         this.#code = code;
         this.#players = players;
         this.#io = io;
-        this.#state = new SetupState();
+        this.#state = new SetupState(this);
         this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
+
+        this.#hostPlayer = hostPlayer;
+
+        // Set up timing cues
+        this.handleTimerExpired = this.handleTimerExpired.bind(this);
+
+        this.#hostPlayerSocket = hostPlayer.socket;
+        this.#hostPlayerSocket.off("timerExpired", this.handleTimerExpired);
+        this.#hostPlayerSocket.once("timerExpired", this.handleTimerExpired);
+
     }
 
     start() {
@@ -29,14 +41,18 @@ export default class Game {
         this.#started = true;
 
         this.#io.to(this.#code).emit("gameStarted");
-        this.#state.enter(this);
+        this.#state.enter();
     }
     
 
     setState(newState) {
-        this.#state.exit?.(this);
+        this.#state.exit?.();
         this.#state = newState;
-        this.#state.enter(this);
+        this.#state.enter();
+    }
+
+    handleTimerExpired() {
+        this.#state.handleTimerExpired?.();
     }
 
     nextState() {

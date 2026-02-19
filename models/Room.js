@@ -6,6 +6,7 @@ export default class Room {
     #code = "";
     #connectedPlayers = new Map();
     #game = null;
+    #hostPlayer;
 
     constructor(code) {
         this.#code = code; // 5 Digit alphanumeric string
@@ -15,11 +16,15 @@ export default class Room {
     addPlayer(player) {
         this.#connectedPlayers.set(player.id, player);
         console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.role}`)
+        
+        // set host player
+        if (player.role === Roles.ROOM_LEADER) {
+            this.#hostPlayer = player;
+        }
     }
 
     removePlayer(player) {
         this.#connectedPlayers.delete(player.id);
-
     }
 
     hasPlayer(playerId) {
@@ -63,7 +68,7 @@ export default class Room {
 
     start(io) {
         if (this.#game) return;
-        this.#game = new Game(this.#code, io, this.#connectedPlayers);
+        this.#game = new Game(this.#code, io, this.#connectedPlayers, this.#hostPlayer);
         this.#game.start();
     }
 }
