@@ -62,8 +62,6 @@ app.prepare().then(() => {
             socket.join(roomCode); // Set current connection to the roomCode
             
             console.log(`${roomCode} is made`);
-
-            emitRoomToPlayers(createdRoom)
         });
 
         // On room being joined
@@ -88,7 +86,6 @@ app.prepare().then(() => {
             roomManager.addPlayer(targetRoom, player)
             socket.join(roomCode);
             // Need to update this somehow
-            emitRoomToPlayers(targetRoom)
         });
 
         function emitRoomToPlayers(room) {

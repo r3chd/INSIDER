@@ -21,6 +21,24 @@ export default class Room {
         if (player.role === Roles.ROOM_LEADER) {
             this.#hostPlayer = player; // Distinguish from current role (e.g. master)
         }
+
+        // Emit update to people
+        for (const player of this.#connectedPlayers.values()) {
+            if (player.id === this.#hostPlayer.id) {
+                player.role = Roles.ROOM_LEADER;
+                console.log("HELP")
+            } else {
+                player.role = Roles.ROOM_MEMBER;
+                console.log("ME")
+            }
+            console.log(player.role, this.#hostPlayer.id)
+
+            player.socket.emit("roomUpdated", this.toDTO(player.id));
+            player.socket.emit("roleAssigned", {
+                role: player.role,
+                masterId: this.#hostPlayer.id
+            })
+        }
     }
 
     removePlayer(player) {

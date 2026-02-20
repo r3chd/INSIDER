@@ -6,9 +6,12 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
 
 
   const getRoleText = () => {
-    if (isYou) return currentPlayerRole;
-    if (player.isMaster) return "MASTER";
-    return "???";
+    if (isYou) return currentPlayerRole; // Sets you to the correct value
+    if (player.isMaster && currentPlayerRole === Roles.ROOM_MEMBER) return Roles.ROOM_LEADER; // Lobby State
+    if (player.isMaster) return Roles.MASTER; // Game State
+    if (currentPlayerRole === Roles.ROOM_MEMBER || currentPlayerRole === Roles.ROOM_LEADER) return Roles.ROOM_MEMBER; // Replace non-you and non-master to member in lobby
+    if (currentPlayerRole === Roles.INSIDER) return Roles.COMMONER; // Insider knows all roles
+    return "???"; // Commoner knows nothing
   };
 
     if (empty) {

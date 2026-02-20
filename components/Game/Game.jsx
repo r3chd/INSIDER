@@ -15,7 +15,6 @@ export default function Game({ isActive, fillRef }) {
 
   // Socket
   const [youSocket, setYouSocket] = useState(null);
-  const [currentPlayerRole, setCurrentPlayerRole] = useState("not assigned");
   
   // setting the word
   const [wordOptions, setWordOptions] = useState([]);
@@ -120,7 +119,6 @@ export default function Game({ isActive, fillRef }) {
 
   // --------------- SOCKET RECEIVERS --------------- //
   useEffect(() => {
-    const handleSetRole = (data) => setCurrentPlayerRole(data.role);
     const handleSetWord = (data) => setTargetWord(data.word);
     const handleHideOverlay = () => setShowOverlay(false);
 
@@ -165,7 +163,6 @@ export default function Game({ isActive, fillRef }) {
       setGameMessage("vote for the guy")
     }
 
-    socket.on("roleAssigned", handleSetRole);
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
@@ -176,7 +173,6 @@ export default function Game({ isActive, fillRef }) {
 
 
     return() => {
-      socket.off("roleAssigned", handleSetRole);
       socket.off("wordAssigned", handleSetWord);
       socket.off("startSetupState", handleSetupState);
       socket.off("hideOverlay", handleHideOverlay);
@@ -204,7 +200,6 @@ export default function Game({ isActive, fillRef }) {
 
         </div>
         <div className={styles.gameInteractable}>
-            <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1>{gameMessage}</h1>
             <PlayerDisplay showEmpty={false} />
