@@ -3,20 +3,35 @@
   aspect-ratio: 5 / 7;
   color: white; /* Text color */
   display: flex;
+  flex-direction:column;
   align-items: center;
-  justify-content: center-left;
+  justify-content: center;
   /* squircle effect */
   border-radius: 5px;
-  padding-left: 15px; 
 }
 
-.squircle::before {
-  content: ""; /* This is required */
+.squircle::before { 
+  content: ""; /* This is required for inset */
   position: absolute;
   inset: 3px;
   border: 2px solid rgb(21, 21, 21);
   border-radius:3px;
   pointer-events: none;
+}
+
+.name {
+  position: absolute;
+  top: 10px;
+}
+
+.role {
+  position: absolute;
+  bottom: 10px;
+}
+
+.h1 {
+  font-size: 20px;
+  margin: 0px;
 }
 
 .squircleUsed {
@@ -28,8 +43,8 @@
 }
 
 .icon {
-  position: absolute;
-  right: 20px;
-  width: 24px;
+  position: relative;
+  width: 100px;
   height: auto;
+  opacity: 20%;
 }

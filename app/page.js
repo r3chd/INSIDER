@@ -59,10 +59,6 @@ export default function Home() {
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
 
-        socket.on("roomUpdated", (data) => {
-          console.log(data);
-          // Need to display the data somewhere
-        });
 
         socket.on("gameStarted", () => {
           setActiveView('game');

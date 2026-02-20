@@ -19,7 +19,7 @@ export default class Room {
         
         // set host player
         if (player.role === Roles.ROOM_LEADER) {
-            this.#hostPlayer = player;
+            this.#hostPlayer = player; // Distinguish from current role (e.g. master)
         }
     }
 
@@ -32,6 +32,7 @@ export default class Room {
     }
 
     toDTO() {
+        // setup roles by conversion
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
@@ -45,18 +46,6 @@ export default class Room {
         }
     }
 
-    printRoom() {
-        console.log(`Room: ${this.#code}`);
-        if (this.#connectedPlayers.size === 0) {
-            console.log(" No players located in this room");
-            return;
-        }
-
-        for (const player of this.#connectedPlayers.values()) { // done as a map
-            console.log(` - ${player.name} (ID: ${player.id})`);
-        }
-
-    }
 
     get code() {
         return this.#code;
