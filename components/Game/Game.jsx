@@ -30,8 +30,11 @@ export default function Game({ isActive, fillRef }) {
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
   const [isMasterButton, setIsMasterButton] = useState(false);
 
-  // Guesser
+  // Guesser's turn (who has the button)
   const [guessingPlayer, setGuessingPlayer] = useState(null);
+
+  // Voting
+  const [votedPlayer, setVotedPlayer] = useState(null);
 
   // --------------- TIMER --------------- //
 
@@ -94,7 +97,14 @@ export default function Game({ isActive, fillRef }) {
       // Should play some kind of animation
       socket.emit("nextTurn");
     }
-    
+  }
+
+  const handleCardClick = (clickedPlayer) => {
+    // On a card and ID being pressed:
+    // Update the UI on this end
+    // send an emit that increments the votes overall?
+    // if player.votes = 0;???
+    console.log(clickedPlayer, "Id player");
   }
 
   // --------------- SOCKET RECEIVERS --------------- //
@@ -190,7 +200,7 @@ export default function Game({ isActive, fillRef }) {
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer}/>
+            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} onCardClick={handleCardClick}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

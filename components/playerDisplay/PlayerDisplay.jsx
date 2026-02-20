@@ -1,18 +1,23 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { socket } from "../../socket.js";
 import styles from "./PlayerDisplay.module.css";
 import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
-export default function PlayerDisplay({showEmpty=true, guessingPlayer}) { // Arguments needed here in for loop
-  const [playerList, setPlayerList] = useState({
-    players: [],
-  });
-
+export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick}) { // Arguments needed here in for loop
+  const [playerList, setPlayerList] = useState({ players: [] });
   const [youSocket, setYouSocket] = useState(null);
   const [youRole, setYouRole] = useState(null);
+
+
+
+  const clickHandlerRef = useRef(onCardClick);
+
+  useEffect(() => {
+    clickHandlerRef.current = onCardClick;
+  }, [onCardClick]);
+
 
   const items = [];
 
@@ -24,6 +29,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer}) { // Arg
         id: p.id,
         name: p.name,
         role: p.role,
+        votes: p.votes,
         isMaster: false
       }))
     };
@@ -45,11 +51,14 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer}) { // Arg
             isMaster: p.id === data.masterId
           }))
         }))
-
       }
+
+      const handleVoteSent = (data) => {
+        console.log("yelling all the time")
+      } // IS THIS NECESSARY
+
       socket.on("roomUpdated", handleRoomUpdate);
       socket.on("roleAssigned", handleRoleAssignment)
-
       return () => {
         socket.off("roomUpdated", handleRoomUpdate);
         socket.off("roleAssigned", handleRoleAssignment);
@@ -57,23 +66,23 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer}) { // Arg
   }, []);
 
 
+  return (<div className={styles.grid}>
+    {/* Render Active Players */}
+    {playerList.players.map((player) => (
+      <PlayerCard 
+        key={player.id} 
+        empty={false} 
+        player={player} 
+        guessingPlayer={guessingPlayer === player.id} 
+        currentPlayerRole={youRole} 
+        isYou={youSocket === player.id} 
+        onClick={onCardClick} // Passing it directly here
+      />
+    ))}
 
-  for (let i = 0; i < playerList.players.length; i++) {
-    const player = playerList.players[i];    
-    items.push(
-      <PlayerCard key={player.id} empty={false} player={player} guessingPlayer={guessingPlayer === player.id} currentPlayerRole={youRole} isYou={youSocket === player.id}/>
-    )
-  }
-  // For leftovers
-  if (showEmpty) {
-    for (let i = playerList.players.length; i < MAX_PLAYERS; i++) { // Need to change out with max players later on
-      items.push(
-        <PlayerCard key={i} empty={true} />
-      );
-    } 
-  }
-
-
-  return <div className={styles.grid}>
-    {items}</div>;
+    {/* Render Empty Slots */}
+    {showEmpty && [...Array(MAX_PLAYERS - playerList.players.length)].map((_, i) => (
+      <PlayerCard key={`empty-${i}`} empty={true} onClick={null} />
+    ))}
+  </div>)
 }

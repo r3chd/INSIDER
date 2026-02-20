@@ -6,6 +6,7 @@ export default class Player {
     #name = "";
     #role = Roles.UNDEFINED;
     #socket = null; // socket itself
+    #votes = 0;
 
     constructor(socket, name) {
         this.#id = socket.id;
@@ -35,5 +36,13 @@ export default class Player {
 
     get socket() {
         return this.#socket;
+    }
+
+    set votes(vote) {
+        this.#votes = vote
+    }
+
+    get votes() {
+        return this.#votes;
     }
 }

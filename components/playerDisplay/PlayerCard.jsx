@@ -2,7 +2,7 @@ import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
 
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer}) {
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick}) {
 
 
   const getRoleText = () => {
@@ -20,22 +20,19 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
           
           ...
         </div>
-    } else {
-        return <div className={`${styles.squircle} ${styles.squircleUsed} ${guessingPlayer ? styles.guessing : ""}`}>
-          <h1 className={`${styles.name} ${styles.h1}`}> {player.name} {isYou ? "YOU" : ""}</h1>
+    } 
+    
+    const handleClick = () => {
+      if (!onClick || empty) return;
+      onClick(player.id);
+    }
 
-        {/* Case one: Master - show everyone as ???*/}
-        {/* Case two: insider - show everyone as ??? besides master */}
-        {/* Case three: commoner - show everyone as ??? besides master*/}
-        {/* If its you, show the role, else if its the master, show master */}
-          <h1 className={`${styles.role} ${styles.h1}`}>{ getRoleText() } </h1>
-
-
-
+    return <div className={`${styles.squircle} ${styles.squircleUsed} ${guessingPlayer ? styles.guessing : ""}`} onClick={handleClick}>
+      <h1 className={`${styles.name} ${styles.h1}`}> {player.name} {isYou ? "YOU" : ""} {player.votes}</h1>
+      <h1 className={`${styles.role} ${styles.h1}`}>{ getRoleText() } </h1>
       {player.role === Roles.ROOM_LEADER &&
         (<img src="..\..\assets\roomLeader.svg" alt="icon" className={styles.icon}/>)
       }
         
     </div>
-    }
 }

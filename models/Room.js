@@ -54,7 +54,8 @@ export default class Room {
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
-                role: p.role
+                role: p.role,
+                votes: p.votes
             }))
         const hostPlayer = players.find(p => p.role === Roles.ROOM_LEADER);
         return {
