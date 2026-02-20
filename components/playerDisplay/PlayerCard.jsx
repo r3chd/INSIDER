@@ -2,10 +2,11 @@ import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
 
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false}) {
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer}) {
 
 
   const getRoleText = () => {
+    // This whole thing is quite messy due to how lobby roles and game roles overlap with one another..
     if (isYou) return currentPlayerRole; // Sets you to the correct value
     if (player.isMaster && currentPlayerRole === Roles.ROOM_MEMBER) return Roles.ROOM_LEADER; // Lobby State
     if (player.isMaster) return Roles.MASTER; // Game State
@@ -20,7 +21,7 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
           ...
         </div>
     } else {
-        return <div className={`${styles.squircle} ${styles.squircleUsed}`}>
+        return <div className={`${styles.squircle} ${styles.squircleUsed} ${guessingPlayer ? styles.guessing : ""}`}>
           <h1 className={`${styles.name} ${styles.h1}`}> {player.name} {isYou ? "YOU" : ""}</h1>
 
         {/* Case one: Master - show everyone as ???*/}

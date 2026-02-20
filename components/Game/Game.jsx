@@ -12,9 +12,6 @@ export default function Game({ isActive, fillRef }) {
   const [hostId, setHostId] = useState("not assigned");
 
   const [gameMessage, setGameMessage] = useState("not assigned");
-
-  // Socket
-  const [youSocket, setYouSocket] = useState(null);
   
   // setting the word
   const [wordOptions, setWordOptions] = useState([]);
@@ -33,25 +30,8 @@ export default function Game({ isActive, fillRef }) {
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
   const [isMasterButton, setIsMasterButton] = useState(false);
 
-  // set socket on initialization
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleConnect = () => {
-      setYouSocket(socket.id);
-      console.log("your id is ", socket.id)
-    } 
-
-    if (socket.connected) {
-      handleConnect();
-    }
-
-    socket.on("connect", handleConnect);
-
-    return () => {
-      socket.off("connect", handleConnect);
-    };
-  }, [socket]);
+  // Guesser
+  const [guessingPlayer, setGuessingPlayer] = useState(null);
 
   // --------------- TIMER --------------- //
 
@@ -151,9 +131,15 @@ export default function Game({ isActive, fillRef }) {
       setButtonActive(true);
     }
 
+    const handleShowGuesser = (guesser) => {
+      setGuessingPlayer(guesser)
+    }
+
     const handleRevealState = (data) => {
       setShowOverlay(true);
+      setButtonActive(false);
       startTimer(data.startTime, data.endTime);
+      setGuessingPlayer(null); // Clear guess highlight
       // Could be replaced by some kind of animation
       setOverlayMessage(`The word was ${data.word} and it was ${data.success ? "found" : "not found"}`);
     }
@@ -168,6 +154,7 @@ export default function Game({ isActive, fillRef }) {
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("startGuessingState", handleGuessingState);
     socket.on("showButton", handleShowButton);
+    socket.on("showGuesser", handleShowGuesser);
     socket.on("startRevealState", handleRevealState);
     socket.on("startVoteState", handleVoteState);
 
@@ -178,6 +165,7 @@ export default function Game({ isActive, fillRef }) {
       socket.off("hideOverlay", handleHideOverlay);
       socket.off("startGuessingState", handleGuessingState);
       socket.off("showButton", handleShowButton);
+      socket.off("showGuesser", handleShowGuesser);
       socket.off("startRevealState", handleRevealState);
       socket.off("startVoteState", handleVoteState);
     }
@@ -202,7 +190,7 @@ export default function Game({ isActive, fillRef }) {
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={false} />
+            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

@@ -59,7 +59,6 @@ export class SetupState extends GameState {
         // Backup method in instance of timeout
         setTimeout(() => {
             this.handleTimerExpired();
-            console.log("duration has ended")
         }, this.#duration);
 
         

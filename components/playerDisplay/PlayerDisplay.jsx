@@ -6,7 +6,7 @@ import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
-export default function PlayerDisplay({showEmpty=true}) { // Arguments needed here in for loop
+export default function PlayerDisplay({showEmpty=true, guessingPlayer}) { // Arguments needed here in for loop
   const [playerList, setPlayerList] = useState({
     players: [],
   });
@@ -61,7 +61,7 @@ export default function PlayerDisplay({showEmpty=true}) { // Arguments needed he
   for (let i = 0; i < playerList.players.length; i++) {
     const player = playerList.players[i];    
     items.push(
-      <PlayerCard key={player.id} empty={false} player={player} currentPlayerRole={youRole} isYou={youSocket === player.id}/>
+      <PlayerCard key={player.id} empty={false} player={player} guessingPlayer={guessingPlayer === player.id} currentPlayerRole={youRole} isYou={youSocket === player.id}/>
     )
   }
   // For leftovers

@@ -10,6 +10,7 @@ export class GuessingState extends GameState {
     #duration = 18000;
     #activePlayer;
     #wordFound = false;
+    #timerExpirationRun = false;
 
     constructor(game) {
         super();
@@ -61,6 +62,7 @@ export class GuessingState extends GameState {
                 text: "OK ITS ON ITS UP TO YOU",
                 master: false
             });
+            this.#game.emit("showGuesser", nextPlayer.id);
 
             nextPlayer.socket.once("nextTurn", handlePlayerTurn);
         }
@@ -74,6 +76,9 @@ export class GuessingState extends GameState {
     }
 
     handleTimerExpired() {
+        if (this.#timerExpirationRun) return;
+        this.#timerExpirationRun = true;
+
         if (!this.#wordFound) {
             this.#game.wordFound = false;
         } else {
@@ -84,11 +89,7 @@ export class GuessingState extends GameState {
     }
 
     exit () {
-    
         // Reset variables here
-        // if (this.#activePlayer) {
-        //     this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);
-        // }
     }
 
 }
