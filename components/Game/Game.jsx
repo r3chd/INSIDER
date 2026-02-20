@@ -41,6 +41,11 @@ export default function Game({ isActive, fillRef }) {
 
     const handleConnect = () => {
       setYouSocket(socket.id);
+      console.log("your id is ", socket.id)
+    } 
+
+    if (socket.connected) {
+      handleConnect();
     }
 
     socket.on("connect", handleConnect);
@@ -173,7 +178,19 @@ export default function Game({ isActive, fillRef }) {
     socket.on("showButton", handleShowButton);
     socket.on("startRevealState", handleRevealState);
     socket.on("startVoteState", handleVoteState);
-  })
+
+
+    return() => {
+      socket.off("roleAssigned", handleSetRole);
+      socket.off("wordAssigned", handleSetWord);
+      socket.off("startSetupState", handleSetupState);
+      socket.off("hideOverlay", handleHideOverlay);
+      socket.off("startGuessingState", handleGuessingState);
+      socket.off("showButton", handleShowButton);
+      socket.off("startRevealState", handleRevealState);
+      socket.off("startVoteState", handleVoteState);
+    }
+  }, [])
 
 
   return (
@@ -195,7 +212,7 @@ export default function Game({ isActive, fillRef }) {
             <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={false} youSocketId={youSocket} />
+            <PlayerDisplay showEmpty={false} />
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

@@ -31,7 +31,7 @@ export default class Room {
         return this.#connectedPlayers.has(playerId);
     }
 
-    toDTO() {
+    toDTO(socketId) {
         // setup roles by conversion
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
@@ -42,7 +42,8 @@ export default class Room {
         return {
             code: this.#code,
             players,
-            hostId: hostPlayer ? hostPlayer.id : null
+            hostId: hostPlayer ? hostPlayer.id : null,
+            yourId: socketId
         }
     }
 
