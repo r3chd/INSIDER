@@ -12,6 +12,7 @@ export default function PlayerDisplay({showEmpty=true}) { // Arguments needed he
   });
 
   const [youSocket, setYouSocket] = useState(null);
+  const [youRole, setYouRole] = useState(null);
 
   const items = [];
 
@@ -22,7 +23,8 @@ export default function PlayerDisplay({showEmpty=true}) { // Arguments needed he
       players: dto.players.map(p => ({
         id: p.id,
         name: p.name,
-        role: p.role
+        role: p.role,
+        isMaster: false
       }))
     };
   };
@@ -32,18 +34,34 @@ export default function PlayerDisplay({showEmpty=true}) { // Arguments needed he
           console.log("socket update, data", data);
           setPlayerList(parseDTOPlayers(data));
       }
+
+      const handleRoleAssignment = (data) => {
+        // Set personal role
+        setYouRole(data.role);
+
+        setPlayerList(prev => ({
+          players: prev.players.map(p => ({
+            ...p,
+            isMaster: p.id === data.masterId
+          }))
+        }))
+
+      }
       socket.on("roomUpdated", handleRoomUpdate);
+      socket.on("roleAssigned", handleRoleAssignment)
+
+      return () => {
+        socket.off("roomUpdated", handleRoomUpdate);
+        socket.off("roleAssigned", handleRoleAssignment);
+      };
   }, []);
 
 
 
   for (let i = 0; i < playerList.players.length; i++) {
-    const player = playerList.players[i];
-
-
-    
+    const player = playerList.players[i];    
     items.push(
-      <PlayerCard key={player.id} empty={false} player={player} isYou={youSocket === player.id}/>
+      <PlayerCard key={player.id} empty={false} player={player} currentPlayerRole={youRole} isYou={youSocket === player.id}/>
     )
   }
   // For leftovers

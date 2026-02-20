@@ -96,10 +96,15 @@ export class SetupState extends GameState {
                 player.role = Roles.COMMONER;
             }
             console.log(player.id);
-            this.#game.emitToPlayer(player.id, "roleAssigned", {
-                role: player.role
-            });
         }
+
+        for (let i = 0; i < playersArray.length; i++) {
+            const player = playersArray[i];
+            this.#game.emitToPlayer(player.id, "roleAssigned", {
+                role: player.role,          // only send their own role
+                masterId: this.#game.masterPlayer.id // send master id for everyone
+        });
+}
     }
 
     assignWord(word) {

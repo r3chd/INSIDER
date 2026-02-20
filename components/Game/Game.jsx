@@ -28,7 +28,6 @@ export default function Game({ isActive, fillRef }) {
   // Timer
   let timerCanRun = true;
   const [timerWhiteout, setTimerWhiteout] = useState(true); // Timer direction
-  const [timerFill, setTimerFill] = useState(null); // Timer element
 
   // Main Button variables
   const [buttonActive, setButtonActive] = useState(false);
@@ -57,17 +56,14 @@ export default function Game({ isActive, fillRef }) {
 
   // --------------- TIMER --------------- //
 
-  // GET TIMER ELEMENT
-  useEffect(() => {
-    if (fillRef.current) {
-      setTimerFill(fillRef.current);
-    }
-  }, [fillRef])
-
   // TIMER ITSELF
   function startTimer(start, end) {
-    
+    console.log("TIMER IS RUNNING")
+
+    const timerFill = fillRef.current;
+
     if (!timerFill) return;
+    console.log("TIMER IS STILL RUNNING")
     // invert whiteout on each run
     setTimerWhiteout(!timerWhiteout);
     let progress = 0;
@@ -94,7 +90,6 @@ export default function Game({ isActive, fillRef }) {
         topValue = progress * 100;
       }
       timerFill.style.top = `${topValue}%`;
-
 
       if (progress < 1) {
         requestAnimationFrame(animate); // Keep mainloop going
