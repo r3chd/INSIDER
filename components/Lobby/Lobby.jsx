@@ -4,12 +4,17 @@ import { socket } from "../../socket.js";
 import styles from "./Lobby.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import MenuButton from "../menu/MenuButton.jsx";
+import { MIN_PLAYERS } from "../constants/gameParam.js";
 
 export default function Lobby({ isActive }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState(null);
+  const [playerCount, setPlayerCount] = useState(0);
+  
+  const canStart = playerCount >= MIN_PLAYERS;
 
   const handleStartButtonPressed = () => {
+    if (!canStart) return;
     console.log("start button pressed");
     socket.emit("startGame", roomCode);
   }
@@ -24,6 +29,7 @@ export default function Lobby({ isActive }) {
     const handleRoomUpdate = (data) => {
       setRoomCode(data.code);
       setHostId(data.hostId);
+      setPlayerCount(data.players?.length ?? 0);
     }
 
     socket.on("roomUpdated", handleRoomUpdate)
@@ -37,11 +43,21 @@ export default function Lobby({ isActive }) {
         <h1 className={styles.h1}>lobby code: {roomCode} </h1>
         <PlayerDisplay showEmpty={true} onCardClick={handleLobbyClick}/>
 
-
         {hostId === socket.id && (
-              <MenuButton children="start" onClick={handleStartButtonPressed} half={false} />
-         )
-        }
+          <>
+            {!canStart && (
+              <p className={styles.minPlayersHint}>
+                Need at least {MIN_PLAYERS} players to start ({playerCount}/{MIN_PLAYERS}).
+              </p>
+            )}
+            <MenuButton
+              children="start"
+              onClick={handleStartButtonPressed}
+              half={false}
+              disabled={!canStart}
+            />
+          </>
+        )}
         
       </div>
     </div>

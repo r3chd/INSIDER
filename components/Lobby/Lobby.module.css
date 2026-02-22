@@ -18,3 +18,9 @@
 .h1 {
   color: white;
 }
+
+.minPlayersHint {
+  color: #ffb347;
+  font-size: 0.9rem;
+  margin: 0 0 8px 0;
+}

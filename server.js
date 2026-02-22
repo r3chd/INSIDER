@@ -106,8 +106,15 @@ app.prepare().then(() => {
         }
 
         // on start button pressed
+        const MIN_PLAYERS_TO_START = 4;
         socket.on("startGame", (roomCode) => {
-            const startingRoom = roomManager.getRoom(roomCode)
+            const startingRoom = roomManager.getRoom(roomCode);
+            if (!startingRoom) return;
+            const count = startingRoom.connectedPlayers.size;
+            if (count < MIN_PLAYERS_TO_START) {
+                socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS_TO_START });
+                return;
+            }
             startingRoom.start(io);
         })
 
