@@ -1,4 +1,4 @@
-
+// imports
 import { useEffect, useState } from 'react';
 import { socket } from "../../socket.js";
 import styles from "./Game.module.css";
@@ -8,7 +8,9 @@ import MenuButton from "../menu/MenuButton.jsx"
 
 
 export default function Game({ isActive, fillRef }) {
-  const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
+  // would be funny if the code generates the word 'ERROR'
+  // R: is that even possible chat does it not alwasy include a number?
+  const [roomCode, setRoomCode] = useState('ERROR'); 
   const [hostId, setHostId] = useState("not assigned");
 
   const [gameMessage, setGameMessage] = useState("not assigned");
@@ -17,23 +19,23 @@ export default function Game({ isActive, fillRef }) {
   const [wordOptions, setWordOptions] = useState([]);
   const [targetWord, setTargetWord] = useState(null);
 
-  // Overlay variables
+  // overlay variables
   const [overlayMessage, setOverlayMessage] = useState("DEBUG message");
   const [showOverlay, setShowOverlay] = useState(false);
 
-  // Timer
+  // timer
   let timerCanRun = true;
-  const [timerWhiteout, setTimerWhiteout] = useState(true); // Timer direction
+  const [timerWhiteout, setTimerWhiteout] = useState(true); //  Timer direction
 
-  // Main Button variables
+  // main button variables
   const [buttonActive, setButtonActive] = useState(false);
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
   const [isMasterButton, setIsMasterButton] = useState(false);
 
-  // Guesser's turn (who has the button)
+  // guesser's turn (who has the button)
   const [guessingPlayer, setGuessingPlayer] = useState(null);
 
-  // Voting
+  // voting
   const [votedPlayer, setVotedPlayer] = useState(null);
 
   // --------------- TIMER --------------- //
@@ -61,7 +63,7 @@ export default function Game({ isActive, fillRef }) {
       if (!timerCanRun) return;
       const isWhiteout = timerWhiteout;
       const now = Date.now();
-      progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
+      progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // caps 100%
     
       let topValue;
       if (isWhiteout) {
@@ -74,20 +76,20 @@ export default function Game({ isActive, fillRef }) {
       timerFill.style.top = `${topValue}%`;
 
       if (progress < 1) {
-        requestAnimationFrame(animate); // Keep mainloop going
+        requestAnimationFrame(animate); // keep mainloop going
       }
     }
     requestAnimationFrame(animate);
   }
 
-  // For when one of the three word options is pressed by the master
+  // for when one of the three word options is pressed by the master
   const handleWordSelect = (word) => {
     socket.emit("wordSelected", word);
-    // Clear words
+    // clear words
     setWordOptions([]);
   }
 
-  // For the guess state - alternate or master submits
+  // for the guess state - alternate or master submits
   const handleButtonPressed = () => {
     setButtonActive(false);
     if (isMasterButton) {
@@ -99,6 +101,7 @@ export default function Game({ isActive, fillRef }) {
     }
   }
 
+  // R: this is during voting phase?
   const handleCardClick = (clickedPlayer) => {
     // On a card and ID being pressed:
     // Update the UI on this end
@@ -108,24 +111,24 @@ export default function Game({ isActive, fillRef }) {
   }
 
   // --------------- SOCKET RECEIVERS --------------- //
+
   useEffect(() => {
     const handleSetWord = (data) => setTargetWord(data.word);
     const handleHideOverlay = () => setShowOverlay(false);
 
-
     const handleSetupState = (data) => {
-        // Everyone gets overlay
+        // everyone gets overlay
         setShowOverlay(true);
 
-        // Everyone gets custom message
+        // everyone gets custom massage
         setOverlayMessage(data.overlayMessage.replace("{{name}}", data.masterPlayer));
         
-        // Show words only to master
+        // show words only to master
         if (data.words !== null) {
             setWordOptions(data.words);
         }
 
-        // Start timer
+        // start timer
         startTimer(data.startTime, data.endTime)
     }
 
@@ -149,8 +152,8 @@ export default function Game({ isActive, fillRef }) {
       setShowOverlay(true);
       setButtonActive(false);
       startTimer(data.startTime, data.endTime);
-      setGuessingPlayer(null); // Clear guess highlight
-      // Could be replaced by some kind of animation
+      setGuessingPlayer(null); // clear guess highlight
+      // could be replaced by some kind of animation
       setOverlayMessage(`The word was ${data.word} and it was ${data.success ? "found" : "not found"}`);
     }
 

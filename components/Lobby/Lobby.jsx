@@ -10,11 +10,11 @@ export default function Lobby({ isActive }) {
   const [hostId, setHostId] = useState(null);
 
   const handleStartButtonPressed = () => {
-    console.log("start butotn pressed");
+    console.log("start button pressed");
     socket.emit("startGame", roomCode);
   }
 
-
+  // R: what is the point of this right now, to be able to click in the lobby. is it also to do with the 0 above each player lol
   const handleLobbyClick = (toPlayer) => {
     console.log("lobby clicked", toPlayer);
     // TEMP

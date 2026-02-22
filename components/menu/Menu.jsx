@@ -4,9 +4,12 @@ import styles from "./Menu.module.css";
 // Menu components
 import MenuButton from "./MenuButton";
 
+const EMPTY_NAME_MSG = "Please enter a name to create or join.";
+
 export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin}) {
   const [name, setName] = useState("");
   const [roomCode, setRoomCode] = useState("");
+  const [nameError, setNameError] = useState("");
 
   // for menu components
   const [createActive, setCreateActive] = useState(true);
@@ -15,6 +18,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   // For setting room, name variable
   const handleNameChange = (e) => {
     setName(e.target.value);
+    if (nameError) setNameError("");
     console.log("name changed to", name)
   }
   const onRoomCodeChange = (e) => {
@@ -24,7 +28,12 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
   // For navigating between components
   const handleCreateButtonPressed = () => {
-    handleCreate(name);
+    if (!name.trim()) {
+      setNameError(EMPTY_NAME_MSG);
+      return;
+    }
+    setNameError("");
+    handleCreate(name.trim());
   }
 
   const handleBackButtonPressed = () => {
@@ -38,7 +47,12 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
   // Specifically joining a room
   const handleJoinRoomPressed = () => {
-    handleJoin(roomCode, name)
+    if (!name.trim()) {
+      setNameError(EMPTY_NAME_MSG);
+      return;
+    }
+    setNameError("");
+    handleJoin(roomCode, name.trim());
   }
 
 
@@ -50,8 +64,9 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
           
           <div className = {styles.inputBox}>
             <p>name: </p>
-            <input onChange={handleNameChange}></input>
+            <input onChange={handleNameChange} value={name} aria-invalid={!!nameError}></input>
           </div>
+          {nameError && <p className={styles.nameError} role="alert">{nameError}</p>}
 
 
           {/* Make two divs - one for buttons and join */}
@@ -70,7 +85,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
           <div className = {`${styles.buttonBox} ${createActive ? "" : styles.active}`}>
 
             <MenuButton children="X" onClick={handleBackButtonPressed}/>
-            <p> .. </p>
+            <p></p>
             <input onChange={onRoomCodeChange}></input>
             <MenuButton children="join" onClick={handleJoinRoomPressed}/>
 
