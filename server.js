@@ -1,6 +1,6 @@
 /** the backend for our program */
 
-// Server
+// server imports
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
@@ -8,11 +8,11 @@ import Roles from './components/constants/rolesEnum.js';
 import{ setIo } from "./io.js";
 
 
-// Player and room classes
+// player room and classes
 import Player from "./models/Player.js"
 import RoomManager from "./models/RoomManager.js";
 
-// Server
+// server setup
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
@@ -24,48 +24,54 @@ const players = new Map();
 
 const roomManager = new RoomManager;
 
+// app needs to be 'prepared' before handling requests
 app.prepare().then(() => {
 
+    // server initialization
     const httpServer = createServer(handler);
     const io = new Server(httpServer);
     setIo(io);
 
+    // socket connection
     io.on("connection", (socket) => {
 
-        // Set player and current player
+        // initialize player name 
         let playerName = "";
 
-        // Print actively connected
+        // debugging check connection 
         console.log("a user connected");
         
-        // Console.log code
+        // console.log code
         socket.on("console", (data) => {
             console.log(data);
         });
 
 
-        // On room being created
+        // on room being created
         socket.on("createRoom", (playerName) => {
             
+            // create room
             const createdRoom = roomManager.createRoom();
             const roomCode = createdRoom.code;
-            // Make the player proper
+            
+            // properly initialise player with name and socket
             const player = new Player(socket, playerName);
             
-            // Player manager?
+            // create room leader player
             player.role = Roles.ROOM_LEADER;
             players.set(socket.id, player);
 
-            // Interaction between the two
+            // interaction between the two
             roomManager.addPlayer(createdRoom, player)
 
-            socket.join(roomCode); // Set current connection to the roomCode
+            socket.join(roomCode); // set current connection to the roomCode
             
+            // debugging 
             console.log(`${roomCode} is made`);
             io.to(roomCode).emit("roomUpdated", createdRoom.toDTO());
         });
 
-        // On room being joined
+        // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
             const targetRoom = roomManager.getRoom(roomCode);
             if (!targetRoom) {
@@ -75,37 +81,40 @@ app.prepare().then(() => {
                 console.log("room found!")
             }
 
+            // check if player is already in room
             if (targetRoom.connectedPlayers.has(socket.id)) {
                 console.log("player already in room");
                 return;
             }
 
+            // create member player
             const player = new Player(socket, playerName);
             player.role = Roles.ROOM_MEMBER;
             console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
-            
+
+            // add player to room
             roomManager.addPlayer(targetRoom, player)
             socket.join(roomCode);
-            // Need to update this somehow
+
+            // need to update this somehow
             console.log(targetRoom.toDTO());
             io.to(roomCode).emit("roomUpdated", targetRoom.toDTO());
         })
 
-        // On start button pressed
-
+        // on start button pressed
         socket.on("startGame", (roomCode) => {
             const startingRoom = roomManager.getRoom(roomCode)
             startingRoom.start(io);
         })
 
-
-        // DISCONNECT CODE
+        // player disconnect
         socket.on("disconnect", () => {
 
             delete players[socket.id];
         })
     });
 
+    // error handling
     httpServer.once("error", (err) => {
         console.error(err);
         process.exit(1);
