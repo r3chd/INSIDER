@@ -1,5 +1,6 @@
 "use client";
 
+// imports
 import { useState, useEffect, useRef } from 'react';
 import { socket } from "../socket.js";
 
@@ -8,18 +9,23 @@ import Lobby from '../components/Lobby/Lobby.jsx';
 import Game from '../components/Game/Game.jsx';
 import styles from './style.module.css';
 
+// home page
 export default function Home() {
-    // State of connectivity
+
+    // state of connectivity
     const [isConnected, setIsConnected] = useState(false);
+
+    // R: what is the point of showing the transport for debugging?
     const [transport, setTransport] = useState("N/A");
 
     // views
     const [activeView, setActiveView] = useState('menu');
 
-    // Timer information
+    // timer information
     const timerFillRef = useRef(null);
 
-    // Unsure if needed
+    // unsure if needed 
+    // R: if what is needed, this bottom section here?
 
     // this runs when the "create" button is hit
     const handleCreate = (playerName) => { 
@@ -30,14 +36,15 @@ export default function Home() {
       setActiveView('lobby');
     };
 
+    // this runs when the "join" button is hit
     const handleJoin = (roomCode, playerName) => {
 
       socket.emit("joinRoom", {roomCode, playerName})
 
-      setActiveView('lobby'); // Change to game HERE
+      setActiveView('lobby'); // change from menu to game lobby HERE
     }
 
-    // Connectivity code (connection and socket receiving)
+    // connectivity code (connection and socket receiving)
     useEffect(() => {
         if (socket.connected) {
             onConnect();
@@ -56,15 +63,16 @@ export default function Home() {
             setIsConnected(false);
             setTransport("N/A");
         }
+
+        // event driven on connection, disconnection and game started
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
-
-
         socket.on("gameStarted", () => {
           setActiveView('game');
         })
 
-        // Disables these codes i guess
+        // cleanup events
+        // R: do we also need to cleanup gameStarted event?
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
@@ -76,7 +84,7 @@ export default function Home() {
     <div className={styles.container}>
       <div className={styles.timerBack}>
         <div ref={timerFillRef} className={styles.timerFill}> </div>
-        {/* This is the timer fill */}
+        {/* this is the timer fill */}
           <div className={styles.main}>
               <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
             
