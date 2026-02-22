@@ -68,7 +68,6 @@ app.prepare().then(() => {
             
             // debugging 
             console.log(`${roomCode} is made`);
-            io.to(roomCode).emit("roomUpdated", createdRoom.toDTO());
         });
 
         // on room being joined by player
@@ -95,11 +94,16 @@ app.prepare().then(() => {
             // add player to room
             roomManager.addPlayer(targetRoom, player)
             socket.join(roomCode);
-
             // need to update this somehow
-            console.log(targetRoom.toDTO());
-            io.to(roomCode).emit("roomUpdated", targetRoom.toDTO());
-        })
+        });
+
+        function emitRoomToPlayers(room) {
+            for (const player of room.connectedPlayers.values()) {
+                const playerSocket = player.socket;
+                if (!playerSocket) continue;
+                playerSocket.emit("roomUpdated", room.toDTO(player.id));
+            }
+        }
 
         // on start button pressed
         socket.on("startGame", (roomCode) => {

@@ -2,6 +2,7 @@ import { socket } from "../socket.js"
 import { SetupState } from "./states/SetupState.js";
 import { GuessingState } from "./states/GuessingState.js"
 import { RevealState } from "./states/RevealState.js"
+import { VoteState } from "./states/VoteState.js";
 
 export default class Game {
     #code;
@@ -11,17 +12,20 @@ export default class Game {
     #state;
     #roundCount;
     #targetWord;
-    #masterPlayer;
+    #masterPlayer; // Current leader of round
     #wordFound;
 
     
-    constructor(code, io, players) { // add #io to constructor
+    constructor(code, io, players, hostPlayer) { // add #io to constructor
         this.#code = code;
         this.#players = players;
         this.#io = io;
-        this.#state = new SetupState();
+        this.#state = new SetupState(this);
         this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
+
+
+
     }
 
     start() {
@@ -29,14 +33,14 @@ export default class Game {
         this.#started = true;
 
         this.#io.to(this.#code).emit("gameStarted");
-        this.#state.enter(this);
+        this.#state.enter();
     }
     
 
     setState(newState) {
-        this.#state.exit?.(this);
+        this.#state.exit?.();
         this.#state = newState;
-        this.#state.enter(this);
+        this.#state.enter();
     }
 
     nextState() {
@@ -44,6 +48,8 @@ export default class Game {
             this.setState(new GuessingState(this));
         } else if (this.#state instanceof GuessingState) {
             this.setState(new RevealState(this));
+        } else if (this.#state instanceof RevealState) {
+            this.setState(new VoteState(this));
         }
     }
 
@@ -73,6 +79,10 @@ export default class Game {
 
     set targetWord(targetWord){
         this.#targetWord = targetWord;
+    }
+
+    get targetWord() {
+        return this.#targetWord;
     }
 
     set masterPlayer(masterPlayer) {

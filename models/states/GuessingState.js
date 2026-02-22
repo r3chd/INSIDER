@@ -5,86 +5,91 @@ export class GuessingState extends GameState {
 
     #currentPlayerIndex = 0;
     #lobbySize;
+
+    #game;
     #duration = 18000;
     #activePlayer;
     #wordFound = false;
+    #timerExpirationRun = false;
 
-    enter(game) {
+    constructor(game) {
+        super();
+        this.#game = game;
+        this.#lobbySize = this.#game.players.size;
+    }
+
+    enter() {
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
-        game.emit("startGuessingState", 
+        this.#game.emit("startGuessingState", 
             {
                 startTime: startTime,
                 endTime: startTime + this.#duration
             }
         )
+
         // On timer running out
+        const masterSocket = this.#game.masterPlayer.socket;
 
-        const masterSocket = game.masterPlayer.socket;
-
-        const handleTimerExpired = () => {
-            if (!this.#wordFound) {
-                game.wordFound = false;
-            } else {
-                game.wordFound = true;
-            }
-            game.nextState();
-        }
-
-        this.timeoutId = setTimeout(() => {
-            handleTimerExpired();
+        
+        setTimeout(() => {
+            this.handleTimerExpired();
         }, this.#duration);
 
+        // Remove preexisting socket attachment
+        
         masterSocket.once("wordFound", () => {
             this.#wordFound = true;
-            handleTimerExpired();
+            this.handleTimerExpired();
         })
 
         // Get the player
-        this.#lobbySize = game.players.size;
-        const playerArr = [...game.players.values()];
+        const playerArr = [...this.#game.players.values()];
 
+        // Alternate between players
         const handlePlayerTurn = () => {
             // TEMP may need some kind of check to authorise who is clicking the button
             // otherwise game could be manipulated.
             do {
                 this.#currentPlayerIndex = (this.#currentPlayerIndex + 1) % this.#lobbySize;
-            } while (playerArr[this.#currentPlayerIndex] === game.masterPlayer);
+            } while (playerArr[this.#currentPlayerIndex] === this.#game.masterPlayer);
             // Convert to player
             const nextPlayer = playerArr[this.#currentPlayerIndex];
             this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
-            game.emitToPlayer(nextPlayer.id, "showButton", {
+            this.#game.emitToPlayer(nextPlayer.id, "showButton", {
                 text: "OK ITS ON ITS UP TO YOU",
                 master: false
             });
+            this.#game.emit("showGuesser", nextPlayer.id);
 
             nextPlayer.socket.once("nextTurn", handlePlayerTurn);
         }
 
         handlePlayerTurn();
-        game.emitToPlayer(game.masterPlayer.id, "showButton", {
+        this.#game.emitToPlayer(this.#game.masterPlayer.id, "showButton", {
             text: "They've got it!",
             master: true
         })
-        // Cycling works
-
-
-        // on the player hitting the button
-        // update their ui to hide the button
-        // emit to the next player the button
-
-        // end condition occurs when the master hits their button, or when time expires
 
     }
 
+    handleTimerExpired() {
+        if (this.#timerExpirationRun) return;
+        this.#timerExpirationRun = true;
+
+        if (!this.#wordFound) {
+            this.#game.wordFound = false;
+        } else {
+            this.#game.wordFound = true;
+        }
+        this.#game.nextState();
+        console.log("GOING TO REVEAL STATE");
+    }
 
     exit () {
         // Reset variables here
-        // if (this.#activePlayer) {
-        //     this.#activePlayer.socket.off("nextTurn", handlePlayerTurn);
-        // }
     }
 
 }

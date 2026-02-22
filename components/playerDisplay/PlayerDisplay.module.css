@@ -8,37 +8,9 @@
   margin-right: auto;
 }
 
-.squircle {
-  position:relative;
-  height: 60px;
-  color: white; /* Text color */
-  display: flex;
-  align-items: center;
-  justify-content: center-left;
-  /* squircle effect */
-  border-radius: 5px;
-  padding-left: 15px; 
-}
-
-.squircle::before {
-  content: ""; /* This is required */
-  position: absolute;
-  inset: 3px;
-  border: 2px solid rgb(21, 21, 21);
-  border-radius:3px;
-  pointer-events: none;
-}
-
-.squircleUsed {
-  background: #787878;
-}
-
-.squircleEmpty {
-  background: #474747;
-}
-.icon {
-  position: absolute;
-  right: 20px;
-  width: 24px;
-  height: auto;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin:15px;
 }

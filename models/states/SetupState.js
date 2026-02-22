@@ -7,17 +7,27 @@ import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
     #duration = 3000;
+    #game;
 
-    enter(game) {
+    #generatedWords;
+    #wordChosen = false;
 
+
+    constructor(game) {
+        super();
+        this.#game = game;
+        console.log(game);
+    }
+
+    enter() {
         // Timer
-        let generatedWords = generateRandomWords();
+        this.#generatedWords = generateRandomWords();
 
         // Set roles to each player
-        this.assignRoles(game); 
+        this.assignRoles(); 
 
         // Show the overlay to all players
-        for (const player of game.players.values()) {
+        for (const player of this.#game.players.values()) {
             let overlayMessage = null;
             let startTime = Date.now();
             switch(player.role) {
@@ -32,10 +42,10 @@ export class SetupState extends GameState {
                     break;
             }
 
-            game.emitToPlayer(player.id, "startSetupState", {
-                words: player.role === Roles.MASTER ? generatedWords : [],
+            this.#game.emitToPlayer(player.id, "startSetupState", {
+                words: player.role === Roles.MASTER ? this.#generatedWords : [],
                 overlayMessage: overlayMessage,
-                masterPlayer: game.masterPlayer.name,
+                masterPlayer: this.#game.masterPlayer.name,
                 startTime: startTime,
                 endTime: startTime + this.#duration
             })
@@ -43,47 +53,26 @@ export class SetupState extends GameState {
         }
 
         // --------------- WORD SELECTION --------------- //
-        const masterSocket = game.masterPlayer.socket;
+        const masterSocket = this.#game.masterPlayer.socket;
 
-        let wordChosen = false;
-
-        const handleTimerExpired = () => {
-            if (!wordChosen) {
-                const randomWord = generatedWords[Math.floor(Math.random() * generatedWords.length)];
-                assignWord(randomWord);
-            }
-        }
-
-        masterSocket.once("wordSelected", (word) => assignWord(word));
-        masterSocket.once("timerExpired", handleTimerExpired)
-        
-        
-        // Backup method
-        this.timeoutId = setTimeout(() => {
-            handleTimerExpired();
+        masterSocket.once("wordSelected", (word) => this.assignWord(word));         
+        // Backup method in instance of timeout
+        setTimeout(() => {
+            this.handleTimerExpired();
         }, this.#duration);
 
-        function assignWord(word) {
-            if (wordChosen) return;
-            wordChosen = true;
+        
+    }
 
-            for (const player of game.players.values()) {
-                if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
-                    console.log("sending to ", player.role);
-                    game.emitToPlayer(player.id, "wordAssigned", {
-                        word: word
-                    });
-                }
-            }
-            // Assignment of words indicates start of next state
-            game.nextState();
-        }
+    handleTimerExpired() {
+        if (this.#wordChosen) return; // no need to run as word has chosen
+        const randomWord = this.#generatedWords[Math.floor(Math.random() * this.#generatedWords.length)];
+        this.assignWord(randomWord);
     }
     
-    
-    assignRoles(game) {
+    assignRoles() {
         // Convert to array
-        const playersArray = Array.from(game.players.values());
+        const playersArray = Array.from(this.#game.players.values());
         
         // Random number selection
         let insider_num = -1;
@@ -92,29 +81,54 @@ export class SetupState extends GameState {
         }
         do {
             insider_num = Math.floor(Math.random() * playersArray.length) // If 4 ppl; then [0-4)
-        } while (insider_num === game.roundCount);
+        } while (insider_num === this.#game.roundCount);
 
         // Role assignment
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
-            if (i === game.roundCount) {
+            if (i === this.#game.roundCount) {
                 player.role = Roles.MASTER;
-                game.masterPlayer = player;
+                this.#game.masterPlayer = player;
             } else if (i === insider_num) {
                 player.role = Roles.INSIDER;
             } else {
                 player.role = Roles.COMMONER;
             }
             console.log(player.id);
-            game.emitToPlayer(player.id, "roleAssigned", {
-                role: player.role
-            });
         }
+
+        for (let i = 0; i < playersArray.length; i++) {
+            const player = playersArray[i];
+            this.#game.emitToPlayer(player.id, "roleAssigned", {
+                role: player.role,          // only send their own role
+                masterId: this.#game.masterPlayer.id // send master id for everyone
+        });
+}
     }
 
+    assignWord(word) {
+        if (this.#wordChosen) return;
+        this.#wordChosen = true;
 
-    exit(game) {
+        this.#game.targetWord = word;
+
+        for (const player of this.#game.players.values()) {
+            if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
+                console.log("sending to ", player.role);
+                this.#game.emitToPlayer(player.id, "wordAssigned", {
+                    word: word
+                });
+            }
+        }
+        // Assignment of words indicates start of next state
+        this.#game.nextState();
+        console.log("GOING TO GUESSING STATE")
+    }
+
+    exit() {
         // Reset variables for next round
-        game.emit("hideOverlay");
+
+        // Need to disable socket
+        this.#game.emit("hideOverlay");
     }
 }

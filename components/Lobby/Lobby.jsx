@@ -15,6 +15,10 @@ export default function Lobby({ isActive }) {
   }
 
 
+  const handleLobbyClick = (toPlayer) => {
+    console.log("lobby clicked", toPlayer);
+    // TEMP
+  }
 
   useEffect(() => {
     const handleRoomUpdate = (data) => {
@@ -31,7 +35,7 @@ export default function Lobby({ isActive }) {
       <div className={styles.lobbyInteractable}>
 
         <h1 className={styles.h1}>lobby code: {roomCode} </h1>
-        <PlayerDisplay showEmpty={true}/>
+        <PlayerDisplay showEmpty={true} onCardClick={handleLobbyClick}/>
 
 
         {hostId === socket.id && (

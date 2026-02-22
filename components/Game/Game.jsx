@@ -11,10 +11,7 @@ export default function Game({ isActive, fillRef }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState("not assigned");
 
-  // Socket
-  const [youSocket, setYouSocket] = useState(null);
-
-  const [currentPlayerRole, setCurrentPlayerRole] = useState("not assigned");
+  const [gameMessage, setGameMessage] = useState("not assigned");
   
   // setting the word
   const [wordOptions, setWordOptions] = useState([]);
@@ -26,90 +23,96 @@ export default function Game({ isActive, fillRef }) {
 
   // Timer
   let timerCanRun = true;
-  const [timerWhiteout, setTimerWhiteout] = useState(true);
-  const [timerFill, setTimerFill] = useState(null);
+  const [timerWhiteout, setTimerWhiteout] = useState(true); // Timer direction
 
   // Main Button variables
   const [buttonActive, setButtonActive] = useState(false);
   const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
   const [isMasterButton, setIsMasterButton] = useState(false);
 
-  // set socket on initialization
-  useEffect(() => {
-    if (!socket) return;
+  // Guesser's turn (who has the button)
+  const [guessingPlayer, setGuessingPlayer] = useState(null);
 
-    const handleConnect = () => {
-      setYouSocket(socket.id);
-    }
+  // Voting
+  const [votedPlayer, setVotedPlayer] = useState(null);
 
-    socket.on("connect", handleConnect);
+  // --------------- TIMER --------------- //
 
-    return () => {
-      socket.off("connect", handleConnect);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    if (fillRef.current) {
-      setTimerFill(fillRef.current);
-    }
-  }, [fillRef])
-
+  // TIMER ITSELF
   function startTimer(start, end) {
-    
-    if (!timerFill) return;
-    // invert whiteout
-    setTimerWhiteout(!timerWhiteout);
+    console.log("TIMER IS RUNNING")
 
+    const timerFill = fillRef.current;
+
+    if (!timerFill) return;
+    console.log("TIMER IS STILL RUNNING")
+    // invert whiteout on each run
+    setTimerWhiteout(!timerWhiteout);
+    let progress = 0;
+
+    // Disables animation to prevent jump from 100% to -100%
+    timerFill.style.transition = "none";
+    timerFill.style.top = timerWhiteout ? "-100%" : "0%";
+    
+    void timerFill.offsetHeight;
+    timerFill.style.transition = "0.018s linear";
 
     const animate = () => {
       if (!timerCanRun) return;
       const isWhiteout = timerWhiteout;
-
       const now = Date.now();
-      const progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
+      progress = Math.min(Math.max((now - start) / (end - start), 0), 1); // Caps 100%
     
       let topValue;
-      // timerFill.style.top = `${progress * 100}%`;
       if (isWhiteout) {
         // -100% -> 0%
         topValue = -100 + progress * 100;
       } else {
+        // 0 -> 100%
         topValue = progress * 100;
       }
       timerFill.style.top = `${topValue}%`;
 
-
       if (progress < 1) {
         requestAnimationFrame(animate); // Keep mainloop going
-      } else {
-        socket.emit("timerExpired"); // Backup timer expiration
       }
     }
-
     requestAnimationFrame(animate);
   }
 
-  // For when one of the buttons is pressed
+  // For when one of the three word options is pressed by the master
   const handleWordSelect = (word) => {
     socket.emit("wordSelected", word);
+    // Clear words
+    setWordOptions([]);
   }
 
+  // For the guess state - alternate or master submits
   const handleButtonPressed = () => {
     setButtonActive(false);
     if (isMasterButton) {
+      socket.emit("wordFound");
       // Socket.emit end round ...
     } else {
+      // Should play some kind of animation
       socket.emit("nextTurn");
     }
-    
   }
 
+  const handleCardClick = (clickedPlayer) => {
+    // On a card and ID being pressed:
+    // Update the UI on this end
+    // send an emit that increments the votes overall?
+    // if player.votes = 0;???
+    console.log(clickedPlayer, "Id player");
+  }
 
+  // --------------- SOCKET RECEIVERS --------------- //
   useEffect(() => {
-    const handleSetRole = (data) => setCurrentPlayerRole(data.role);
     const handleSetWord = (data) => setTargetWord(data.word);
     const handleHideOverlay = () => setShowOverlay(false);
+
+
     const handleSetupState = (data) => {
         // Everyone gets overlay
         setShowOverlay(true);
@@ -129,6 +132,7 @@ export default function Game({ isActive, fillRef }) {
     const handleGuessingState = (data) => {
       timerCanRun = true;
       startTimer(data.startTime, data.endTime);
+      setGameMessage("finding the word")
     }
 
     const handleShowButton = (data) => {
@@ -137,23 +141,48 @@ export default function Game({ isActive, fillRef }) {
       setButtonActive(true);
     }
 
-    const handleRevealState = (data) => {
-      setOverlayMessage(data ? "the word was found" : "the word was not found");
+    const handleShowGuesser = (guesser) => {
+      setGuessingPlayer(guesser)
     }
 
-    socket.on("roleAssigned", handleSetRole);
+    const handleRevealState = (data) => {
+      setShowOverlay(true);
+      setButtonActive(false);
+      startTimer(data.startTime, data.endTime);
+      setGuessingPlayer(null); // Clear guess highlight
+      // Could be replaced by some kind of animation
+      setOverlayMessage(`The word was ${data.word} and it was ${data.success ? "found" : "not found"}`);
+    }
+
+    const handleVoteState = (data) => {
+      startTimer(data.startTime, data.endTime)
+      setGameMessage("vote for the guy")
+    }
+
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("startGuessingState", handleGuessingState);
     socket.on("showButton", handleShowButton);
+    socket.on("showGuesser", handleShowGuesser);
     socket.on("startRevealState", handleRevealState);
-  })
+    socket.on("startVoteState", handleVoteState);
+
+
+    return() => {
+      socket.off("wordAssigned", handleSetWord);
+      socket.off("startSetupState", handleSetupState);
+      socket.off("hideOverlay", handleHideOverlay);
+      socket.off("startGuessingState", handleGuessingState);
+      socket.off("showButton", handleShowButton);
+      socket.off("showGuesser", handleShowGuesser);
+      socket.off("startRevealState", handleRevealState);
+      socket.off("startVoteState", handleVoteState);
+    }
+  }, [])
 
 
   return (
-
-    
     <div className={`${styles.game} ${isActive ? styles.active : ""}`}>
         <div className={`${styles.overlay} ${showOverlay ? styles.active : ""}`}>
             <div className={styles.overlayBox}>
@@ -169,9 +198,9 @@ export default function Game({ isActive, fillRef }) {
 
         </div>
         <div className={styles.gameInteractable}>
-            <h1 className={styles.h1}> {currentPlayerRole} </h1>e
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
-            <PlayerDisplay showEmpty={false} youSocketId={youSocket} />
+            <h1>{gameMessage}</h1>
+            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} onCardClick={handleCardClick}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

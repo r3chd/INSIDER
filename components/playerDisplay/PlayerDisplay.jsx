@@ -1,63 +1,88 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { socket } from "../../socket.js";
 import styles from "./PlayerDisplay.module.css";
 import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
+import PlayerCard from "./PlayerCard.jsx"
+
+export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick}) { // Arguments needed here in for loop
+  const [playerList, setPlayerList] = useState({ players: [] });
+  const [youSocket, setYouSocket] = useState(null);
+  const [youRole, setYouRole] = useState(null);
 
 
-export default function PlayerCard({showEmpty=true, youSocketId}) { // Arguments needed here in for loop
-  const [playerList, setPlayerList] = useState({
-    players: [],
-  });
+
+  const clickHandlerRef = useRef(onCardClick);
+
+  useEffect(() => {
+    clickHandlerRef.current = onCardClick;
+  }, [onCardClick]);
+
 
   const items = [];
 
-  const parseDTOPlayers = dto => ({
-    players: dto.players.map(p => ({
+  const parseDTOPlayers = (dto) => {
+    setYouSocket(dto.yourId);
+
+    return {
+      players: dto.players.map(p => ({
         id: p.id,
         name: p.name,
-        role: p.role
-    }))
-  });
+        role: p.role,
+        votes: p.votes,
+        isMaster: false
+      }))
+    };
+  };
 
-    useEffect(() => {
-        const handleRoomUpdate = (data) => {
-            console.log("socket update, data", data);
-            setPlayerList(parseDTOPlayers(data));
-        }
-        socket.on("roomUpdated", handleRoomUpdate);
-    }, []);
-
-
-  for (let i = 0; i < playerList.players.length; i++) {
-    const player = playerList.players[i];
-    const isYou = player.id === youSocketId;
-    console.log(youSocketId);
-    items.push(
-    <div key={player.id} className={`${styles.squircle} ${styles.squircleUsed}`}>
-  
-      Player {i + 1}: "{player.name}" {player.role === Roles.ROOM_LEADER || player.role === Roles.MASTER ? "leader" : ""}, {isYou ? "YOU" : ""} 
-
-      {player.role === Roles.ROOM_LEADER &&
-        (<img src="..\..\assets\roomLeader.svg" alt="icon" className={styles.icon}/>)
+  useEffect(() => {
+      const handleRoomUpdate = (data) => {
+          console.log("socket update, data", data);
+          setPlayerList(parseDTOPlayers(data));
       }
-        
-    </div>
-    )
-  }
-  // For leftovers
-  if (showEmpty) {
-    for (let i = 0; i < MAX_PLAYERS - playerList.players.length; i++) { // Need to change out with max players later on
-      items.push(
-        <div key={i} className={`${styles.squircle} ${styles.squircleEmpty}`}>
-          Waiting for player..
-        </div>
-      );
-    } 
-  }
+
+      const handleRoleAssignment = (data) => {
+        // Set personal role
+        setYouRole(data.role);
+
+        setPlayerList(prev => ({
+          players: prev.players.map(p => ({
+            ...p,
+            isMaster: p.id === data.masterId
+          }))
+        }))
+      }
+
+      const handleVoteSent = (data) => {
+        console.log("yelling all the time")
+      } // IS THIS NECESSARY
+
+      socket.on("roomUpdated", handleRoomUpdate);
+      socket.on("roleAssigned", handleRoleAssignment)
+      return () => {
+        socket.off("roomUpdated", handleRoomUpdate);
+        socket.off("roleAssigned", handleRoleAssignment);
+      };
+  }, []);
 
 
-  return <div className={styles.column}>
-    {items}</div>;
+  return (<div className={styles.grid}>
+    {/* Render Active Players */}
+    {playerList.players.map((player) => (
+      <PlayerCard 
+        key={player.id} 
+        empty={false} 
+        player={player} 
+        guessingPlayer={guessingPlayer === player.id} 
+        currentPlayerRole={youRole} 
+        isYou={youSocket === player.id} 
+        onClick={onCardClick} // Passing it directly here
+      />
+    ))}
+
+    {/* Render Empty Slots */}
+    {showEmpty && [...Array(MAX_PLAYERS - playerList.players.length)].map((_, i) => (
+      <PlayerCard key={`empty-${i}`} empty={true} onClick={null} />
+    ))}
+  </div>)
 }
