@@ -6,6 +6,7 @@ import next from "next";
 import { Server } from "socket.io";
 import Roles from './components/constants/rolesEnum.js';
 import{ setIo } from "./io.js";
+import { MIN_PLAYERS } from "./components/constants/gameParam.js";
 
 
 // player room and classes
@@ -106,13 +107,12 @@ app.prepare().then(() => {
         }
 
         // on start button pressed
-        const MIN_PLAYERS_TO_START = 4;
         socket.on("startGame", (roomCode) => {
             const startingRoom = roomManager.getRoom(roomCode);
             if (!startingRoom) return;
             const count = startingRoom.connectedPlayers.size;
-            if (count < MIN_PLAYERS_TO_START) {
-                socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS_TO_START });
+            if (count < MIN_PLAYERS) {
+                socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS });
                 return;
             }
             startingRoom.start(io);

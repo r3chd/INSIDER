@@ -16,6 +16,9 @@ export default function Home() {
     const [isConnected, setIsConnected] = useState(false);
 
     // R: what is the point of showing the transport for debugging?
+    // j: this is a part of socket.io - we don't need to know this as any 
+    // connection will have websocket as higher priority to polling (websocket is better too)
+    // this was just in the setup with seeing whether or not the socket connected in the first place
     const [transport, setTransport] = useState("N/A");
 
     // views
@@ -26,6 +29,7 @@ export default function Home() {
 
     // unsure if needed 
     // R: if what is needed, this bottom section here?
+    // j: thing i already deleted - it was a useState for an unused var
 
     // this runs when the "create" button is hit
     const handleCreate = (playerName) => { 
@@ -64,18 +68,22 @@ export default function Home() {
             setTransport("N/A");
         }
 
+        function handleGameStarted() {
+          setActiveView('game');
+        }
+
         // event driven on connection, disconnection and game started
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
-        socket.on("gameStarted", () => {
-          setActiveView('game');
-        })
+        socket.on("gameStarted", handleGameStarted);
 
         // cleanup events
         // R: do we also need to cleanup gameStarted event?
+        // j: yes i am lazy - the point of 'off' is to prevent duplicate listeners/ons
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
+            socket.off("gameStarted", )
         };
         
     }, []);
