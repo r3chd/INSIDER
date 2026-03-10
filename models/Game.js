@@ -11,6 +11,14 @@ export default class Game {
     #connectedPlayers = new Map();
     #hostPlayer;
 
+
+    constructor(code, io) {
+        this.#code = code;
+        this.#io = io;
+        this.#state = new LobbyState(this);
+        this.#targetWord = "not yet chosen"; // TEMP
+    }
+
     addPlayer(player) {
         this.#connectedPlayers.set(player.id, player);
         console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.roomRole}`)
@@ -59,6 +67,18 @@ export default class Game {
         return this.#connectedPlayers;
     }
 
+    get code() {
+        return this.#code;
+    }
+
+    start(connectedPlayers) {
+        if (this.#started) return;
+        this.#started = true;
+        this.#roundCount = this.#connectedPlayers.size - 1; // 0 index
+        this.nextState(); // move from lobby to setup
+    }
+    
+
     /// OLD BELOW ///
 
 
@@ -66,7 +86,6 @@ export default class Game {
 
     #code;
     #io = null;
-    #players;
     #started = false;
     #state = null;
     #roundCount;
@@ -74,24 +93,8 @@ export default class Game {
     #masterPlayer; // Current leader of round
     #wordFound;
 
-    
-    constructor(code, io) {
-        this.#code = code;
-        this.#io = io;
-        this.#state = new LobbyState(this);
-        this.#targetWord = "not yet chosen"; // TEMP
-    }
 
-    start(connectedPlayers) {
-        if (this.#started) return;
-        this.#started = true;
 
-        this.#players = connectedPlayers
-        this.#roundCount = this.#players.size - 1; // 0 index
-        this.nextState(); // move from lobby to setup
-        this.emit("gameStarted");
-    }
-    
 
     setState(newState) {
         this.#state?.exit?.();
@@ -129,10 +132,6 @@ export default class Game {
         }
         
         this.#io.to(socketId).emit(event, data);
-    }
-
-    get players() {
-        return this.#players;
     }
 
     get roundCount() {

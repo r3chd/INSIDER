@@ -12,9 +12,12 @@ export class VoteState extends GameState {
 
     enter() {
         let startTime = Date.now()
-        this.#game.emit("startVoteState", {
-            startTime: startTime,
-            endTime: startTime + this.#duration
+        this.#game.emit("stateChange", {
+            state: "vote",
+            data: {
+                startTime: startTime,
+                endTime: startTime + this.#duration
+            }
         }) 
     }
 }

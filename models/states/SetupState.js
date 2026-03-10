@@ -27,7 +27,7 @@ export class SetupState extends GameState {
         this.assignRoles(); 
 
         // Show the overlay to all players
-        for (const player of this.#game.players.values()) {
+        for (const player of this.#game.connectedPlayers.values()) {
             let overlayMessage = null;
             let startTime = Date.now();
             switch(player.gameRole) {
@@ -42,12 +42,15 @@ export class SetupState extends GameState {
                     break;
             }
       
-            this.#game.emitToPlayer(player.id, "startSetupState", {
-                words: player.gameRole === Roles.GAME.MASTER ? this.#generatedWords : [],
-                overlayMessage: overlayMessage,
-                masterPlayer: this.#game.masterPlayer.name,
-                startTime: startTime,
-                endTime: startTime + this.#duration
+            this.#game.emitToPlayer(player.id, "stateChange", {
+                state: "setup",
+                data: {
+                    words: player.gameRole === Roles.GAME.MASTER ? this.#generatedWords : [],
+                    overlayMessage: overlayMessage,
+                    masterPlayer: this.#game.masterPlayer.name,
+                    startTime: startTime,
+                    endTime: startTime + this.#duration
+                }
             })
 
         }
@@ -72,7 +75,7 @@ export class SetupState extends GameState {
     
     assignRoles() {
         // Convert to array
-        const playersArray = Array.from(this.#game.players.values());
+        const playersArray = Array.from(this.#game.connectedPlayers.values());
         
         // Random number selection
         let insider_num = -1;
@@ -111,7 +114,7 @@ export class SetupState extends GameState {
 
         this.#game.targetWord = word;
 
-        for (const player of this.#game.players.values()) {
+        for (const player of this.#game.connectedPlayers.values()) {
             if (player.gameRole === Roles.GAME.MASTER || player.gameRole === Roles.GAME.INSIDER) {
                 console.log("sending to ", player.gameRole);
                 this.#game.emitToPlayer(player.id, "wordAssigned", {

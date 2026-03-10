@@ -85,19 +85,26 @@ app.prepare().then(() => {
 
         function emitRoomToPlayers(game) {
             console.log("emitting room to players")
-            io.emit("roomUpdated", game.toDTO(socket.id))
+
+            game.connectedPlayers.forEach(player => {
+                const socketId = player.id;
+                const dto = game.toDTO(socket.id);
+
+                io.to(socketId).emit("roomUpdated", dto)
+            })
+
         }
 
         // on start button pressed
         socket.on("startGame", (roomCode) => {
-            const startingRoom = gameManager.getRoom(roomCode);
-            if (!startingRoom) return;
-            const count = startingRoom.connectedPlayers.size;
+            const gameToStart = gameManager.getGame(roomCode);
+            if (!gameToStart) return;
+            const count = gameToStart.connectedPlayers.size;
             if (count < MIN_PLAYERS) {
                 socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS });
                 return;
             }
-            startingRoom.start(); // 
+            gameToStart.start();
         })
 
         // player disconnect

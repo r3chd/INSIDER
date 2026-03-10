@@ -5,13 +5,23 @@ import styles from "./Game.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import WordButton from "../WordButton/WordButton.jsx";
 import MenuButton from "../menu/MenuButton.jsx"
-
+import { MIN_PLAYERS } from "../constants/gameParam.js";
 
 export default function Game({ fillRef }) {
   // would be funny if the code generates the word 'ERROR'
   // R: is that even possible chat does it not alwasy include a number?
   const [roomCode, setRoomCode] = useState('ERROR'); 
   const [hostId, setHostId] = useState("not assigned");
+  const [playerCount, setPlayerCount] = useState(0);
+  const [showStartButton, setShowStartButton] = useState(true); 
+
+  const handleStartButtonPressed = () => {
+    socket.emit("startGame", roomCode);
+    setShowStartButton(false);
+  }
+
+  const canStart = playerCount >= MIN_PLAYERS;
+
 
   const [gameMessage, setGameMessage] = useState("not assigned");
   
@@ -109,7 +119,7 @@ export default function Game({ fillRef }) {
     // send an emit that increments the votes overall?
     // if player.votes = 0;???
     console.log(clickedPlayer, "Id player");
-    socket.to(roomCode).emit("voteCast", {clickedPlayer});
+  
   }
 
   // --------------- SOCKET RECEIVERS --------------- //
@@ -171,32 +181,36 @@ export default function Game({ fillRef }) {
 
     const handleRoomUpdated = (data) => {
       setRoomCode(data.code);
+      setHostId(data.hostId);
+      setPlayerCount(data.players?.length ?? 0);
     }
     // new functions
 
     socket.on("roomUpdated", handleRoomUpdated)
 
     // old functions
+
+    socket.on("stateChange", ({ state, data }) => {
+      switch(state) {
+        case "setup": handleSetupState(data); break;
+        case "guessing": handleGuessingState(data); break;
+        case "reveal": handleRevealState(data); break;
+        case "vote": handleVoteState(data); break;
+      }
+    })
+
     socket.on("wordAssigned", handleSetWord);
-    socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
-    socket.on("startGuessingState", handleGuessingState);
     socket.on("showButton", handleShowButton);
     socket.on("showGuesser", handleShowGuesser);
-    socket.on("startRevealState", handleRevealState);
-    socket.on("startVoteState", handleVoteState);
     socket.on("setRoomCode", handleSetRoomCode)
-
 
     return() => {
       socket.off("wordAssigned", handleSetWord);
-      socket.off("startSetupState", handleSetupState);
       socket.off("hideOverlay", handleHideOverlay);
-      socket.off("startGuessingState", handleGuessingState);
       socket.off("showButton", handleShowButton);
       socket.off("showGuesser", handleShowGuesser);
-      socket.off("startRevealState", handleRevealState);
-      socket.off("startVoteState", handleVoteState);
+      socket.off("setRoomCode", handleSetRoomCode)
     }
   }, [])
 
@@ -221,7 +235,21 @@ export default function Game({ fillRef }) {
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1 className={styles.h1}>{gameMessage}</h1>
             <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick}/>
+
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
+            
+            {/* Start button condition for host */}
+            {(hostId === socket.id) && (showStartButton) && (
+              <>
+                  {!canStart && (
+                    <p className={styles.minPlayersHint}>
+                      Need at least {MIN_PLAYERS} players to start ({playerCount}/{MIN_PLAYERS}).
+                    </p>
+                  )}
+              <MenuButton 
+                onClick={handleStartButtonPressed} 
+                half={false} 
+                disabled={!canStart}> start </MenuButton></>)}
         </div>
     </div>
   );
