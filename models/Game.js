@@ -20,7 +20,7 @@ export default class Game {
     constructor(code, io) {
         this.#code = code;
         this.#io = io;
-        this.#state = this.setState(new LobbyState(this));
+        this.#state = new LobbyState(this);
         // this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
     }
@@ -31,7 +31,7 @@ export default class Game {
 
         this.#players = connectedPlayers
         this.#roundCount = this.#players.size - 1; // 0 index
-        this.#io.to(this.#code).emit("gameStarted");
+        this.emit("gameStarted");
         this.nextState(); // move from lobby to setup
     }
     
@@ -39,12 +39,11 @@ export default class Game {
     setState(newState) {
         this.#state?.exit?.();
         this.#state = newState;
-        console.log(this.#state);
-        this.emit("stateUpdated", this.#state);
         this.#state.enter();
     }
 
     nextState() {
+        console.log("next stated")
         if (this.#state instanceof LobbyState) {
             this.setState(new SetupState(this));
         } else if (this.#state instanceof SetupState) {

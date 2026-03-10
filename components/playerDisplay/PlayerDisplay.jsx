@@ -36,7 +36,6 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, gameState
 
   useEffect(() => {
       const handleRoomUpdate = (data) => {
-          console.log("socket update, data", data);
           setPlayerList(parseDTOPlayers(data));
       }
 

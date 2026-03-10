@@ -7,7 +7,7 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
 
   const getRoleText = () => {
     // get current state of game
-    console.log(gameState, "test");
+    // console.log(gameState, "test");
     if (gameState instanceof LobbyState) {
 
       return "skibid"

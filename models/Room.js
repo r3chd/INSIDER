@@ -30,7 +30,6 @@ export default class Room {
             } else {
                 player.roomRole = Roles.ROOM.MEMBER;
             }
-            console.log(player.roomRole, this.#hostPlayer.id)
 
             player.socket.emit("roomUpdated", this.toDTO(player.id));
             player.socket.emit("roleAssigned", {
@@ -53,17 +52,11 @@ export default class Room {
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
-                role: p.roomRole,
+                roomRole: p.roomRole,
                 votes: p.votes
             }))
-        // this is failing for some reason
+
         const hostPlayer = players.find(p => p.roomRole === Roles.ROOM.LEADER);
-        console.log({
-            code: this.#code,
-            players,
-            hostId: hostPlayer ? hostPlayer.id : null,
-            yourId: socketId
-        })
 
         return {
             code: this.#code,
