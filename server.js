@@ -74,12 +74,6 @@ app.prepare().then(() => {
         // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
             const targetRoom = roomManager.getRoom(roomCode);
-            if (!targetRoom) {
-                console.log("room not found!")
-                return;
-            } else {
-                console.log("room found!")
-            }
 
             // check if player is already in room
             if (targetRoom.connectedPlayers.has(socket.id)) {

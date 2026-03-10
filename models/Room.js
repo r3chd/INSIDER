@@ -53,6 +53,7 @@ export default class Room {
                 id: p.id,
                 name: p.name,
                 roomRole: p.roomRole,
+                gameRole: p.gameRole,
                 votes: p.votes
             }))
 

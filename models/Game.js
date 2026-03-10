@@ -21,7 +21,6 @@ export default class Game {
         this.#code = code;
         this.#io = io;
         this.#state = new LobbyState(this);
-        // this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
     }
 
@@ -31,8 +30,8 @@ export default class Game {
 
         this.#players = connectedPlayers
         this.#roundCount = this.#players.size - 1; // 0 index
-        this.emit("gameStarted");
         this.nextState(); // move from lobby to setup
+        this.emit("gameStarted");
     }
     
 
@@ -43,7 +42,6 @@ export default class Game {
     }
 
     nextState() {
-        console.log("next stated")
         if (this.#state instanceof LobbyState) {
             this.setState(new SetupState(this));
         } else if (this.#state instanceof SetupState) {
@@ -57,6 +55,7 @@ export default class Game {
     }
 
     emit(event, data) { // To a room - everyone should know
+        console.log("emitting", event, data)
         if (data === undefined) {
             this.#io.to(this.#code).emit(event); // Where data is not necessary
             return;

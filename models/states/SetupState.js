@@ -41,7 +41,7 @@ export class SetupState extends GameState {
                     overlayMessage = TEXT.overlay.insider;
                     break;
             }
-
+      
             this.#game.emitToPlayer(player.id, "startSetupState", {
                 words: player.gameRole === Roles.GAME.MASTER ? this.#generatedWords : [],
                 overlayMessage: overlayMessage,
@@ -94,13 +94,12 @@ export class SetupState extends GameState {
             } else {
                 player.gameRole = Roles.GAME.COMMONER;
             }
-            console.log(player.id);
         }
 
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             this.#game.emitToPlayer(player.id, "roleAssigned", {
-                role: player.gameRole,          // only send their own role
+                gameRole: player.gameRole,          // only send their own role
                 masterId: this.#game.masterPlayer.id // send master id for everyone
         });
 }

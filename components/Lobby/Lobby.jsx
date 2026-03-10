@@ -33,13 +33,7 @@ export default function Lobby({ isActive }) {
       setPlayerCount(data.players?.length ?? 0);
     }
 
-    const handleStateUpdated = (data) => {
-      setGameState(data);
-      console.log(data);
-    }
-
     socket.on("roomUpdated", handleRoomUpdate);
-    socket.on("stateUpdated", handleStateUpdated);
   })
 
 
@@ -48,7 +42,7 @@ export default function Lobby({ isActive }) {
       <div className={styles.lobbyInteractable}>
 
         <h1 className={styles.h1}>lobby code: {roomCode} </h1>
-        <PlayerDisplay showEmpty={true} gameState={gameState} onCardClick={handleLobbyClick}/>
+        <PlayerDisplay showEmpty={true} onCardClick={handleLobbyClick}/>
 
         {hostId === socket.id && (
           <>

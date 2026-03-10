@@ -4,7 +4,7 @@ import styles from "./PlayerDisplay.module.css";
 import MAX_PLAYERS from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
-export default function PlayerDisplay({showEmpty=true, guessingPlayer, gameState, onCardClick}) { // Arguments needed here in for loop
+export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick}) { // Arguments needed here in for loop
   const [playerList, setPlayerList] = useState({ players: [] });
   const [youSocket, setYouSocket] = useState(null);
   const [youRole, setYouRole] = useState(null);
@@ -27,7 +27,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, gameState
       players: dto.players.map(p => ({
         id: p.id,
         name: p.name,
-        role: p.roomRole,
+        roomRole: p.roomRole,
         votes: p.votes,
         isMaster: false
       }))
@@ -41,7 +41,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, gameState
 
       const handleRoleAssignment = (data) => {
         // Set personal role
-        setYouRole(data.gameRole);
+        setYouRole(data.roomRole);
 
         setPlayerList(prev => ({
           players: prev.players.map(p => ({
@@ -75,7 +75,6 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, gameState
         currentPlayerRole={youRole} 
         isYou={youSocket === player.id} 
         onClick={onCardClick} // Passing it directly here
-        gameState={gameState}
       />
     ))}
 

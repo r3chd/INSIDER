@@ -48,6 +48,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
   // Specifically joining a room
   const handleJoinRoomPressed = () => {
+    handleJoin(roomCode, name.trim()); // TEMP TO GET INTO GAME FASTER
     if (!name.trim()) {
       setNameError(EMPTY_NAME_MSG);
       return;

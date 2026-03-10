@@ -2,21 +2,15 @@ import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
 import { LobbyState } from "../../models/states/LobbyState.js";
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick, gameState}) { // Pass in something for the state
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick}) { // Pass in something for the state
 
 
   const getRoleText = () => {
-    // get current state of game
-    // console.log(gameState, "test");
-    if (gameState instanceof LobbyState) {
 
-      return "skibid"
-    }
     
     // if it is in lobby state
 
     // then handle based on the state
-
 
     // This whole thing is quite messy due to how lobby roles and game roles overlap with one another..
     if (isYou) return currentPlayerRole; // Sets you to the correct value
