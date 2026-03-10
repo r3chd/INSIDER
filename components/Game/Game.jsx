@@ -136,6 +136,7 @@ export default function Game({ isActive, fillRef }) {
       timerCanRun = true;
       startTimer(data.startTime, data.endTime);
       setGameMessage("finding the word")
+      setWordOptions([]); // clear from previous
     }
 
     const handleShowButton = (data) => {
@@ -202,7 +203,7 @@ export default function Game({ isActive, fillRef }) {
         </div>
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
-            <h1>{gameMessage}</h1>
+            <h1 className={styles.h1}>{gameMessage}</h1>
             <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} onCardClick={handleCardClick}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>

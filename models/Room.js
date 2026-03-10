@@ -8,9 +8,10 @@ export default class Room {
     #game = null;
     #hostPlayer;
 
-    constructor(code) {
+    constructor(code, io) {
         this.#code = code; // 5 Digit alphanumeric string
         console.log(`room created with ${this.#code}`)
+        this.#game = new Game(this.#code, io); //TEMP
     }
     
     addPlayer(player) {
@@ -75,9 +76,8 @@ export default class Room {
         return this.#connectedPlayers;
     }
 
-    start(io) {
-        if (this.#game) return;
-        this.#game = new Game(this.#code, io, this.#connectedPlayers, this.#hostPlayer);
-        this.#game.start();
+    start() {
+        if (!this.#game) return;
+        this.#game.start(this.#connectedPlayers);
     }
 }

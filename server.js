@@ -52,7 +52,7 @@ app.prepare().then(() => {
         socket.on("createRoom", (playerName) => {
             
             // create room
-            const createdRoom = roomManager.createRoom();
+            const createdRoom = roomManager.createRoom(io);
             const roomCode = createdRoom.code;
             
             // properly initialise player with name and socket
@@ -115,7 +115,7 @@ app.prepare().then(() => {
                 socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS });
                 return;
             }
-            startingRoom.start(io);
+            startingRoom.start(); // 
         })
 
         // player disconnect

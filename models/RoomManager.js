@@ -6,7 +6,7 @@ import { generateRoomCode } from "../utils/roomCode.js"
 export default class RoomManager {
     #rooms = new Map();
 
-    createRoom() {
+    createRoom(io) {
 
         // Code creation
         let roomCode;
@@ -14,7 +14,7 @@ export default class RoomManager {
             roomCode = generateRoomCode();
         } while (this.#rooms.has(roomCode));
         
-        const room = new Room(roomCode);
+        const room = new Room(roomCode, io);
         this.#rooms.set(roomCode, room);
 
         return room;
