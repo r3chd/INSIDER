@@ -31,7 +31,6 @@ export default class Room {
                 player.roomRole = Roles.ROOM.MEMBER;
             }
 
-            player.socket.emit("roomUpdated", this.toDTO(player.id));
             player.socket.emit("roleAssigned", {
                 role: player.roomRole,
                 masterId: this.#hostPlayer.id
@@ -58,7 +57,6 @@ export default class Room {
             }))
 
         const hostPlayer = players.find(p => p.roomRole === Roles.ROOM.LEADER);
-
         return {
             code: this.#code,
             players,

@@ -9,10 +9,11 @@ export default class Player {
     #socket = null; // socket itself
     #votes = 0;
 
-    constructor(socket, name) {
+    constructor(socket, name, roomRole) {
         this.#id = socket.id;
         this.#name = name;
         this.#socket = socket;
+        this.#roomRole = roomRole;
     }
 
     set name(name) {

@@ -4,8 +4,66 @@ import { SetupState } from "./states/SetupState.js";
 import { GuessingState } from "./states/GuessingState.js";
 import { RevealState } from "./states/RevealState.js"
 import { VoteState } from "./states/VoteState.js";
+import Roles from "../components/constants/rolesEnum.js"
 
 export default class Game {
+
+    #connectedPlayers = new Map();
+    #hostPlayer;
+
+    addPlayer(player) {
+        this.#connectedPlayers.set(player.id, player);
+        console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.roomRole}`)
+        
+        // set host player
+        if (player.roomRole === Roles.ROOM.LEADER) {
+            this.#hostPlayer = player; // Distinguish from current role (e.g. master)
+        }
+
+        // Emit update to people
+        for (const player of this.#connectedPlayers.values()) {
+            if (player.id === this.#hostPlayer.id) {
+                player.roomRole = Roles.ROOM.LEADER;
+            } else {
+                player.roomRole = Roles.ROOM.MEMBER;
+            }
+
+            player.socket.emit("roleAssigned", {
+                role: player.roomRole,
+                masterId: this.#hostPlayer.id
+            })
+        }
+    }
+
+    toDTO(socketId) {
+        // setup roles by conversion
+        const players = Array.from(this.#connectedPlayers.values()).map(p => ({
+                id: p.id,
+                name: p.name,
+                roomRole: p.roomRole,
+                gameRole: p.gameRole,
+                votes: p.votes
+            }))
+
+        const hostPlayer = players.find(p => p.roomRole === Roles.ROOM.LEADER);
+        console.log("processing room update");
+        return {
+            code: this.#code,
+            players,
+            hostId: hostPlayer ? hostPlayer.id : null,
+            yourId: socketId
+        }
+    }
+
+    get connectedPlayers() {
+        return this.#connectedPlayers;
+    }
+
+    /// OLD BELOW ///
+
+
+
+
     #code;
     #io = null;
     #players;

@@ -33,7 +33,7 @@ export default function Lobby({ isActive }) {
       setPlayerCount(data.players?.length ?? 0);
     }
 
-    socket.on("roomUpdated", handleRoomUpdate);
+    // socket.on("roomUpdated", handleRoomUpdate);
   })
 
 

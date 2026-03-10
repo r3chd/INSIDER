@@ -1,24 +1,21 @@
 import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
-import { LobbyState } from "../../models/states/LobbyState.js";
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick}) { // Pass in something for the state
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick }) { // Pass in something for the state
 
 
   const getRoleText = () => {
 
-    
-    // if it is in lobby state
-
+    // what about only show in the game state
+    console.log("getting role text")
     // then handle based on the state
 
     // This whole thing is quite messy due to how lobby roles and game roles overlap with one another..
     if (isYou) return currentPlayerRole; // Sets you to the correct value
-    if (player.isMaster && currentPlayerRole === Roles.ROOM_MEMBER) return Roles.ROOM_LEADER; // Lobby State
-    if (player.isMaster) return Roles.MASTER; // Game State
-    if (currentPlayerRole === Roles.ROOM_MEMBER || currentPlayerRole === Roles.ROOM_LEADER) return Roles.ROOM_MEMBER; // Replace non-you and non-master to member in lobby
-    if (currentPlayerRole === Roles.INSIDER) return Roles.COMMONER; // Insider knows all roles
-    return "???"; // Commoner knows nothing
+    if (player.isMaster) return Roles.GAME.MASTER; // Game State
+    if (currentPlayerRole === Roles.ROOM.MEMBER || currentPlayerRole === Roles.ROOM.LEADER) return Roles.ROOM.MEMBER; // Replace non-you and non-master to member in lobby
+    if (currentPlayerRole === Roles.GAME.INSIDER) return Roles.COMMONER; // Insider knows all roles
+    return ""; // Commoner knows nothing
   };
 
     if (empty) {

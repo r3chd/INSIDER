@@ -29,19 +29,19 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         name: p.name,
         roomRole: p.roomRole,
         votes: p.votes,
-        isMaster: false
       }))
     };
   };
 
   useEffect(() => {
       const handleRoomUpdate = (data) => {
+        console.log(data);
           setPlayerList(parseDTOPlayers(data));
       }
 
       const handleRoleAssignment = (data) => {
         // Set personal role
-        setYouRole(data.roomRole);
+        setYouRole(data.gameRole);
 
         setPlayerList(prev => ({
           players: prev.players.map(p => ({

@@ -7,7 +7,7 @@ import WordButton from "../WordButton/WordButton.jsx";
 import MenuButton from "../menu/MenuButton.jsx"
 
 
-export default function Game({ isActive, fillRef }) {
+export default function Game({ fillRef }) {
   // would be funny if the code generates the word 'ERROR'
   // R: is that even possible chat does it not alwasy include a number?
   const [roomCode, setRoomCode] = useState('ERROR'); 
@@ -85,7 +85,7 @@ export default function Game({ isActive, fillRef }) {
 
   // for when one of the three word options is pressed by the master
   const handleWordSelect = (word) => {
-    socket.emit("wordSelected", word);
+    socket.emit("wordSelected", word); // TEMP need roomcode
     // clear words
     setWordOptions([]);
   }
@@ -109,6 +109,7 @@ export default function Game({ isActive, fillRef }) {
     // send an emit that increments the votes overall?
     // if player.votes = 0;???
     console.log(clickedPlayer, "Id player");
+    socket.to(roomCode).emit("voteCast", {clickedPlayer});
   }
 
   // --------------- SOCKET RECEIVERS --------------- //
@@ -164,6 +165,18 @@ export default function Game({ isActive, fillRef }) {
       setGameMessage("vote for the guy")
     }
 
+    const handleSetRoomCode = (data) => {
+      setRoomCode(data)
+    }
+
+    const handleRoomUpdated = (data) => {
+      setRoomCode(data.code);
+    }
+    // new functions
+
+    socket.on("roomUpdated", handleRoomUpdated)
+
+    // old functions
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
@@ -172,6 +185,7 @@ export default function Game({ isActive, fillRef }) {
     socket.on("showGuesser", handleShowGuesser);
     socket.on("startRevealState", handleRevealState);
     socket.on("startVoteState", handleVoteState);
+    socket.on("setRoomCode", handleSetRoomCode)
 
 
     return() => {
@@ -188,7 +202,7 @@ export default function Game({ isActive, fillRef }) {
 
 
   return (
-    <div className={`${styles.game} ${isActive ? styles.active : ""}`}>
+    <div className={styles.game}>
         <div className={`${styles.overlay} ${showOverlay ? styles.active : ""}`}>
             <div className={styles.overlayBox}>
                 <h1>{overlayMessage}</h1>
@@ -203,9 +217,10 @@ export default function Game({ isActive, fillRef }) {
 
         </div>
         <div className={styles.gameInteractable}>
+            <h1 className={styles.h1}> {roomCode} </h1>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1 className={styles.h1}>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick}/>
+            <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

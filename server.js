@@ -11,7 +11,7 @@ import { MIN_PLAYERS } from "./components/constants/gameParam.js";
 
 // player room and classes
 import Player from "./models/Player.js"
-import RoomManager from "./models/RoomManager.js";
+import GameManager from "./models/GameManager.js";
 
 // server setup
 const dev = process.env.NODE_ENV !== "production";
@@ -23,7 +23,7 @@ const handler = app.getRequestHandler();
 // used to track all players
 const players = new Map();
 
-const roomManager = new RoomManager;
+const gameManager = new GameManager();
 
 // app needs to be 'prepared' before handling requests
 app.prepare().then(() => {
@@ -39,9 +39,6 @@ app.prepare().then(() => {
         // initialize player name 
         let playerName = "";
 
-        // debugging check connection 
-        console.log("a user connected");
-        
         // console.log code
         socket.on("console", (data) => {
             console.log(data);
@@ -51,58 +48,49 @@ app.prepare().then(() => {
         // on room being created
         socket.on("createRoom", (playerName) => {
             
-            // create room
-            const createdRoom = roomManager.createRoom(io);
-            const roomCode = createdRoom.code;
-            
+            // create game
+            const createdGame = gameManager.createGame(io);
+
             // properly initialise player with name and socket
-            const player = new Player(socket, playerName);
+            const player = new Player(socket, playerName, Roles.ROOM.LEADER);
             
-            // create room leader player
-            player.roomRole = Roles.ROOM.LEADER;
             players.set(socket.id, player);
+            gameManager.addPlayer(createdGame, player)
 
-            // interaction between the two
-            roomManager.addPlayer(createdRoom, player)
-
-            socket.join(roomCode); // set current connection to the roomCode
+            socket.join(createdGame.code); // set current connection to the roomCode
             
-            // debugging 
-            console.log(`${roomCode} is made`);
+            emitRoomToPlayers(createdGame);
         });
 
         // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
-            const targetRoom = roomManager.getRoom(roomCode);
+            const targetGame = gameManager.getGame(roomCode);
+            console.log(targetGame.connectedPlayers);
 
             // check if player is already in room
-            if (targetRoom.connectedPlayers.has(socket.id)) {
+            if (targetGame.connectedPlayers.has(socket.id)) {
                 console.log("player already in room");
                 return;
             }
 
             // create member player
-            const player = new Player(socket, playerName);
-            player.roomRole = Roles.ROOM.MEMBER;
-            console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
+            const player = new Player(socket, playerName, Roles.ROOM.MEMBER);
 
             // add player to room
-            roomManager.addPlayer(targetRoom, player)
+            gameManager.addPlayer(targetGame, player)
             socket.join(roomCode);
-            // need to update this somehow
+
+            emitRoomToPlayers(targetGame);
         });
 
-        function emitRoomToPlayers(room) {
-            for (const player of room.connectedPlayers.values()) {
-                const playerSocket = player.socket;
-                if (!playerSocket) continue;
-                playerSocket.emit("roomUpdated", room.toDTO(player.id));
-            }
+        function emitRoomToPlayers(game) {
+            console.log("emitting room to players")
+            io.emit("roomUpdated", game.toDTO(socket.id))
         }
 
         // on start button pressed
         socket.on("startGame", (roomCode) => {
-            const startingRoom = roomManager.getRoom(roomCode);
+            const startingRoom = gameManager.getRoom(roomCode);
             if (!startingRoom) return;
             const count = startingRoom.connectedPlayers.size;
             if (count < MIN_PLAYERS) {
@@ -115,7 +103,7 @@ app.prepare().then(() => {
         // player disconnect
         socket.on("disconnect", () => {
 
-            delete players[socket.id];
+            players.delete[socket.id];
         })
     });
 

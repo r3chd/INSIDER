@@ -37,7 +37,7 @@ export default function Home() {
       // creates in backend
       socket.emit("createRoom", playerName);
 
-      setActiveView('lobby');
+      setActiveView('game');
     };
 
     // this runs when the "join" button is hit
@@ -45,7 +45,7 @@ export default function Home() {
 
       socket.emit("joinRoom", {roomCode, playerName})
 
-      setActiveView('lobby'); // change from menu to game lobby HERE
+      setActiveView('game'); // change from menu to game lobby HERE
     }
 
     // connectivity code (connection and socket receiving)
@@ -68,25 +68,40 @@ export default function Home() {
             setTransport("N/A");
         }
 
-        function handleGameStarted() {
-          setActiveView('game');
-        }
-
         // event driven on connection, disconnection and game started
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
-        socket.on("gameStarted", handleGameStarted);
 
         // cleanup events
-        // R: do we also need to cleanup gameStarted event?
-        // j: yes i am lazy - the point of 'off' is to prevent duplicate listeners/ons
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
-            socket.off("gameStarted", )
         };
         
     }, []);
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.timerBack}>
+        <div ref={timerFillRef} className={styles.timerFill}> </div>
+        {/* this is the timer fill */}
+          <div className={styles.main}>
+              <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
+            
+              <div className={styles.content}>
+                {activeView === 'menu' && (
+                  <Menu handleCreate={handleCreate} handleJoin={handleJoin} />
+                )}
+
+              {activeView === 'game' && <Game fillRef = {timerFillRef} />}
+
+              <p>Transport: { transport }</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  );
+
 
   return (
     <div className={styles.container}>

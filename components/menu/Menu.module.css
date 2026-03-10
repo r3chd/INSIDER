@@ -1,10 +1,6 @@
 .menu {
   /* This is the vertical column */
   height: 100%;
-  display:none;
-}
-
-.menu.active {
   display: flex;
 }
 

@@ -1,17 +1,13 @@
 .game{
   /* This is the vertical column */
   height: 100%;
-  display: none;
+  display: flex;
 }
 
 
 .gameInteractable {
   width:100%;
   margin: auto;
-}
-
-.game.active {
-  display: flex;
 }
 
 
