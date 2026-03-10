@@ -4,7 +4,8 @@ export default class Player {
     
     #id = null; // text of the socket
     #name = "";
-    #role = Roles.UNDEFINED;
+    #roomRole = Roles.UNDEFINED
+    #gameRole = Roles.UNDEFINED;
     #socket = null; // socket itself
     #votes = 0;
 
@@ -18,8 +19,12 @@ export default class Player {
         this.#name = name;
     }
 
-    set role(role) {
-        this.#role = role;
+    set gameRole(gameRole) {
+        this.#gameRole = gameRole;
+    }
+
+    set roomRole(roomRole) {
+        this.#roomRole = roomRole;
     }
 
     get id() {
@@ -30,8 +35,12 @@ export default class Player {
         return this.#name;
     }
 
-    get role() {
-        return this.#role;
+    get gameRole() {
+        return this.#gameRole;
+    }
+
+    get roomRole() {
+        return this.#roomRole;
     }
 
     get socket() {

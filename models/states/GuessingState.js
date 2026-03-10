@@ -1,6 +1,5 @@
 import { GameState } from "./GameState.js";
 import { getIo } from "../../io.js";
-import Roles from "../../components/constants/rolesEnum.js";
 export class GuessingState extends GameState {
 
     #currentPlayerIndex = 0;

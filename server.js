@@ -59,7 +59,7 @@ app.prepare().then(() => {
             const player = new Player(socket, playerName);
             
             // create room leader player
-            player.role = Roles.ROOM_LEADER;
+            player.roomRole = Roles.ROOM.LEADER;
             players.set(socket.id, player);
 
             // interaction between the two
@@ -89,7 +89,7 @@ app.prepare().then(() => {
 
             // create member player
             const player = new Player(socket, playerName);
-            player.role = Roles.ROOM_MEMBER;
+            player.roomRole = Roles.ROOM.MEMBER;
             console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
 
             // add player to room

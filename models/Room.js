@@ -16,27 +16,25 @@ export default class Room {
     
     addPlayer(player) {
         this.#connectedPlayers.set(player.id, player);
-        console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.role}`)
+        console.log(`player ${player.name}, ${player.id} added to ${this.#code}. they have role ${player.roomRole}`)
         
         // set host player
-        if (player.role === Roles.ROOM_LEADER) {
+        if (player.roomRole === Roles.ROOM.LEADER) {
             this.#hostPlayer = player; // Distinguish from current role (e.g. master)
         }
 
         // Emit update to people
         for (const player of this.#connectedPlayers.values()) {
             if (player.id === this.#hostPlayer.id) {
-                player.role = Roles.ROOM_LEADER;
-                console.log("HELP")
+                player.roomRole = Roles.ROOM.LEADER;
             } else {
-                player.role = Roles.ROOM_MEMBER;
-                console.log("ME")
+                player.roomRole = Roles.ROOM.MEMBER;
             }
-            console.log(player.role, this.#hostPlayer.id)
+            console.log(player.roomRole, this.#hostPlayer.id)
 
             player.socket.emit("roomUpdated", this.toDTO(player.id));
             player.socket.emit("roleAssigned", {
-                role: player.role,
+                role: player.roomRole,
                 masterId: this.#hostPlayer.id
             })
         }
@@ -55,10 +53,18 @@ export default class Room {
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
-                role: p.role,
+                role: p.roomRole,
                 votes: p.votes
             }))
-        const hostPlayer = players.find(p => p.role === Roles.ROOM_LEADER);
+        // this is failing for some reason
+        const hostPlayer = players.find(p => p.roomRole === Roles.ROOM.LEADER);
+        console.log({
+            code: this.#code,
+            players,
+            hostId: hostPlayer ? hostPlayer.id : null,
+            yourId: socketId
+        })
+
         return {
             code: this.#code,
             players,

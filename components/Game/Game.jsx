@@ -38,6 +38,9 @@ export default function Game({ isActive, fillRef }) {
   // voting
   const [votedPlayer, setVotedPlayer] = useState(null);
 
+  // current gameState
+  const [gameState, setGameState] = useState(null);
+
   // --------------- TIMER --------------- //
 
   // TIMER ITSELF
@@ -163,6 +166,11 @@ export default function Game({ isActive, fillRef }) {
       setGameMessage("vote for the guy")
     }
 
+    const handleStateUpdate = (data) => {
+      setGameState(data);
+      console.log(data);
+    }
+
     socket.on("wordAssigned", handleSetWord);
     socket.on("startSetupState", handleSetupState);
     socket.on("hideOverlay", handleHideOverlay);
@@ -171,6 +179,7 @@ export default function Game({ isActive, fillRef }) {
     socket.on("showGuesser", handleShowGuesser);
     socket.on("startRevealState", handleRevealState);
     socket.on("startVoteState", handleVoteState);
+    socket.on("stateUpdated", handleStateUpdate);
 
 
     return() => {
@@ -182,6 +191,7 @@ export default function Game({ isActive, fillRef }) {
       socket.off("showGuesser", handleShowGuesser);
       socket.off("startRevealState", handleRevealState);
       socket.off("startVoteState", handleVoteState);
+      socket.off("stateUpdated", handleStateUpdate);
     }
   }, [])
 
@@ -204,7 +214,7 @@ export default function Game({ isActive, fillRef }) {
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1 className={styles.h1}>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} onCardClick={handleCardClick}/>
+            <PlayerDisplay showEmpty={false} guessingPlayer={guessingPlayer} gameState={gameState} onCardClick={handleCardClick}/>
             <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
         </div>
     </div>

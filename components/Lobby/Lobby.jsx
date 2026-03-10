@@ -10,6 +10,7 @@ export default function Lobby({ isActive }) {
   const [roomCode, setRoomCode] = useState('ERROR'); // Would be funny if the code generates the word 'ERROR'
   const [hostId, setHostId] = useState(null);
   const [playerCount, setPlayerCount] = useState(0);
+  const [gameState, setGameState] = useState(null);
   
   const canStart = playerCount >= MIN_PLAYERS;
 
@@ -32,7 +33,13 @@ export default function Lobby({ isActive }) {
       setPlayerCount(data.players?.length ?? 0);
     }
 
-    socket.on("roomUpdated", handleRoomUpdate)
+    const handleStateUpdated = (data) => {
+      setGameState(data);
+      console.log(data);
+    }
+
+    socket.on("roomUpdated", handleRoomUpdate);
+    socket.on("stateUpdated", handleStateUpdated);
   })
 
 
@@ -41,7 +48,7 @@ export default function Lobby({ isActive }) {
       <div className={styles.lobbyInteractable}>
 
         <h1 className={styles.h1}>lobby code: {roomCode} </h1>
-        <PlayerDisplay showEmpty={true} onCardClick={handleLobbyClick}/>
+        <PlayerDisplay showEmpty={true} gameState={gameState} onCardClick={handleLobbyClick}/>
 
         {hostId === socket.id && (
           <>

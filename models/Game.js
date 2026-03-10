@@ -10,7 +10,7 @@ export default class Game {
     #io = null;
     #players;
     #started = false;
-    #state;
+    #state = null;
     #roundCount;
     #targetWord;
     #masterPlayer; // Current leader of round
@@ -20,7 +20,7 @@ export default class Game {
     constructor(code, io) {
         this.#code = code;
         this.#io = io;
-        this.#state = new LobbyState(this);
+        this.#state = this.setState(new LobbyState(this));
         // this.#roundCount = this.#players.size - 1; // 0 index
         this.#targetWord = "not yet chosen"; // TEMP
     }
@@ -37,8 +37,10 @@ export default class Game {
     
 
     setState(newState) {
-        this.#state.exit?.();
+        this.#state?.exit?.();
         this.#state = newState;
+        console.log(this.#state);
+        this.emit("stateUpdated", this.#state);
         this.#state.enter();
     }
 
@@ -52,11 +54,13 @@ export default class Game {
         } else if (this.#state instanceof RevealState) {
             this.setState(new VoteState(this));
         }
+
     }
 
     emit(event, data) { // To a room - everyone should know
         if (data === undefined) {
             this.#io.to(this.#code).emit(event); // Where data is not necessary
+            return;
         }
         
         this.#io.to(this.#code).emit(event, data);
@@ -65,6 +69,7 @@ export default class Game {
     emitToPlayer(socketId, event, data) { // To a person - only they should know
         if (data === undefined) {
             this.#io.to(socketId).emit(event); // Where data is not necessary
+            return;
         }
         
         this.#io.to(socketId).emit(event, data);
@@ -100,5 +105,9 @@ export default class Game {
 
     get wordFound() {
         return this.#wordFound;
+    }
+
+    get state() {
+        return this.#state;
     }
 }

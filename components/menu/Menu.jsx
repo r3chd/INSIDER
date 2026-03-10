@@ -28,6 +28,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
   // For navigating between components
   const handleCreateButtonPressed = () => {
+    handleCreate(name.trim()); // TEMP TO GET INTO GAME FASTER
     if (!name.trim()) {
       setNameError(EMPTY_NAME_MSG);
       return;
