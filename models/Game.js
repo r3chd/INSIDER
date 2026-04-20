@@ -64,10 +64,26 @@ export default class Game {
         return this.#connectedPlayers.has(playerId);
     }
 
+    handleClick(from, to) {
+        if (this.#state instanceof LobbyState) {
+            this.lobbyClick(from, to);
+        } else if (this.#state instanceof VoteState) { // TODO set up the responding actions
+            this.votePlayer(from, to);
+        }
+        // if game state = yada yada yada
+
+        // else if yada yada 
+
+    }
+
+    lobbyClick(from, to) {
+        console.log ("ahahahaha");
+    }
+
     votePlayer(from, to) {
+        if (from === to) return;
         const previousVote = this.#voteMap.get(from);
         // see if a vote has already been cast
-
         if (previousVote === to) return; // no change needed
 
         if (previousVote !== undefined) {

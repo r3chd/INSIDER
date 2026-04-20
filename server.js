@@ -115,16 +115,15 @@ app.prepare().then(() => {
             players.delete[socket.id];
         })
 
-        socket.on("voteCast", (data) => {
+        socket.on("playerClicked", (data) => {
 
-            console.log(data.votingPlayer, "has voted for", data.votedPlayer, "in room", data.room);
+            console.log(data.clickingPlayer, "has voted for", data.clickedPlayer, "in room", data.room);
 
+            // need to check gamestate
             // handling the vote
             const game = gameManager.getGame(data.room);
-            if (data.votingPlayer != data.votedPlayer) { // ignore self vote
-                game.votePlayer(data.votingPlayer, data.votedPlayer);
-            }
-            
+
+            game.handleClick(data.clickingPlayer, data.clickedPlayer);
         })
     });
 

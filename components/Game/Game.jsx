@@ -45,7 +45,7 @@ export default function Game({ fillRef }) {
   // guesser's turn (who has the button)
   const [guessingPlayer, setGuessingPlayer] = useState(null);
 
-  // current gameState
+  // current gameState (unsure if needed)
   const [gameState, setGameState] = useState(null);
 
   // --------------- TIMER --------------- //
@@ -116,9 +116,9 @@ export default function Game({ fillRef }) {
     // send an emit that increments the votes overall?
     // if player.votes = 0;???
     console.log(clickedPlayer, "Id player");
-    socket.emit("voteCast", {
-      votingPlayer: socket.id,
-      votedPlayer: clickedPlayer,
+    socket.emit("playerClicked", {
+      clickingPlayer: socket.id,
+      clickedPlayer: clickedPlayer,
       room: roomCode
     })
 

@@ -55,16 +55,13 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         setVotes(data)
       }
 
-      const handleVoteSent = (data) => {
-        console.log("yelling all the time")
-      } // IS THIS NECESSARY
-
       socket.on("roomUpdated", handleRoomUpdate);
       socket.on("roleAssigned", handleRoleAssignment);
       socket.on("updateVotes", handleUpdateVotes);
       return () => {
         socket.off("roomUpdated", handleRoomUpdate);
         socket.off("roleAssigned", handleRoleAssignment);
+        socket.off("updateVotes", handleUpdateVotes);
       };
   }, []);
 
