@@ -8,6 +8,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
   const [playerList, setPlayerList] = useState({ players: [] });
   const [youSocket, setYouSocket] = useState(null);
   const [youRole, setYouRole] = useState(null);
+  const [votes, setVotes] = useState({}); // empty map
 
 
 
@@ -27,8 +28,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
       players: dto.players.map(p => ({
         id: p.id,
         name: p.name,
-        roomRole: p.roomRole,
-        votes: p.votes,
+        roomRole: p.roomRole
       }))
     };
   };
@@ -51,12 +51,17 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         }))
       }
 
+      const handleUpdateVotes = (data) => {
+        setVotes(data)
+      }
+
       const handleVoteSent = (data) => {
         console.log("yelling all the time")
       } // IS THIS NECESSARY
 
       socket.on("roomUpdated", handleRoomUpdate);
-      socket.on("roleAssigned", handleRoleAssignment)
+      socket.on("roleAssigned", handleRoleAssignment);
+      socket.on("updateVotes", handleUpdateVotes);
       return () => {
         socket.off("roomUpdated", handleRoomUpdate);
         socket.off("roleAssigned", handleRoleAssignment);
@@ -71,6 +76,7 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         key={player.id} 
         empty={false} 
         player={player} 
+        voteCount={votes[player.id] || 0}
         guessingPlayer={guessingPlayer === player.id} 
         currentPlayerRole={youRole} 
         isYou={youSocket === player.id} 

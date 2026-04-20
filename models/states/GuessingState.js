@@ -7,7 +7,6 @@ export class GuessingState extends GameState {
 
     #game;
     #duration = 18000;
-    #activePlayer;
     #wordFound = false;
     #timerExpirationRun = false;
 
@@ -58,7 +57,6 @@ export class GuessingState extends GameState {
             } while (playerArr[this.#currentPlayerIndex] === this.#game.masterPlayer);
             // Convert to player
             const nextPlayer = playerArr[this.#currentPlayerIndex];
-            this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
             this.#game.emitToPlayer(nextPlayer.id, "showButton", {
                 text: "OK ITS ON ITS UP TO YOU",

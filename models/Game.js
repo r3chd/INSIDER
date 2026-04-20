@@ -10,14 +10,27 @@ export default class Game {
 
     #connectedPlayers = new Map();
     #hostPlayer;
-
+    #voteMap;
+    #voteTally;
 
     constructor(code, io) {
         this.#code = code;
         this.#io = io;
         this.#state = new LobbyState(this);
         this.#targetWord = "not yet chosen"; // TEMP
+        this.#voteMap = new Map(); 
+        this.#voteTally = new Map();
     }
+
+    #code;
+    #io = null;
+    #started = false;
+    #state = null;
+    #roundCount;
+    #targetWord;
+    #masterPlayer; // Current leader of round
+    #wordFound;
+
 
     addPlayer(player) {
         this.#connectedPlayers.set(player.id, player);
@@ -43,14 +56,49 @@ export default class Game {
         }
     }
 
+    removePlayer(player) {
+        this.#connectedPlayers.delete(player.id);
+    }
+
+    hasPlayer(playerId) {
+        return this.#connectedPlayers.has(playerId);
+    }
+
+    votePlayer(from, to) {
+        const previousVote = this.#voteMap.get(from);
+        // see if a vote has already been cast
+
+        if (previousVote === to) return; // no change needed
+
+        if (previousVote !== undefined) {
+            // vote has been cast before
+            const prevCount = this.#voteTally.get(previousVote);
+            if (prevCount <= 1) {
+                // delete entry if zero votes
+                this.#voteTally.delete(previousVote);
+            } else {
+                // subtract by one otherwise
+                this.#voteTally.set(previousVote, prevCount - 1);
+            }
+        }
+
+        this.#voteMap.set(from, to);
+
+        this.#voteTally.set(to, (this.#voteTally.get(to) || 0) + 1)
+
+        console.log(this.#voteTally);
+
+        this.emit("updateVotes", Object.fromEntries(this.#voteTally));
+
+    }
+
     toDTO(socketId) {
         // setup roles by conversion
         const players = Array.from(this.#connectedPlayers.values()).map(p => ({
                 id: p.id,
                 name: p.name,
                 roomRole: p.roomRole,
-                gameRole: p.gameRole,
-                votes: p.votes
+                gameRole: p.gameRole
             }))
 
         const hostPlayer = players.find(p => p.roomRole === Roles.ROOM.LEADER);
@@ -63,35 +111,12 @@ export default class Game {
         }
     }
 
-    get connectedPlayers() {
-        return this.#connectedPlayers;
-    }
-
-    get code() {
-        return this.#code;
-    }
-
     start(connectedPlayers) {
         if (this.#started) return;
         this.#started = true;
         this.#roundCount = this.#connectedPlayers.size - 1; // 0 index
         this.nextState(); // move from lobby to setup
     }
-    
-
-    /// OLD BELOW ///
-
-
-
-
-    #code;
-    #io = null;
-    #started = false;
-    #state = null;
-    #roundCount;
-    #targetWord;
-    #masterPlayer; // Current leader of round
-    #wordFound;
 
 
 
@@ -164,5 +189,13 @@ export default class Game {
 
     get state() {
         return this.#state;
+    }
+
+    get connectedPlayers() {
+        return this.#connectedPlayers;
+    }
+
+    get code() {
+        return this.#code;
     }
 }

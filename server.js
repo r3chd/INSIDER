@@ -65,7 +65,6 @@ app.prepare().then(() => {
         // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
             const targetGame = gameManager.getGame(roomCode);
-            console.log(targetGame.connectedPlayers);
 
             // check if player is already in room
             if (targetGame.connectedPlayers.has(socket.id)) {
@@ -81,6 +80,8 @@ app.prepare().then(() => {
             socket.join(roomCode);
 
             emitRoomToPlayers(targetGame);
+
+            console.log(targetGame.connectedPlayers);
         });
 
         function emitRoomToPlayers(game) {
@@ -88,7 +89,8 @@ app.prepare().then(() => {
 
             game.connectedPlayers.forEach(player => {
                 const socketId = player.id;
-                const dto = game.toDTO(socket.id);
+                const dto = game.toDTO(socketId);
+                console.log(dto);
 
                 io.to(socketId).emit("roomUpdated", dto)
             })
@@ -111,6 +113,18 @@ app.prepare().then(() => {
         socket.on("disconnect", () => {
 
             players.delete[socket.id];
+        })
+
+        socket.on("voteCast", (data) => {
+
+            console.log(data.votingPlayer, "has voted for", data.votedPlayer, "in room", data.room);
+
+            // handling the vote
+            const game = gameManager.getGame(data.room);
+            if (data.votingPlayer != data.votedPlayer) { // ignore self vote
+                game.votePlayer(data.votingPlayer, data.votedPlayer);
+            }
+            
         })
     });
 

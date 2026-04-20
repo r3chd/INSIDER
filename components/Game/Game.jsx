@@ -38,15 +38,12 @@ export default function Game({ fillRef }) {
   const [timerWhiteout, setTimerWhiteout] = useState(true); //  Timer direction
 
   // main button variables
-  const [buttonActive, setButtonActive] = useState(false);
-  const [buttonMessage, setButtonMessage] = useState("GUESS / SKIP");
+  const [buttonActive, setGuessButtonActive] = useState(false);
+  const [guessButtonMessage, setGuessButtonMessage] = useState("GUESS / SKIP");
   const [isMasterButton, setIsMasterButton] = useState(false);
 
   // guesser's turn (who has the button)
   const [guessingPlayer, setGuessingPlayer] = useState(null);
-
-  // voting
-  const [votedPlayer, setVotedPlayer] = useState(null);
 
   // current gameState
   const [gameState, setGameState] = useState(null);
@@ -102,7 +99,7 @@ export default function Game({ fillRef }) {
 
   // for the guess state - alternate or master submits
   const handleButtonPressed = () => {
-    setButtonActive(false);
+    setGuessButtonActive(false);
     if (isMasterButton) {
       socket.emit("wordFound");
       // Socket.emit end round ...
@@ -119,7 +116,12 @@ export default function Game({ fillRef }) {
     // send an emit that increments the votes overall?
     // if player.votes = 0;???
     console.log(clickedPlayer, "Id player");
-  
+    socket.emit("voteCast", {
+      votingPlayer: socket.id,
+      votedPlayer: clickedPlayer,
+      room: roomCode
+    })
+
   }
 
   // --------------- SOCKET RECEIVERS --------------- //
@@ -151,10 +153,11 @@ export default function Game({ fillRef }) {
       setWordOptions([]); // clear from previous
     }
 
-    const handleShowButton = (data) => {
-      setButtonMessage(data.text);
+    // 
+    const handleGuessButton = (data) => {
+      setGuessButtonMessage(data.text);
       setIsMasterButton(data.master);
-      setButtonActive(true);
+      setGuessButtonActive(true);
     }
 
     const handleShowGuesser = (guesser) => {
@@ -163,7 +166,7 @@ export default function Game({ fillRef }) {
 
     const handleRevealState = (data) => {
       setShowOverlay(true);
-      setButtonActive(false);
+      setGuessButtonActive(false);
       startTimer(data.startTime, data.endTime);
       setGuessingPlayer(null); // clear guess highlight
       // could be replaced by some kind of animation
@@ -185,7 +188,6 @@ export default function Game({ fillRef }) {
       setPlayerCount(data.players?.length ?? 0);
     }
     // new functions
-
     socket.on("roomUpdated", handleRoomUpdated)
 
     // old functions
@@ -201,14 +203,14 @@ export default function Game({ fillRef }) {
 
     socket.on("wordAssigned", handleSetWord);
     socket.on("hideOverlay", handleHideOverlay);
-    socket.on("showButton", handleShowButton);
+    socket.on("showGuessButton", handleGuessButton);
     socket.on("showGuesser", handleShowGuesser);
-    socket.on("setRoomCode", handleSetRoomCode)
+    socket.on("setRoomCode", handleSetRoomCode);
 
     return() => {
       socket.off("wordAssigned", handleSetWord);
       socket.off("hideOverlay", handleHideOverlay);
-      socket.off("showButton", handleShowButton);
+      socket.off("showGuessButton", handleGuessButton);
       socket.off("showGuesser", handleShowGuesser);
       socket.off("setRoomCode", handleSetRoomCode)
     }
@@ -236,7 +238,7 @@ export default function Game({ fillRef }) {
             <h1 className={styles.h1}>{gameMessage}</h1>
             <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick}/>
 
-            <MenuButton children={buttonMessage} onClick={handleButtonPressed} active={buttonActive} />
+            <MenuButton children={guessButtonMessage} onClick={handleButtonPressed} active={buttonActive} />
             
             {/* Start button condition for host */}
             {(hostId === socket.id) && (showStartButton) && (

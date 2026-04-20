@@ -1,7 +1,7 @@
 import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, guessingPlayer, onClick }) { // Pass in something for the state
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, voteCount, guessingPlayer, onClick }) { // Pass in something for the state
 
 
   const getRoleText = () => {
@@ -31,7 +31,7 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
     }
 
     return <div className={`${styles.squircle} ${styles.squircleUsed} ${guessingPlayer ? styles.guessing : ""}`} onClick={handleClick}>
-      <h1 className={`${styles.name} ${styles.h1}`}> {player.name} {isYou ? "YOU" : ""} {player.votes}</h1>
+      <h1 className={`${styles.name} ${styles.h1}`}> {player.name} {isYou ? "YOU" : ""} {voteCount}</h1>
       <h1 className={`${styles.role} ${styles.h1}`}> { getRoleText() } </h1>
       {player.roomRole === Roles.ROOM.LEADER &&
         (<img src="..\..\assets\roomLeader.svg" alt="icon" className={styles.icon}/>)
