@@ -2,7 +2,7 @@ import styles from "./PlayerCard.module.css";
 import Roles from "../constants/rolesEnum.js"
 import { useState } from "react";
 
-export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, voteCount, guessingPlayer, onClick }) { // Pass in something for the state
+export default function PlayerCard({empty, player, currentPlayerRole, isYou=false, isLeader=false, isSelected=false, voteCount, guessingPlayer, onClick }) { // Pass in something for the state
 
   const [wiggle, setWiggle] = useState(false);
   const getRoleText = () => {
@@ -30,14 +30,20 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
       if (!onClick || empty) return;
       onClick(player.id); 
 
+      if (isLeader) {
+        console.log("player powers activated")
+      } // this code works
+
       // play wiggle animation
       setWiggle(false); //reset, if any
       requestAnimationFrame(() => {
         setWiggle(true);
       })
-      // PlayerCard and PlayerDisplay don't know the room code,
-      // so this function is passed all the way through to Game
-      // alternatively you could pass the code into here, but it doesn't need to know that.
+
+
+      // Need to implement the following
+      // If the gamestate is lobby, 
+      // otherwise, wiggle animation
     }
 
     return <div className={`${styles.squircle} ${styles.squircleUsed} ${guessingPlayer ? styles.guessing : ""} ${wiggle ? styles.wiggle : ""}`} onClick={handleClick}>
@@ -46,6 +52,18 @@ export default function PlayerCard({empty, player, currentPlayerRole, isYou=fals
       {player.roomRole === Roles.ROOM.LEADER &&
         (<img src="..\..\assets\roomLeader.svg" alt="icon" className={styles.icon}/>)
       }
+
+      {isSelected && isLeader && 
+      (<div className={styles.overlay}> 
+       <h2 className={styles.h2}>kick player?</h2>
+        <div className={styles.overlayButtons}> 
+          <button>yes</button> 
+          {/* need to add functions to each of these (kicking the player) */}
+          <button>nup</button> 
+          {/* this is just 'set selected to false' */}
+        </div>
+
+       </div>)}
         
     </div>
 }

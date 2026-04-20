@@ -117,7 +117,7 @@ app.prepare().then(() => {
 
         socket.on("playerClicked", (data) => {
 
-            console.log(data.clickingPlayer, "has voted for", data.clickedPlayer, "in room", data.room);
+            console.log(data.clickingPlayer, "has clicked on", data.clickedPlayer, "in room", data.room);
 
             // need to check gamestate
             // handling the vote

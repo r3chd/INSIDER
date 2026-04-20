@@ -9,21 +9,28 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
   const [youSocket, setYouSocket] = useState(null);
   const [youRole, setYouRole] = useState(null);
   const [votes, setVotes] = useState({}); // empty map
+  const [hostPlayer, setHostPlayer] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
 
 
-  const clickHandlerRef = useRef(onCardClick);
+  // const clickHandlerRef = useRef(onCardClick);
 
-  useEffect(() => {
-    clickHandlerRef.current = onCardClick;
-  }, [onCardClick]);
+  // useEffect(() => {
+  //   clickHandlerRef.current = onCardClick;
+  // }, [onCardClick]);
 
+
+  const onCardClickDisplay = (playerId) => {
+    onCardClick(playerId); // pass to game above
+    setSelectedPlayer(playerId); // update display
+  }
 
   const items = [];
 
   const parseDTOPlayers = (dto) => {
     setYouSocket(dto.yourId);
-
+    setHostPlayer(dto.hostId)
     return {
       players: dto.players.map(p => ({
         id: p.id,
@@ -77,7 +84,9 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         guessingPlayer={guessingPlayer === player.id} 
         currentPlayerRole={youRole} 
         isYou={youSocket === player.id} 
-        onClick={onCardClick} // Passing it directly here
+        isLeader={youSocket === hostPlayer} // to do here
+        isSelected={selectedPlayer === player.id && selectedPlayer != youSocket}
+        onClick={onCardClickDisplay} // pass to function in this display
       />
     ))}
 
