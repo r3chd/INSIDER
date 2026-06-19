@@ -1,13 +1,12 @@
 import { GameState } from "./GameState.js";
 import { getIo } from "../../io.js";
-import Roles from "../../components/constants/rolesEnum.js";
 export class GuessingState extends GameState {
 
     #currentPlayerIndex = 0;
     #lobbySize;
 
     #game;
-    #duration = 180000;
+    #duration = 18000;
     #activePlayer;
     #wordFound = false;
     #timerExpirationRun = false;
@@ -15,18 +14,21 @@ export class GuessingState extends GameState {
     constructor(game) {
         super();
         this.#game = game;
-        this.#lobbySize = this.#game.players.size;
+        this.#lobbySize = this.#game.connectedPlayers.size;
     }
 
     enter() {
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
-        this.#game.emit("startGuessingState", 
-            {
+        this.#game.emit("stateChange", {
+            state: "guessing",
+            data: {
                 startTime: startTime,
                 endTime: startTime + this.#duration
             }
+        } 
+
         )
 
         // On timer running out
@@ -45,7 +47,7 @@ export class GuessingState extends GameState {
         })
 
         // Get the player
-        const playerArr = [...this.#game.players.values()];
+        const playerArr = [...this.#game.connectedPlayers.values()];
 
         // Alternate between players
         const handlePlayerTurn = () => {
@@ -56,7 +58,6 @@ export class GuessingState extends GameState {
             } while (playerArr[this.#currentPlayerIndex] === this.#game.masterPlayer);
             // Convert to player
             const nextPlayer = playerArr[this.#currentPlayerIndex];
-            this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
             this.#game.emitToPlayer(nextPlayer.id, "showButton", {
                 text: "OK ITS ON ITS UP TO YOU",

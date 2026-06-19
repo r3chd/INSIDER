@@ -6,7 +6,7 @@ import MenuButton from "./MenuButton";
 
 const EMPTY_NAME_MSG = "Please enter a name to create or join.";
 
-export default function Menu({ isActive, handleCreate: handleCreate, handleJoin: handleJoin}) {
+export default function Menu({ handleCreate, handleJoin}) {
   const [name, setName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [nameError, setNameError] = useState("");
@@ -19,11 +19,9 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
   const handleNameChange = (e) => {
     setName(e.target.value);
     if (nameError) setNameError("");
-    console.log("name changed to", name)
   }
   const onRoomCodeChange = (e) => {
     setRoomCode(e.target.value);
-    console.log("room code has changed to", roomCode)
   }
 
   // For navigating between components
@@ -57,7 +55,7 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
 
 
   return (
-    <div className={`${styles.menu} ${isActive ? styles.active : ""}`}>
+    <div className={styles.menu}>
 
       <div className={styles.menuInteractable}>
 
@@ -76,17 +74,17 @@ export default function Menu({ isActive, handleCreate: handleCreate, handleJoin:
           {/* First Div */}
           <div className = {`${styles.buttonBox} ${createActive ? styles.active : ""}`}>
 
-            <MenuButton children="create" onClick={handleCreateButtonPressed}/>
-            <MenuButton children="join" onClick={handleJoinTransitionPressed}/>
+            <MenuButton onClick={handleCreateButtonPressed}> create </MenuButton>
+            <MenuButton onClick={handleJoinTransitionPressed}> join </MenuButton>
           </div>
 
 
           {/* Second Div */}
           <div className = {`${styles.buttonBox} ${createActive ? "" : styles.active}`}>
 
-            <MenuButton children="X" onClick={handleBackButtonPressed}/>
+            <MenuButton onClick={handleBackButtonPressed}> X </MenuButton>
             <p></p>
-            <input onChange={onRoomCodeChange}></input>
+            <input onChange={onRoomCodeChange} value={roomCode}></input>
             <MenuButton children="join" onClick={handleJoinRoomPressed}/>
 
           </div>

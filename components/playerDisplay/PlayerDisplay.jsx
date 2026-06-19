@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { socket } from "../../socket.js";
 import styles from "./PlayerDisplay.module.css";
-import Roles from "../constants/rolesEnum.js"
 import MAX_PLAYERS from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
@@ -9,41 +8,47 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
   const [playerList, setPlayerList] = useState({ players: [] });
   const [youSocket, setYouSocket] = useState(null);
   const [youRole, setYouRole] = useState(null);
+  const [votes, setVotes] = useState({}); // empty map
+  const [hostPlayer, setHostPlayer] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
 
 
-  const clickHandlerRef = useRef(onCardClick);
+  // const clickHandlerRef = useRef(onCardClick);
 
-  useEffect(() => {
-    clickHandlerRef.current = onCardClick;
-  }, [onCardClick]);
+  // useEffect(() => {
+  //   clickHandlerRef.current = onCardClick;
+  // }, [onCardClick]);
 
+
+  const onCardClickDisplay = (playerId) => {
+    onCardClick(playerId); // pass to game above
+    setSelectedPlayer(playerId); // update display
+  }
 
   const items = [];
 
   const parseDTOPlayers = (dto) => {
     setYouSocket(dto.yourId);
-
+    setHostPlayer(dto.hostId)
     return {
       players: dto.players.map(p => ({
         id: p.id,
         name: p.name,
-        role: p.role,
-        votes: p.votes,
-        isMaster: false
+        roomRole: p.roomRole
       }))
     };
   };
 
   useEffect(() => {
       const handleRoomUpdate = (data) => {
-          console.log("socket update, data", data);
+        console.log(data);
           setPlayerList(parseDTOPlayers(data));
       }
 
       const handleRoleAssignment = (data) => {
         // Set personal role
-        setYouRole(data.role);
+        setYouRole(data.gameRole);
 
         setPlayerList(prev => ({
           players: prev.players.map(p => ({
@@ -53,15 +58,17 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         }))
       }
 
-      const handleVoteSent = (data) => {
-        console.log("yelling all the time")
-      } // IS THIS NECESSARY
+      const handleUpdateVotes = (data) => {
+        setVotes(data)
+      }
 
       socket.on("roomUpdated", handleRoomUpdate);
-      socket.on("roleAssigned", handleRoleAssignment)
+      socket.on("roleAssigned", handleRoleAssignment);
+      socket.on("updateVotes", handleUpdateVotes);
       return () => {
         socket.off("roomUpdated", handleRoomUpdate);
         socket.off("roleAssigned", handleRoleAssignment);
+        socket.off("updateVotes", handleUpdateVotes);
       };
   }, []);
 
@@ -73,10 +80,13 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
         key={player.id} 
         empty={false} 
         player={player} 
+        voteCount={votes[player.id] || 0}
         guessingPlayer={guessingPlayer === player.id} 
         currentPlayerRole={youRole} 
         isYou={youSocket === player.id} 
-        onClick={onCardClick} // Passing it directly here
+        isLeader={youSocket === hostPlayer} // to do here
+        isSelected={selectedPlayer === player.id && selectedPlayer != youSocket}
+        onClick={onCardClickDisplay} // pass to function in this display
       />
     ))}
 

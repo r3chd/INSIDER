@@ -6,11 +6,12 @@ import next from "next";
 import { Server } from "socket.io";
 import Roles from './components/constants/rolesEnum.js';
 import{ setIo } from "./io.js";
+import { MIN_PLAYERS } from "./components/constants/gameParam.js";
 
 
 // player room and classes
 import Player from "./models/Player.js"
-import RoomManager from "./models/RoomManager.js";
+import GameManager from "./models/GameManager.js";
 
 // server setup
 const dev = process.env.NODE_ENV !== "production";
@@ -22,7 +23,7 @@ const handler = app.getRequestHandler();
 // used to track all players
 const players = new Map();
 
-const roomManager = new RoomManager;
+const gameManager = new GameManager();
 
 // app needs to be 'prepared' before handling requests
 app.prepare().then(() => {
@@ -38,9 +39,6 @@ app.prepare().then(() => {
         // initialize player name 
         let playerName = "";
 
-        // debugging check connection 
-        console.log("a user connected");
-        
         // console.log code
         socket.on("console", (data) => {
             console.log(data);
@@ -50,78 +48,82 @@ app.prepare().then(() => {
         // on room being created
         socket.on("createRoom", (playerName) => {
             
-            // create room
-            const createdRoom = roomManager.createRoom();
-            const roomCode = createdRoom.code;
-            
+            // create game
+            const createdGame = gameManager.createGame(io);
+
             // properly initialise player with name and socket
-            const player = new Player(socket, playerName);
+            const player = new Player(socket, playerName, Roles.ROOM.LEADER);
             
-            // create room leader player
-            player.role = Roles.ROOM_LEADER;
             players.set(socket.id, player);
+            gameManager.addPlayer(createdGame, player)
 
-            // interaction between the two
-            roomManager.addPlayer(createdRoom, player)
-
-            socket.join(roomCode); // set current connection to the roomCode
+            socket.join(createdGame.code); // set current connection to the roomCode
             
-            // debugging 
-            console.log(`${roomCode} is made`);
+            emitRoomToPlayers(createdGame);
         });
 
         // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
-            const targetRoom = roomManager.getRoom(roomCode);
-            if (!targetRoom) {
-                console.log("room not found!")
-                return;
-            } else {
-                console.log("room found!")
-            }
+            const targetGame = gameManager.getGame(roomCode);
 
             // check if player is already in room
-            if (targetRoom.connectedPlayers.has(socket.id)) {
+            if (targetGame.connectedPlayers.has(socket.id)) {
                 console.log("player already in room");
                 return;
             }
 
             // create member player
-            const player = new Player(socket, playerName);
-            player.role = Roles.ROOM_MEMBER;
-            console.log(`this ${player.name}, ${player.id} is attempting ${roomCode}`);
+            const player = new Player(socket, playerName, Roles.ROOM.MEMBER);
 
             // add player to room
-            roomManager.addPlayer(targetRoom, player)
+            gameManager.addPlayer(targetGame, player)
             socket.join(roomCode);
-            // need to update this somehow
+
+            emitRoomToPlayers(targetGame);
+
+            console.log(targetGame.connectedPlayers);
         });
 
-        function emitRoomToPlayers(room) {
-            for (const player of room.connectedPlayers.values()) {
-                const playerSocket = player.socket;
-                if (!playerSocket) continue;
-                playerSocket.emit("roomUpdated", room.toDTO(player.id));
-            }
+        function emitRoomToPlayers(game) {
+            console.log("emitting room to players")
+
+            game.connectedPlayers.forEach(player => {
+                const socketId = player.id;
+                const dto = game.toDTO(socketId);
+                console.log(dto);
+
+                io.to(socketId).emit("roomUpdated", dto)
+            })
+
         }
 
         // on start button pressed
-        const MIN_PLAYERS_TO_START = 4;
         socket.on("startGame", (roomCode) => {
-            const startingRoom = roomManager.getRoom(roomCode);
-            if (!startingRoom) return;
-            const count = startingRoom.connectedPlayers.size;
-            if (count < MIN_PLAYERS_TO_START) {
-                socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS_TO_START });
+            const gameToStart = gameManager.getGame(roomCode);
+            if (!gameToStart) return;
+            const count = gameToStart.connectedPlayers.size;
+            if (count < MIN_PLAYERS) {
+                socket.emit("startGameError", { reason: "not_enough_players", min: MIN_PLAYERS });
                 return;
             }
-            startingRoom.start(io);
+            gameToStart.start();
         })
 
         // player disconnect
         socket.on("disconnect", () => {
 
-            delete players[socket.id];
+            players.delete[socket.id];
+        })
+
+        socket.on("playerClicked", (data) => {
+
+            console.log(data.clickingPlayer, "has clicked on", data.clickedPlayer, "in room", data.room);
+
+            // need to check gamestate
+            // handling the vote
+            const game = gameManager.getGame(data.room);
+
+            game.handleClick(data.clickingPlayer, data.clickedPlayer);
         })
     });
 

@@ -11,11 +11,13 @@ export class RevealState extends GameState {
     
     enter () {
         let startTime = Date.now()
-        this.#game.emit("startRevealState",  {
+        this.#game.emit("stateChange",  {
+            state: "reveal",
+            data: {
                 success: this.#game.wordFound,
                 word: this.#game.targetWord,
                 startTime: startTime,
-                endTime: startTime + this.#duration
+                endTime: startTime + this.#duration}
             }
         );
 

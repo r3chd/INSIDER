@@ -27,27 +27,30 @@ export class SetupState extends GameState {
         this.assignRoles(); 
 
         // Show the overlay to all players
-        for (const player of this.#game.players.values()) {
+        for (const player of this.#game.connectedPlayers.values()) {
             let overlayMessage = null;
             let startTime = Date.now();
-            switch(player.role) {
-                case Roles.MASTER:
+            switch(player.gameRole) {
+                case Roles.GAME.MASTER:
                     overlayMessage = TEXT.overlay.master;
                     break;
-                case Roles.COMMONER:
+                case Roles.GAME.COMMONER:
                     overlayMessage = TEXT.overlay.commoner;
                     break;
-                case Roles.INSIDER:
+                case Roles.GAME.INSIDER:
                     overlayMessage = TEXT.overlay.insider;
                     break;
             }
-
-            this.#game.emitToPlayer(player.id, "startSetupState", {
-                words: player.role === Roles.MASTER ? this.#generatedWords : [],
-                overlayMessage: overlayMessage,
-                masterPlayer: this.#game.masterPlayer.name,
-                startTime: startTime,
-                endTime: startTime + this.#duration
+      
+            this.#game.emitToPlayer(player.id, "stateChange", {
+                state: "setup",
+                data: {
+                    words: player.gameRole === Roles.GAME.MASTER ? this.#generatedWords : [],
+                    overlayMessage: overlayMessage,
+                    masterPlayer: this.#game.masterPlayer.name,
+                    startTime: startTime,
+                    endTime: startTime + this.#duration
+                }
             })
 
         }
@@ -72,7 +75,7 @@ export class SetupState extends GameState {
     
     assignRoles() {
         // Convert to array
-        const playersArray = Array.from(this.#game.players.values());
+        const playersArray = Array.from(this.#game.connectedPlayers.values());
         
         // Random number selection
         let insider_num = -1;
@@ -87,20 +90,19 @@ export class SetupState extends GameState {
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             if (i === this.#game.roundCount) {
-                player.role = Roles.MASTER;
+                player.gameRole = Roles.GAME.MASTER;
                 this.#game.masterPlayer = player;
             } else if (i === insider_num) {
-                player.role = Roles.INSIDER;
+                player.gameRole = Roles.GAME.INSIDER;
             } else {
-                player.role = Roles.COMMONER;
+                player.gameRole = Roles.GAME.COMMONER;
             }
-            console.log(player.id);
         }
 
         for (let i = 0; i < playersArray.length; i++) {
             const player = playersArray[i];
             this.#game.emitToPlayer(player.id, "roleAssigned", {
-                role: player.role,          // only send their own role
+                gameRole: player.gameRole,          // only send their own role
                 masterId: this.#game.masterPlayer.id // send master id for everyone
         });
 }
@@ -112,9 +114,9 @@ export class SetupState extends GameState {
 
         this.#game.targetWord = word;
 
-        for (const player of this.#game.players.values()) {
-            if (player.role === Roles.MASTER || player.role === Roles.INSIDER) {
-                console.log("sending to ", player.role);
+        for (const player of this.#game.connectedPlayers.values()) {
+            if (player.gameRole === Roles.GAME.MASTER || player.gameRole === Roles.GAME.INSIDER) {
+                console.log("sending to ", player.gameRole);
                 this.#game.emitToPlayer(player.id, "wordAssigned", {
                     word: word
                 });

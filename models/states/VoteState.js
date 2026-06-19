@@ -15,15 +15,6 @@ export class VoteState extends GameState {
         this.#game.emit("startVoteState", {
             startTime: startTime,
             endTime: startTime + this.#duration
-        });
-
-        setTimeout(() => {
-            this.handleTimerExpired();
-        }, this.#duration);
-    }
-
-    handleTimerExpired() {
-        // TODO: resolve votes and transition to the next appropriate state
-        this.#game.emit("voteTimerExpired");
+        }) 
     }
 }

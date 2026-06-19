@@ -1,17 +1,13 @@
 .game{
   /* This is the vertical column */
   height: 100%;
-  display: none;
+  display: flex;
 }
 
 
 .gameInteractable {
   width:100%;
   margin: auto;
-}
-
-.game.active {
-  display: flex;
 }
 
 
@@ -51,4 +47,12 @@
     max-width:90%;
     align-items:center;
     text-align:center;
+}
+
+
+/* Min player hint */
+.minPlayersHint {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin: 0 0 8px 0;
 }
