@@ -7,7 +7,7 @@ export class GuessingState extends GameState {
     #lobbySize;
 
     #game;
-    #duration = 18000;
+    #duration = 180000;
     #activePlayer;
     #wordFound = false;
     #timerExpirationRun = false;

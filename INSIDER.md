@@ -1,146 +1,153 @@
-# OUR PROJECT YIPPE YIPPE YIPPE
+# INSIDER — Project Requirements & Plan
 
-## 1. Overview
-This is documentation that describes the implementation of **Insider**, an Among Us like game. It outlines the requirements, the game, blah blah blah.
+A web-based, real-time multiplayer implementation of the party game **Insider**.
+This document captures the **requirements** for the project, derived from the game
+design in `INSIDER.md` and the current state of the codebase.
 
-## 2. Game Components
-- Word Database (Theme Cards)
-- Role Cards
-- Timer
-- Instructions
+---
 
-## 3. Game Requirements
+## 1. Project Summary
 
-### 3.1 Players
-- 3 - 8 Players
-### 3.3 Communication (PICK ONE OF THE FOLLOWING FOR NOW!!!)
-- Text-based chat for Q&A and discussion
-- Voice Chat
-### 3.4 
-- Server enforces role secrecy
-- Server controls timers and transition between phases
+Players join a shared room and try to guess a secret word during a timed Q&A round,
+then vote to identify a hidden traitor (the **Insider**). The server enforces role
+secrecy, controls all timers, and drives phase transitions; clients only render state
+and send player actions.
 
-## 4. Setup
-### 4.1 Room Creation
-- Host creates a room
-- Host sets number of players
-- System selects role cards equal to number of players
-	- Required: **Master**, **Insider**
-	- Optional: **Follower**
-	- Remaining roles are **Common** roles
-### 4.2 Role Distribution
-- Server randomly assign roles to players
-- UI:
-	- **Master** role is revealed publicly in the room
-	- All other roles remain hidden
+---
 
-## 5. Entities
+## 2. Tech Stack (as built)
 
-### 5.1 Player
-- A **Player** should always receive a role card describing their role during **Role Determination**.
-- All players are allowed to vote who they believe the **Insider** is.
-- There are two possible teams, **Common** and **Insider** team.
-- By default, players are in the **Common Team**.
-- A **Players** role is hidden from all players by default.
-- By default, the word is hidden from all **Players**.
+| Layer      | Technology                                              |
+|------------|---------------------------------------------------------|
+| Frontend   | React 19 + Next.js 16 (App Router, `app/`)              |
+| Backend    | Custom Node HTTP server (`server.js`) + Socket.IO       |
+| Realtime   | `socket.io` / `socket.io-client` (WebSockets)           |
+| State      | In-memory (`Map`s in `RoomManager`, `Room`, `Game`)     |
+| Word data  | `public/assets/words.txt` via `utils/wordService.js`    |
+| Tooling    | `nodemon` (dev), ESLint                                  |
 
-### 5.2 Role Cards
-- Role cards determine a **Players** role during a **Game**.
+**Constraint:** one Node process serves both the Next.js UI and the Socket.IO server.
 
-#### 5.2.1 Role: Master
-- The **Player** who receives the **Master** role is revealed to all players during **Role Distribution**.
-- The **Master** cannot ask questions during **Q&A**.
-- The **Master** cannot be voted for during **Voting**.
-- The **Master** is shown the word during **Determination**.
-- During **Determination**, the **Master** is asked questions by all players where they can only respond with the following responses:
-	- 'Yes'
-	- 'No'
-	- 'I don't know'
+---
 
-#### 5.2.2 Role: Insider
-- The **Player** who receives the **Insider** role knows the word.
-- The **Insider** joins the **Insider Team**
-- The word is shown during **Determination**.
-- The **Insider**'s goal is to guide all **Players** towards the word during **Q&A** before the **Timer** runs out without being voted out during **Voting**.
+## 3. Functional Requirements
 
-#### 5.2.3 Role: Follower
-- The **Follower** role is an optional role to be added into the game that contains 4+ **Players**.
-- The **Follower** joins the **Insider Team**
-- The **Follower** knows who the **Insider** is.
-- The **Follower** is shown who the **Insider** is during **Determination** and can continue to see who the **Insider** is throughout the game.
-- The **Follower**'s goal is to ensure that the **Insider** doesn't get voted out.
+### 3.1 Players & Rooms
+- **FR-1** Support **3–8 players** per room (game design target).
+- **FR-2** A player must provide a **non-empty name** to create or join a room.
+- **FR-3** The host creates a room and receives a unique **5-character alphanumeric** room code.
+- **FR-4** Other players join an existing room using its code; invalid codes are rejected.
+- **FR-5** A player cannot join the same room twice with the same connection.
+- **FR-6** The room list and player list stay **synchronized in real time** across all clients.
+- **FR-7** Handle **disconnects**: remove the player from their room, update remaining
+  players, and delete the room when it becomes empty.
+- **FR-8** Promote a new host (or end the room) if the host disconnects.
 
-#### 5.2.4 Role: Commoner
-- Every other **Player** receives the **Commoner** role
-- The **Commoner** can only ask questions to the **Master**
+### 3.2 Lobby & Game Start
+- **FR-9** Only the **host** sees and can use the **Start** button.
+- **FR-10** The game requires a **minimum player count** to start; the start control is
+  disabled with a clear hint until met.
+  > ⚠️ Reconcile the threshold: design doc says **3**, code uses **4**
+  > (`MIN_PLAYERS`, `MIN_PLAYERS_TO_START`). Pick one and apply everywhere.
+- **FR-11** Enforce a **maximum player count** on join (design = 8; code currently `MAX_PLAYERS = 6`).
 
-### 5.3 Timer
-- A **Timer** for **Q&A** by default is 3 minutes
-- A **Timer** for **Discussion** by default is 2 minutes
-- The amount of minutes on a timer can be changed.
+### 3.3 Roles
+- **FR-12** On game start, assign exactly one **Master** and one **Insider**; all others are **Commoners**.
+- **FR-13** Add the optional **Follower** role when the lobby has **4+ players** *(not yet implemented)*.
+- **FR-14** Reveal the **Master publicly**; keep every other role **hidden** from other players.
+- **FR-15** Each player is privately told **their own role** only.
+- **FR-16** Role rules:
+  - **Master** — knows the word; cannot ask questions; cannot be voted for.
+  - **Insider** — knows the word; on the Insider team; wins by getting the word guessed without being voted out.
+  - **Follower** — on the Insider team; knows who the Insider is; protects the Insider.
+  - **Commoner** — asks questions to find the word.
 
-## 6. Game Flow
-- The **Game** must have at least 3 **Players** to play
-- The **Game** should always contain a **Master** and an **Insider**
+### 3.4 Word Selection
+- **FR-17** Generate **3 unique random words** from the word list for the Master.
+- **FR-18** The **Master selects** the secret word within the setup timer.
+- **FR-19** If the Master doesn't choose in time, the server **auto-selects** a random word.
+- **FR-20** Reveal the chosen word **only** to the Master and the Insider.
 
-### Phase 1: Role Distribution & Determination
-- Each **Player** in the **Game** receives a role card.
-- **Master** is revealed.
-- (OPTIONAL) **Master** selects 1 of 5 possible words.
-- **Master** and **Insider** are given the word.
+### 3.5 Q&A / Guessing Phase
+- **FR-21** Run a configurable **Q&A timer** (default 3 minutes).
+- **FR-22** Allocate a **turn order** and pass an "ask" action between non-Master players.
+- **FR-23** The **Master** confirms when the word has been guessed (ends the phase early).
+- **FR-24** Record the **Guesser** (player who guessed correctly).
+- **FR-25** On timer expiry without a guess, mark the round **word not found** and continue.
+- **FR-26** *(Hardening)* Validate that turn/guess actions come from the **authorized** player.
 
-### Phase 2: Q&A
-- System begins the Q&A timer
-- System allocates playing order
-- At a **Players** turn, they can ask a question to the **Master**.
-- The word must be guessed before the **Timer** runs out.
-- The **Player** who guesses the word correctly is marked as the **Guesser** and **Q&A** transitions to **Discussion**.
-- If the **Timer** runs and the word hasn't been guessed, all players and **Q&A** transitions to **End**.
+### 3.6 Reveal Phase
+- **FR-27** Briefly show all players the **word** and whether it was **found**.
 
-### Phase 3: Discussion & Voting
+### 3.7 Discussion & Voting *(largely unimplemented — primary remaining work)*
+- **FR-28** Run a configurable **discussion/vote timer** (design default 2 minutes).
+- **FR-29** *(Optional)* **Judge the Guesser** first: majority "yes" resolves the round based
+  on whether the Guesser is the Insider.
+- **FR-30** **Final Judgement:** each player votes for one other player before the timer expires.
+- **FR-31** **Tie-break rules:**
+  - Guesser not in the tie → the **Guesser** decides.
+  - Guesser in the tie → the **Master** decides.
+- **FR-32** **Win resolution:**
+  - Voted player **is** the Insider → **Insider team loses**.
+  - Voted player **is not** the Insider → **Insider team wins**.
+  - Timer expires with **no votes** → **Insider team wins**.
+  - Timer expires with votes → player with most votes is voted out.
+- **FR-33** Display the **outcome / winning team** to all players.
 
-#### Judge Guesser (OPTIONAL)
-- The first part is to discuss whether or not the **Guesser** is the **Insider**
-- If the majority vote YES, then
-	- If the **Guesser** is the **Insider**, **Insider Team** loses.
-	- Else if the **Guesser** is not the **Insider**, **Insider Team** wins.
-- If the majority vote is not YES, then proceed to **Final Judgement**.
+### 3.8 Configurability
+- **FR-34** Allow the host to adjust **timer durations** (Q&A, discussion).
 
-#### Final Judgement
-- **Players** discuss who they believe the **Insider** is.
-- **Players** are able to vote for any other **Player**.
-- **Players** must vote before the **Timer** expires.
-- If votes are a tie:
-	- If the **Guesser** is not included in the tie breaker
-		- The **Guesser** decides the final vote
-	- Else if the **Guesser** is included in the tie breaker
-		- The **Master** decides the final vote
-- If a **Player** has majority votes:
-	- If voted **Player** is **Insider**, **Insider Team** loses.
-	- Else if voted **Player** is not **Insider**, **Insider Team** wins.
-- If the **Timer** expires:
-	- If there are no votes, **Insider Team** wins.
-	- If there are votes, the **Player** with majority is voted out.
+---
 
-## 7. UI/UX Requirements
+## 4. Non-Functional Requirements
+- **NFR-1 Authority** — the **server is authoritative**; clients never see hidden roles/word for others.
+- **NFR-2 Realtime** — phase changes and player updates propagate within ~1s.
+- **NFR-3 Consistency** — late-joining/refreshing clients can recover current room/game state.
+- **NFR-4 Resilience** — reconnection support; a single disconnect must not crash the room.
+- **NFR-5 Persistence (future)** — README targets MongoDB; current build is in-memory only.
+- **NFR-6 Deployability** — frontend and backend hostable (single combined server today).
 
-## 8. Data & Randomisation
+---
 
-## 9. Security Considerations
+## 5. Architecture (current)
 
-## 10. Future Considerations
+```
+Client (React / Next.js app/)
+  Menu ──create/join──┐
+  Lobby ──start──┐    │
+  Game  <── socket events
+        │        │    │
+        ▼        ▼    ▼
+====================  Socket.IO  ====================
+server.js  ──▶ RoomManager ──▶ Room ──start──▶ Game
+                                              │
+        SetupState ─▶ GuessingState ─▶ RevealState ─▶ VoteState
+        (state machine: enter/exit/onPlayerAction + timer→nextState)
+```
 
+- `io.js` — Socket.IO singleton accessor (`setIo` / `getIo`).
+- `Game.js` — owns players, word, master, and the active `GameState`; `nextState()` advances phases.
+- Each state follows a `setTimeout → handleTimerExpired → nextState` pattern (candidate for shared base logic).
 
-## Stack
+---
 
-### Front End:
-- React + Next.js ?
+## 6. Known Gaps & Tech Debt (to resolve)
+- [ ] **Voting phase** unimplemented — `VoteState.handleTimerExpired` is a `TODO`; no vote tally, tie-break, or win resolution.
+- [ ] **Follower role** not implemented.
+- [ ] **Disconnect handling** broken — `delete players[socket.id]` doesn't work on a `Map`; players never removed from rooms; no host hand-off.
+- [ ] **Min/Max player counts** inconsistent across docs and code (3 vs 4; 6 vs 8).
+- [ ] **Dead code** — `pages/index.js` (old Pages-Router build, references missing `Status.jsx`, stale events) conflicts with the App Router; `models/states/GameContext.js` is an unused placeholder.
+- [ ] **No persistence** — server restart wipes all rooms.
+- [ ] **No turn/action authorization** — clients could spoof `nextTurn` / `wordFound`.
+- [ ] **No automated tests**.
 
-### Back End: 
-- Node.js + Express ?
-- Socket.IO
-- MongoDB (for database)
+---
 
-### Hosting
-- (one for front end)
-- (one for back end)
+## 7. Suggested Build Order
+1. Clean up dead code (`pages/`, `GameContext.js`) and fix disconnect/cleanup bugs.
+2. Reconcile and centralize player-count + timer config.
+3. Implement **VoteState**: collect votes, tally, tie-break, resolve winner, broadcast outcome.
+4. Add the **Follower** role and 4+ player branching.
+5. Add reconnection/state-recovery (NFR-3/4).
+6. Add host-configurable timers (FR-34).
+7. (Stretch) Persistence layer + separate frontend/backend hosting.

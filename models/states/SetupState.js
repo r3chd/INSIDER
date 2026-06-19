@@ -6,7 +6,7 @@ import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
 export class SetupState extends GameState {
 
-    #duration = 3000;
+    #duration = 10000;
     #game;
 
     #generatedWords;
