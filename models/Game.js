@@ -211,6 +211,11 @@ export default class Game {
         return this.#connectedPlayers;
     }
 
+    // player map referred to as 'player' in states
+    get players() {
+        return this.#connectedPlayers;
+    }
+
     get code() {
         return this.#code;
     }
