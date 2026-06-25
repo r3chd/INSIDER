@@ -67,8 +67,9 @@ export default class Game {
     handleClick(from, to) {
         if (this.#state instanceof LobbyState) {
             this.lobbyClick(from, to);
-        } else if (this.#state instanceof VoteState) { // TODO set up the responding actions
-            this.votePlayer(from, to);
+        } else if (this.#state instanceof VoteState) {
+            // either a normal vote, or the Master's tie-break pick click depending on da state
+            this.#state.onClick(from, to);
         }
         // if game state = yada yada yada
 
@@ -139,6 +140,46 @@ export default class Game {
     resolveWinner(votedOutId) {
         if (votedOutId == null) return "insider";
         return votedOutId === this.insiderPlayer?.id ? "citizens" : "insider";
+    }
+
+    // clear all votes and reset the vote tally (FR-32)
+    clearVotes() {
+        this.#voteMap.clear();
+        this.#voteTally.clear();
+    }
+
+    // reset all da bullshit
+    #resetRound() {
+        this.clearVotes();
+        this.#masterPlayer = null;
+        this.#targetWord = "not yet chosen";
+        this.#wordFound = false;
+        for (const player of this.#connectedPlayers.values()) {
+            player.gameRole = Roles.UNDEFINED;
+        }
+    }
+
+    // push a fresh per-socket room view to everyone after reset
+    #broadcastRoom() {
+        for (const player of this.#connectedPlayers.values()) {
+            this.emitToPlayer(player.id, "roomUpdated", this.toDTO(player.id));
+        }
+    }
+
+    // return to lobby w/ same player (FR-32)
+    resetGame() {
+        this.#resetRound();
+        this.#started = false;
+        this.setState(new LobbyState(this)); // exit() of the current state clears its timer
+        this.emit("stateChange", { state: "lobby", data: {} });
+        this.#broadcastRoom();
+    }
+
+    // player again w/ same players (FR-32)
+    // CURRENTLY DOESN'T REASSIGN ROLES OR WORDS IMPORTANT!!!
+    playAgain() {
+        this.#resetRound();
+        this.setState(new SetupState(this)); // re-assigns roles + word, then runs the phases
     }
 
     toDTO(socketId) {
@@ -226,6 +267,14 @@ export default class Game {
 
     get masterPlayer() {
         return this.#masterPlayer;
+    }
+
+    // the current room host's socket id (the LEADER)
+    get hostId() {
+        for (const player of this.#connectedPlayers.values()) {
+            if (player.roomRole === Roles.ROOM.LEADER) return player.id;
+        }
+        return null;
     }
 
     set wordFound(wordFound) {

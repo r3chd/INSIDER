@@ -38,6 +38,12 @@ test("insiderPlayer getter finds the insider", () => {
   assert.equal(game.insiderPlayer.id, "ins");
 });
 
+test("hostId getter returns the room leader's id", () => {
+  // makeGame makes the first id (m) the room LEADER / host
+  const game = makeGame(ROLES);
+  assert.equal(game.hostId, "m");
+});
+
 test("voting out the insider makes the citizens win", () => {
   const game = makeGame(ROLES);
   assert.equal(game.resolveWinner("ins"), "citizens");

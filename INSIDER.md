@@ -22,9 +22,9 @@ and send player actions.
 | Frontend   | React 19 + Next.js 16 (App Router, `app/`)              |
 | Backend    | Custom Node HTTP server (`server.js`) + Socket.IO       |
 | Realtime   | `socket.io` / `socket.io-client` (WebSockets)           |
-| State      | In-memory (`Map`s in `RoomManager`, `Room`, `Game`)     |
+| State      | In-memory (`Map`s in `GameManager` and `Game`)          |
 | Word data  | `public/assets/words.txt` via `utils/wordService.js`    |
-| Tooling    | `nodemon` (dev), ESLint                                  |
+| Tooling    | `nodemon` (dev), ESLint, `node --test` (unit tests)     |
 
 **Constraint:** one Node process serves both the Next.js UI and the Socket.IO server.
 
@@ -79,20 +79,25 @@ and send player actions.
 ### 3.6 Reveal Phase
 - **FR-27** Briefly show all players the **word** and whether it was **found**.
 
-### 3.7 Discussion & Voting *(largely unimplemented — primary remaining work)*
-- **FR-28** Run a configurable **discussion/vote timer** (design default 2 minutes).
+### 3.7 Discussion & Voting *(implemented — `VoteState`; Master-decides tie-break)*
+- **FR-28** Run a configurable **discussion/vote timer** *(implemented as a fixed 18s vote
+  timer; not yet host-configurable, see FR-34)*.
 - **FR-29** *(Optional)* **Judge the Guesser** first: majority "yes" resolves the round based
-  on whether the Guesser is the Insider.
+  on whether the Guesser is the Insider. *(not implemented)*
 - **FR-30** **Final Judgement:** each player votes for one other player before the timer expires.
-- **FR-31** **Tie-break rules:**
-  - Guesser not in the tie → the **Guesser** decides.
-  - Guesser in the tie → the **Master** decides.
-- **FR-32** **Win resolution:**
-  - Voted player **is** the Insider → **Insider team loses**.
+  *(implemented; the Master cannot be voted for — enforced server-side in `Game.votePlayer`)*
+- **FR-31** **Tie-break rules:** *(implemented as **Master-decides only** — a 15s step where the
+  Master eliminates one of the tied candidates)*
+  - Guesser not in the tie → the **Guesser** decides. *(not implemented — Master decides instead)*
+  - Guesser in the tie → the **Master** decides. *(implemented)*
+- **FR-32** **Win resolution:** *(implemented in `Game.resolveWinner`)*
+  - Voted player **is** the Insider → **Insider team loses** (citizens win).
   - Voted player **is not** the Insider → **Insider team wins**.
   - Timer expires with **no votes** → **Insider team wins**.
   - Timer expires with votes → player with most votes is voted out.
-- **FR-33** Display the **outcome / winning team** to all players.
+- **FR-33** Display the **outcome / winning team** to all players. *(implemented — a `result`
+  screen naming the winning team and the Insider, with host-only **Play Again** / **Return to
+  Lobby** controls)*
 
 ### 3.8 Configurability
 - **FR-34** Allow the host to adjust **timer durations** (Q&A, discussion).
@@ -114,40 +119,101 @@ and send player actions.
 ```
 Client (React / Next.js app/)
   Menu ──create/join──┐
-  Lobby ──start──┐    │
-  Game  <── socket events
-        │        │    │
-        ▼        ▼    ▼
+  Game  <── socket events (stateChange / roomUpdated)
+        │        │
+        ▼        ▼
 ====================  Socket.IO  ====================
-server.js  ──▶ RoomManager ──▶ Room ──start──▶ Game
-                                              │
-        SetupState ─▶ GuessingState ─▶ RevealState ─▶ VoteState
-        (state machine: enter/exit/onPlayerAction + timer→nextState)
+server.js  ──▶ GameManager ──▶ Game ──start──▶ GameState
+                                │
+   LobbyState ─▶ SetupState ─▶ GuessingState ─▶ RevealState ─▶ VoteState
+                (enter/exit/onPlayerAction + timer→nextState)         │
+                                                                      ▼
+                          tally ─▶ resolveWinner ─▶ [Master tie-break] ─▶ result
+                          (resetGame / playAgain loop back to LobbyState)
 ```
 
 - `io.js` — Socket.IO singleton accessor (`setIo` / `getIo`).
-- `Game.js` — owns players, word, master, and the active `GameState`; `nextState()` advances phases.
-- Each state follows a `setTimeout → handleTimerExpired → nextState` pattern (candidate for shared base logic).
+- `GameManager.js` — owns a `Map` of all `Game` rooms keyed by code (`models/Room.js` /
+  `RoomManager.js` are dead/commented out; `Game` is the real room aggregate).
+- `Game.js` — owns players, word, master, vote tally, and the active `GameState`; `nextState()`
+  advances phases, while `resetGame()` / `playAgain()` return the room to `LobbyState`.
+- Most states follow a `setTimeout → handleTimerExpired → nextState` pattern (candidate for shared
+  base logic). **`VoteState` is the exception:** instead of calling `nextState()` it tallies votes,
+  resolves a winner, optionally runs a 15s Master tie-break, then emits a terminal `result`.
 
 ---
 
 ## 6. Known Gaps & Tech Debt (to resolve)
-- [ ] **Voting phase** unimplemented — `VoteState.handleTimerExpired` is a `TODO`; no vote tally, tie-break, or win resolution.
-- [ ] **Follower role** not implemented.
-- [ ] **Disconnect handling** broken — `delete players[socket.id]` doesn't work on a `Map`; players never removed from rooms; no host hand-off.
-- [ ] **Min/Max player counts** inconsistent across docs and code (3 vs 4; 6 vs 8).
-- [ ] **Dead code** — `pages/index.js` (old Pages-Router build, references missing `Status.jsx`, stale events) conflicts with the App Router; `models/states/GameContext.js` is an unused placeholder.
+- [x] **Voting phase** — implemented: `VoteState` tallies votes, resolves the winner
+  (`Game.resolveWinner`), runs a Master-decides tie-break, and emits a terminal `result`
+  with Play Again / Return to Lobby. Covered by unit tests (see below).
+- [ ] **Master rotation** — `Play Again` reuses the **same Master** every round; the Master
+  should rotate (or be re-randomized) between rounds.
+- [ ] **Runoff / Guesser tie-break** — ties are settled by the Master only. The design's
+  runoff re-vote and "Guesser decides" branch (FR-29, FR-31) are not implemented.
+- [ ] **Follower role** not implemented (FR-13).
+- [ ] **Disconnect handling** broken — `players.delete[socket.id]` in `server.js` is a no-op
+  on a `Map`; players are never removed from rooms; no host hand-off.
+- [ ] **Min/Max player counts** inconsistent across docs and code (3 vs 4; 6 vs 8); `MAX_PLAYERS`
+  is defined but not enforced on join.
+- [ ] **Dead code** — `pages/index.js` (old Pages-Router build, references missing `Status.jsx`,
+  stale events) conflicts with the App Router; `models/states/GameContext.js` is an unused
+  placeholder; `models/Room.js` is fully commented out.
 - [ ] **No persistence** — server restart wipes all rooms.
 - [ ] **No turn/action authorization** — clients could spoof `nextTurn` / `wordFound`.
-- [ ] **No automated tests**.
+- [~] **Automated tests** — vote/win resolution is covered (`tests/voteResolution.test.js`,
+  `tests/voteFlow.test.js`, run via `npm test`); the rest of the flow is still hand-tested only.
 
 ---
 
 ## 7. Suggested Build Order
-1. Clean up dead code (`pages/`, `GameContext.js`) and fix disconnect/cleanup bugs.
-2. Reconcile and centralize player-count + timer config.
-3. Implement **VoteState**: collect votes, tally, tie-break, resolve winner, broadcast outcome.
-4. Add the **Follower** role and 4+ player branching.
-5. Add reconnection/state-recovery (NFR-3/4).
-6. Add host-configurable timers (FR-34).
-7. (Stretch) Persistence layer + separate frontend/backend hosting.
+1. ~~Implement **VoteState**: collect votes, tally, tie-break, resolve winner, broadcast outcome.~~ ✅ done
+2. **Fix disconnect handling + host hand-off** *(← next step, see §8)* and clean up dead code
+   (`pages/index.js`, `GameContext.js`, `models/Room.js`).
+3. Reconcile and centralize player-count + timer config (MIN/MAX, enforce MAX on join).
+4. **Master rotation** between rounds (so `Play Again` doesn't reuse the same Master).
+5. Add the **Follower** role and 4+ player branching (FR-13).
+6. Upgrade the tie-break: runoff re-vote / "Guesser decides" (FR-29, FR-31).
+7. Add reconnection/state-recovery (NFR-3/4) and host-configurable timers (FR-34).
+8. (Stretch) Persistence layer + separate frontend/backend hosting.
+
+---
+
+## 8. Next Step — Disconnect Handling & Host Hand-off
+
+With a full round now playable end-to-end (setup → guessing → reveal → vote → result →
+play again), the most valuable next step is **making rooms survive players leaving**, because
+that's the first thing real multiplayer testing will break.
+
+**Problem.** `server.js`'s `disconnect` handler is `players.delete[socket.id]` — that's a no-op
+(it indexes the `delete` operator instead of calling `Map.prototype.delete`). Consequently:
+- A player who closes their tab is never removed from `Game.connectedPlayers`, so they linger as a
+  "ghost" in everyone's player list and still count toward `MIN_PLAYERS`.
+- If the **host** disconnects, the room is stuck — start / Play Again / Return to Lobby are gated on
+  `game.hostId === socket.id`, and the `ROOM.LEADER` is never reassigned, so no live socket matches.
+- Empty rooms are never reclaimed from `GameManager`, so they leak.
+
+**What already exists (just not wired up):** `GameManager.removePlayer(roomCode, player)` and
+`GameManager.deleteGame(code)` are implemented, and `Game.removePlayer(player)` deletes from
+`connectedPlayers`. The gaps are: `server.js`'s `disconnect` never calls them; `Game.isEmpty()`
+(which `GameManager.removePlayer` already calls) does **not** exist; there is no host hand-off; and
+nothing clears a leaver's vote or re-broadcasts the roster.
+
+**Proposed work (server-authoritative, mirrors the existing emit pattern):**
+1. Track which room each socket joined (or scan `GameManager`'s games) so `disconnect` can resolve
+   the player's `Game`.
+2. Add `Game.isEmpty()` (returns `connectedPlayers.size === 0`) so `GameManager.removePlayer`'s
+   empty-room cleanup actually works, and have `Game.removePlayer` also drop any vote the leaver cast
+   (clear them from `#voteMap` / `#voteTally`).
+3. **Host hand-off:** if the leaver was the `ROOM.LEADER`, promote the next remaining player to
+   `ROOM.LEADER` (the `hostId` getter already follows `ROOM.LEADER`, so the guards then track the new
+   host automatically).
+4. If the leaver was mid-game and was the **Master** or **Insider**, end the round gracefully
+   (resolve / `resetGame()` back to `LobbyState`) rather than leaving an unwinnable game.
+5. Re-broadcast `roomUpdated` (and a host-change/`stateChange` event) so every client reflects the
+   new roster and host immediately.
+
+**Tests first (TDD):** add `tests/disconnect.test.js` covering — non-host leaves (roster shrinks,
+count drops), host leaves (next player becomes the new `hostId`), last player leaves (room removed
+via `isEmpty`), and a voter leaving clears their tally entry. Then implement `isEmpty` + the
+`disconnect` wiring + host promotion to green.
