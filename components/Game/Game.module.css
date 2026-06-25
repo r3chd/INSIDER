@@ -12,6 +12,11 @@
 
 
 .h1 {
+  width:100%;
+  font-family: 'bitcount';
+  text-align:center;
+  margin-right: auto;
+  margin-left: auto;
   color: white;
 }
 

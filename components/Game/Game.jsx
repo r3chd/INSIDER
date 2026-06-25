@@ -64,7 +64,8 @@ export default function Game({ fillRef, room }) {
 
     if (!timerFill) return;
     // invert whiteout on each run
-    setTimerWhiteout(!timerWhiteout);
+    setTimerWhiteout(prev => !prev);
+    console.trace("timer started");
     let progress = 0;
 
     // Disables animation to prevent jump from 100% to -100%
@@ -151,6 +152,7 @@ export default function Game({ fillRef, room }) {
         }
 
         // start timer
+        console.log("handled setup state");
         startTimer(data.startTime, data.endTime)
     }
 
@@ -217,9 +219,9 @@ export default function Game({ fillRef, room }) {
       setGuessButtonActive(false);
       setGuessingPlayer(null);
       setShowStartButton(true);
-    }
+    };
 
-    socket.on("stateChange", ({ state, data }) => {
+    const handleStateChange = ({ state, data }) => {
       switch(state) {
         case "setup": handleSetupState(data); break;
         case "guessing": handleGuessingState(data); break;
@@ -229,20 +231,22 @@ export default function Game({ fillRef, room }) {
         case "result": handleResult(data); break;
         case "lobby": handleLobbyState(data); break;
       }
-    })
+    };
 
     socket.on("wordAssigned", handleSetWord);
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("showGuessButton", handleGuessButton);
     socket.on("showGuesser", handleShowGuesser);
+    socket.on("stateChange", handleStateChange);
 
     return() => {
       socket.off("wordAssigned", handleSetWord);
       socket.off("hideOverlay", handleHideOverlay);
       socket.off("showGuessButton", handleGuessButton);
       socket.off("showGuesser", handleShowGuesser);
-    }
-  }, [])
+      socket.off("stateChange", handleStateChange);
+    };
+  }, []);
 
 
   return (
@@ -275,7 +279,9 @@ export default function Game({ fillRef, room }) {
         </div>
         <div className={styles.gameInteractable}>
             <h1 className={styles.h1}> {roomCode} </h1>
-            <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
+            {targetWord && (
+              <h1 className={styles.h1}>{`Your target is: ${targetWord}`}</h1>
+            )}
             <h1 className={styles.h1}>{gameMessage}</h1>
             <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick} room={room}/>
 
