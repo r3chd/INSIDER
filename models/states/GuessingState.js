@@ -7,10 +7,11 @@ export class GuessingState extends GameState {
     #lobbySize;
 
     #game;
-    #duration = 180000;
+    #duration = 180; 
     #activePlayer;
     #wordFound = false;
     #timerExpirationRun = false;
+    #timer;
 
     constructor(game) {
         super();
@@ -22,18 +23,20 @@ export class GuessingState extends GameState {
         console.log("entering guessing state");
         // Start timer
         let startTime = Date.now();
-        this.#game.emit("startGuessingState", 
-            {
+        // the client drives every phase off a single "stateChange" switch
+        this.#game.emit("stateChange", {
+            state: "guessing",
+            data: {
                 startTime: startTime,
                 endTime: startTime + this.#duration
             }
-        )
+        })
 
         // On timer running out
         const masterSocket = this.#game.masterPlayer.socket;
 
-        
-        setTimeout(() => {
+
+        this.#timer = setTimeout(() => {
             this.handleTimerExpired();
         }, this.#duration);
 
@@ -58,7 +61,7 @@ export class GuessingState extends GameState {
             const nextPlayer = playerArr[this.#currentPlayerIndex];
             this.#activePlayer = nextPlayer; // for disabling
             // Emit to target player
-            this.#game.emitToPlayer(nextPlayer.id, "showButton", {
+            this.#game.emitToPlayer(nextPlayer.id, "showGuessButton", {
                 text: "OK ITS ON ITS UP TO YOU",
                 master: false
             });
@@ -68,7 +71,7 @@ export class GuessingState extends GameState {
         }
 
         handlePlayerTurn();
-        this.#game.emitToPlayer(this.#game.masterPlayer.id, "showButton", {
+        this.#game.emitToPlayer(this.#game.masterPlayer.id, "showGuessButton", {
             text: "They've got it!",
             master: true
         })
@@ -89,6 +92,7 @@ export class GuessingState extends GameState {
     }
 
     exit () {
+        // reset variables here
         // stop the round timer from firing after we've moved on
         clearTimeout(this.#timer);
     }
