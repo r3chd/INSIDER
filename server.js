@@ -64,7 +64,15 @@ app.prepare().then(() => {
 
         // on room being joined by player
         socket.on("joinRoom", ({ roomCode, playerName }) => {
-            const targetGame = gameManager.getGame(roomCode);
+            // normalise: codes are generated/stored uppercase, lookup is case-sensitive
+            const code = (roomCode ?? "").trim().toUpperCase();
+            const targetGame = gameManager.getGame(code);
+
+            // no dont exist: tell the joiner instead of letting them into a non-existent room
+            if (!targetGame) {
+                socket.emit("joinError", { reason: "room_not_found", code });
+                return;
+            }
 
             // check if player is already in room
             if (targetGame.connectedPlayers.has(socket.id)) {
@@ -77,7 +85,7 @@ app.prepare().then(() => {
 
             // add player to room
             gameManager.addPlayer(targetGame, player)
-            socket.join(roomCode);
+            socket.join(code);
 
             emitRoomToPlayers(targetGame);
 

@@ -4,13 +4,15 @@ import styles from "./PlayerDisplay.module.css";
 import MAX_PLAYERS from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
-export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick}) { // Arguments needed here in for loop
-  const [playerList, setPlayerList] = useState({ players: [] });
-  const [youSocket, setYouSocket] = useState(null);
+export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick, room}) { // Arguments needed here in for loop
   const [youRole, setYouRole] = useState(null);
   const [votes, setVotes] = useState({}); // empty map
-  const [hostPlayer, setHostPlayer] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+  // parent pass down room data to make sure we have latest room data
+  const playerList = { players: room?.players ?? [] };
+  const youSocket = room?.yourId ?? null;
+  const hostPlayer = room?.hostId ?? null;
 
 
 
@@ -26,47 +28,19 @@ export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardCli
     setSelectedPlayer(playerId); // update display
   }
 
-  const items = [];
-
-  const parseDTOPlayers = (dto) => {
-    setYouSocket(dto.yourId);
-    setHostPlayer(dto.hostId)
-    return {
-      players: dto.players.map(p => ({
-        id: p.id,
-        name: p.name,
-        roomRole: p.roomRole
-      }))
-    };
-  };
-
   useEffect(() => {
-      const handleRoomUpdate = (data) => {
-        console.log(data);
-          setPlayerList(parseDTOPlayers(data));
-      }
-
       const handleRoleAssignment = (data) => {
         // Set personal role
         setYouRole(data.gameRole);
-
-        setPlayerList(prev => ({
-          players: prev.players.map(p => ({
-            ...p,
-            isMaster: p.id === data.masterId
-          }))
-        }))
       }
 
       const handleUpdateVotes = (data) => {
         setVotes(data)
       }
 
-      socket.on("roomUpdated", handleRoomUpdate);
       socket.on("roleAssigned", handleRoleAssignment);
       socket.on("updateVotes", handleUpdateVotes);
       return () => {
-        socket.off("roomUpdated", handleRoomUpdate);
         socket.off("roleAssigned", handleRoleAssignment);
         socket.off("updateVotes", handleUpdateVotes);
       };

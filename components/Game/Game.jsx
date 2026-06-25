@@ -7,13 +7,12 @@ import WordButton from "../WordButton/WordButton.jsx";
 import MenuButton from "../menu/MenuButton.jsx"
 import { MIN_PLAYERS } from "../constants/gameParam.js";
 
-export default function Game({ fillRef }) {
-  // would be funny if the code generates the word 'ERROR'
-  // R: is that even possible chat does it not alwasy include a number?
-  const [roomCode, setRoomCode] = useState('ERROR'); 
-  const [hostId, setHostId] = useState("not assigned");
-  const [playerCount, setPlayerCount] = useState(0);
-  const [showStartButton, setShowStartButton] = useState(true); 
+export default function Game({ fillRef, room }) {
+  // this is just the room code assignment, makes sure the server's roomUpdated before showing view
+  const roomCode = room?.code ?? 'ERROR';
+  const hostId = room?.hostId ?? "not assigned";
+  const playerCount = room?.players?.length ?? 0;
+  const [showStartButton, setShowStartButton] = useState(true);
 
   const handleStartButtonPressed = () => {
     socket.emit("startGame", roomCode);
@@ -178,20 +177,6 @@ export default function Game({ fillRef }) {
       setGameMessage("vote for the guy")
     }
 
-    const handleSetRoomCode = (data) => {
-      setRoomCode(data)
-    }
-
-    const handleRoomUpdated = (data) => {
-      setRoomCode(data.code);
-      setHostId(data.hostId);
-      setPlayerCount(data.players?.length ?? 0);
-    }
-    // new functions
-    socket.on("roomUpdated", handleRoomUpdated)
-
-    // old functions
-
     socket.on("stateChange", ({ state, data }) => {
       switch(state) {
         case "setup": handleSetupState(data); break;
@@ -205,14 +190,12 @@ export default function Game({ fillRef }) {
     socket.on("hideOverlay", handleHideOverlay);
     socket.on("showGuessButton", handleGuessButton);
     socket.on("showGuesser", handleShowGuesser);
-    socket.on("setRoomCode", handleSetRoomCode);
 
     return() => {
       socket.off("wordAssigned", handleSetWord);
       socket.off("hideOverlay", handleHideOverlay);
       socket.off("showGuessButton", handleGuessButton);
       socket.off("showGuesser", handleShowGuesser);
-      socket.off("setRoomCode", handleSetRoomCode)
     }
   }, [])
 
@@ -236,7 +219,7 @@ export default function Game({ fillRef }) {
             <h1 className={styles.h1}> {roomCode} </h1>
             <h1 className={styles.h1}> {`Your target is: ${targetWord || ""}`}</h1>
             <h1 className={styles.h1}>{gameMessage}</h1>
-            <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick}/>
+            <PlayerDisplay showEmpty={true} guessingPlayer={guessingPlayer} currentGameState={gameState} onCardClick={handleCardClick} room={room}/>
 
             <MenuButton children={guessButtonMessage} onClick={handleButtonPressed} active={buttonActive} />
             

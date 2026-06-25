@@ -24,6 +24,10 @@ export default function Home() {
     // views
     const [activeView, setActiveView] = useState('menu');
 
+    // room state (view switch can wait on server confirmation)
+    const [room, setRoom] = useState(null);
+    const [joinError, setJoinError] = useState("");
+
     // timer information
     const timerFillRef = useRef(null);
 
@@ -32,20 +36,23 @@ export default function Home() {
     // j: thing i already deleted - it was a useState for an unused var
 
     // this runs when the "create" button is hit
-    const handleCreate = (playerName) => { 
-      
-      // creates in backend
-      socket.emit("createRoom", playerName);
+    const handleCreate = (playerName) => {
 
-      setActiveView('game');
+      // creates in backend, we switch to the game view once the server
+      // confirms by sending roomUpdated (see useEffect below)
+      setJoinError("");
+      socket.emit("createRoom", playerName);
     };
 
     // this runs when the "join" button is hit
     const handleJoin = (roomCode, playerName) => {
 
-      socket.emit("joinRoom", {roomCode, playerName})
-
-      setActiveView('game'); // change from menu to game lobby HERE
+      // normalize so a lowercase/whitespace code still matches the room
+      const code = (roomCode ?? "").trim().toUpperCase();
+      setJoinError("");
+      socket.emit("joinRoom", { roomCode: code, playerName });
+      // wait for server to confirm before swtiching to game view
+      // with roomUpdated, or report joinError if the room does not exist
     }
 
     // connectivity code (connection and socket receiving)
@@ -68,14 +75,33 @@ export default function Home() {
             setTransport("N/A");
         }
 
+        // server confirms a room was created/joined
+        function onRoomUpdated(data) {
+            setRoom(data);
+            setActiveView('game');
+        }
+
+        // join failed then stay on the menu and surface why
+        function onJoinError(data) {
+            setJoinError(
+                data?.reason === "room_not_found"
+                    ? `No room found with code "${data.code}".`
+                    : "Could not join that room."
+            );
+        }
+
         // event driven on connection, disconnection and game started
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
+        socket.on("roomUpdated", onRoomUpdated);
+        socket.on("joinError", onJoinError);
 
         // cleanup events
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
+            socket.off("roomUpdated", onRoomUpdated);
+            socket.off("joinError", onJoinError);
         };
         
     }, []);
@@ -90,10 +116,10 @@ export default function Home() {
             
               <div className={styles.content}>
                 {activeView === 'menu' && (
-                  <Menu handleCreate={handleCreate} handleJoin={handleJoin} />
+                  <Menu handleCreate={handleCreate} handleJoin={handleJoin} joinError={joinError} />
                 )}
 
-              {activeView === 'game' && <Game fillRef = {timerFillRef} />}
+              {activeView === 'game' && <Game fillRef = {timerFillRef} room={room} />}
 
               <p>Transport: { transport }</p>
             </div>

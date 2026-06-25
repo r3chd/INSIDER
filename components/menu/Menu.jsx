@@ -6,7 +6,7 @@ import MenuButton from "./MenuButton";
 
 const EMPTY_NAME_MSG = "Please enter a name to create or join.";
 
-export default function Menu({ handleCreate, handleJoin}) {
+export default function Menu({ handleCreate, handleJoin, joinError}) {
   const [name, setName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [nameError, setNameError] = useState("");
@@ -21,7 +21,8 @@ export default function Menu({ handleCreate, handleJoin}) {
     if (nameError) setNameError("");
   }
   const onRoomCodeChange = (e) => {
-    setRoomCode(e.target.value);
+    // codes are always uppercase
+    setRoomCode(e.target.value.toUpperCase());
   }
 
   // For navigating between components
@@ -84,10 +85,12 @@ export default function Menu({ handleCreate, handleJoin}) {
 
             <MenuButton onClick={handleBackButtonPressed}> X </MenuButton>
             <p></p>
-            <input onChange={onRoomCodeChange} value={roomCode}></input>
+            <input onChange={onRoomCodeChange} value={roomCode} aria-invalid={!!joinError}></input>
             <MenuButton children="join" onClick={handleJoinRoomPressed}/>
 
           </div>
+
+          {joinError && <p className={styles.nameError} role="alert">{joinError}</p>}
 
       </div>
     </div>
