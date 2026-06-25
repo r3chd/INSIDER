@@ -89,7 +89,8 @@ export class GuessingState extends GameState {
     }
 
     exit () {
-        // Reset variables here
+        // stop the round timer from firing after we've moved on
+        clearTimeout(this.#timer);
     }
 
 }
