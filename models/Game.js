@@ -67,8 +67,8 @@ export default class Game {
     handleClick(from, to) {
         if (this.#state instanceof LobbyState) {
             this.lobbyClick(from, to);
-        } else if (this.#state instanceof VoteState) { // TODO set up the responding actions
-            this.votePlayer(from, to);
+        } else if (this.#state instanceof VoteState) {
+            this.#state.onClick(from, to);
         }
         // if game state = yada yada yada
 
@@ -82,6 +82,8 @@ export default class Game {
 
     votePlayer(from, to) {
         if (from === to) return;
+        // the Master is publicly known and cannot be voted out (FR-16)
+        if (to === this.#masterPlayer?.id) return;
         const previousVote = this.#voteMap.get(from);
         // see if a vote has already been cast
         if (previousVote === to) return; // no change needed
@@ -106,6 +108,76 @@ export default class Game {
 
         this.emit("updateVotes", Object.fromEntries(this.#voteTally));
 
+    }
+
+    clearVotes() {
+        this.#voteMap.clear();
+        this.#voteTally.clear();
+    }
+
+    // reset everything back to a fresh lobby (shared by "play again" and "return to lobby")
+    #resetToLobby() {
+        this.#started = false;
+        this.clearVotes();
+        this.#targetWord = "not yet chosen";
+        this.#masterPlayer = undefined;
+        this.#wordFound = undefined;
+        for (const player of this.#connectedPlayers.values()) {
+            player.gameRole = Roles.UNDEFINED;
+        }
+        this.setState(new LobbyState(this));
+        this.#broadcastRoom();
+    }
+
+    // re-send each player their own room view (mirrors server's emitRoomToPlayers)
+    #broadcastRoom() {
+        for (const player of this.#connectedPlayers.values()) {
+            this.emitToPlayer(player.id, "roomUpdated", this.toDTO(player.id));
+        }
+    }
+
+    // host chose "Return to Lobby": land everyone back on the pre-start lobby
+    resetGame() {
+        this.#resetToLobby();
+        this.emit("stateChange", { state: "lobby", data: {} });
+    }
+
+    // host chose "Play Again": reset and immediately start a new round
+    playAgain() {
+        this.#resetToLobby();
+        this.start();
+    }
+
+    // the current Insider, or undefined if roles aren't assigned yet
+    get insiderPlayer() {
+        for (const player of this.#connectedPlayers.values()) {
+            if (player.gameRole === Roles.GAME.INSIDER) return player;
+        }
+        return undefined;
+    }
+
+    // the player id(s) with the most votes, plus that vote count.
+    // a tie returns every id sharing the top count; no votes returns [] / 0.
+    getTopVoteCandidates() {
+        let maxVotes = 0;
+        let candidates = [];
+        for (const [id, count] of this.#voteTally.entries()) {
+            if (count > maxVotes) {
+                maxVotes = count;
+                candidates = [id];
+            } else if (count === maxVotes) {
+                candidates.push(id);
+            }
+        }
+        return { candidates, maxVotes };
+    }
+
+    // given who was voted out (or null for "no decision"), which team wins (FR-32):
+    //   voted out IS the insider   -> citizens win
+    //   voted out is NOT the insider, or nobody was -> insider team wins
+    resolveWinner(votedOutId) {
+        if (votedOutId == null) return "insider";
+        return votedOutId === this.insiderPlayer?.id ? "citizens" : "insider";
     }
 
     toDTO(socketId) {
@@ -218,5 +290,9 @@ export default class Game {
 
     get code() {
         return this.#code;
+    }
+
+    get hostId() {
+        return this.#hostPlayer?.id;
     }
 }

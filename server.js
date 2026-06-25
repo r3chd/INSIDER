@@ -117,6 +117,20 @@ app.prepare().then(() => {
             gameToStart.start();
         })
 
+        // LET IT RIDE
+        socket.on("playAgain", (roomCode) => {
+            const game = gameManager.getGame((roomCode ?? "").trim().toUpperCase());
+            if (!game || game.hostId !== socket.id) return;
+            game.playAgain();
+        });
+
+        // reset game to lobby
+        socket.on("returnToLobby", (roomCode) => {
+            const game = gameManager.getGame((roomCode ?? "").trim().toUpperCase());
+            if (!game || game.hostId !== socket.id) return;
+            game.resetGame();
+        });
+
         // player disconnect
         socket.on("disconnect", () => {
 

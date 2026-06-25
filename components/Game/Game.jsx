@@ -47,6 +47,14 @@ export default function Game({ fillRef, room }) {
   // current gameState (unsure if needed)
   const [gameState, setGameState] = useState(null);
 
+  // end-of-game result ({ winningTeam, votedOutId, insiderId, insiderName }) or null
+  const [result, setResult] = useState(null);
+  const isHost = hostId === socket.id;
+
+  // host controls on the result screen
+  const handlePlayAgain = () => socket.emit("playAgain", roomCode);
+  const handleReturnToLobby = () => socket.emit("returnToLobby", roomCode);
+
   // --------------- TIMER --------------- //
 
   // TIMER ITSELF
@@ -132,6 +140,7 @@ export default function Game({ fillRef, room }) {
     const handleSetupState = (data) => {
         // everyone gets overlay
         setShowOverlay(true);
+        setResult(null); // clear any prior round's result
 
         // everyone gets custom massage
         setOverlayMessage(data.overlayMessage.replace("{{name}}", data.masterPlayer));
@@ -177,12 +186,48 @@ export default function Game({ fillRef, room }) {
       setGameMessage("vote for the guy")
     }
 
+    const handleTieBreak = (data) => {
+      setShowOverlay(false);
+      setResult(null);
+      setGuessButtonActive(false);
+      setGameMessage("tie... Master slime someone out.");
+      startTimer(data.startTime, data.endTime);
+    }
+
+    const handleResult = (data) => {
+      setResult(data);
+      setGuessButtonActive(false);
+      setGuessingPlayer(null);
+      setGameMessage("");
+      const teamLine = data.winningTeam === "insider"
+        ? "INSIDER WINS"
+        : "CITIZENS WIN";
+      const insiderLine = data.insiderName ? ` The Insider was ${data.insiderName}.` : "";
+      setOverlayMessage(`${teamLine}${insiderLine}`);
+      setShowOverlay(true);
+    }
+
+    // server reset us back to the pre-start lobby
+    const handleLobbyState = () => {
+      setShowOverlay(false);
+      setResult(null);
+      setTargetWord(null);
+      setWordOptions([]);
+      setGameMessage("not assigned");
+      setGuessButtonActive(false);
+      setGuessingPlayer(null);
+      setShowStartButton(true);
+    }
+
     socket.on("stateChange", ({ state, data }) => {
       switch(state) {
         case "setup": handleSetupState(data); break;
         case "guessing": handleGuessingState(data); break;
         case "reveal": handleRevealState(data); break;
         case "vote": handleVoteState(data); break;
+        case "tiebreak": handleTieBreak(data); break;
+        case "result": handleResult(data); break;
+        case "lobby": handleLobbyState(data); break;
       }
     })
 
@@ -211,6 +256,19 @@ export default function Game({ fillRef, room }) {
                         <WordButton key={word} word={word} onSelect={handleWordSelect} />
                     ))}
                 </div>
+
+                {result && (
+                    <div className={styles.overlayButtonBox}>
+                        {isHost ? (
+                            <>
+                                <MenuButton onClick={handlePlayAgain}>play again</MenuButton>
+                                <MenuButton onClick={handleReturnToLobby}>return to lobby</MenuButton>
+                            </>
+                        ) : (
+                            <p>waiting for host…</p>
+                        )}
+                    </div>
+                )}
             </div>
             
 

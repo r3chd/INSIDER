@@ -79,7 +79,8 @@ player**. To play a full game:
 2. In **tabs 2, 3, 4…**, enter a name, click **join**, and type the room code.
    - A minimum of **4 players** (4 tabs) is currently required to start.
 3. Back in the **host tab** (tab 1), click **start**.
-4. Watch the phases play out: role/word setup → Q&A guessing → reveal.
+4. Watch the phases play out: role/word setup → Q&A guessing → reveal → vote → result
+   (the host can then **Play Again** or **Return to Lobby**).
 
 > 💡 Use incognito/private windows or different browsers if tabs share state oddly.
 > The server logs connections, room creation, and role assignment to the terminal —
@@ -95,6 +96,7 @@ player**. To play a full game:
 | `npm run build` | Build the Next.js production bundle (`next build`)        |
 | `npm start`     | Run the production server (`NODE_ENV=production`)         |
 | `npm run lint`  | Run ESLint (`next lint`)                                  |
+| `npm test`      | Run the unit tests (`node --test`, Node's built-in runner)|
 
 ---
 
@@ -130,10 +132,12 @@ INSIDER/
 ## Current Status
 
 Working end-to-end: room create/join, live lobby sync, host-gated start, role & word
-assignment, the Q&A turn loop, and the reveal screen.
+assignment, the Q&A turn loop, the reveal screen, and the **voting phase** — vote tally,
+win/lose resolution, a Master-decides tie-break, and a result screen with **Play Again /
+Return to Lobby**.
 
-**Not yet implemented:** the voting phase (currently a stub), the optional Follower role,
-win/lose resolution, persistence, and robust disconnect handling.
+**Not yet implemented:** the optional Follower role, Master rotation between rounds, a
+runoff re-vote for ties, persistence, and robust disconnect handling.
 
 See [`INSIDER_PLAN.md`](./INSIDER_PLAN.md) for the full breakdown and suggested build order.
 
