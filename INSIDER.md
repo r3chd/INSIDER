@@ -152,8 +152,12 @@ server.js  ──▶ GameManager ──▶ Game ──start──▶ GameState
 - [ ] **Runoff / Guesser tie-break** — ties are settled by the Master only. The design's
   runoff re-vote and "Guesser decides" branch (FR-29, FR-31) are not implemented.
 - [ ] **Follower role** not implemented (FR-13).
-- [ ] **Disconnect handling** broken — `players.delete[socket.id]` in `server.js` is a no-op
-  on a `Map`; players are never removed from rooms; no host hand-off.
+- [x] **Disconnect handling** — implemented: `server.js`'s `disconnect` resolves the leaver's room
+  and calls `GameManager.removePlayer`; `Game.removePlayer` clears the leaver's cast vote and hands
+  off `ROOM.LEADER` host on the host leaving; `Game.isEmpty()` reclaims empty rooms; a Master/Insider
+  leaving mid-round bails to the lobby (`Game.wasCriticalRole` → `resetGame()`). `SetupState`/
+  `RevealState` now cancel their phase timers on `exit()` so the bail-out can't leave a phantom round.
+  Covered by `tests/disconnect.test.js` and `tests/stateTimers.test.js`.
 - [ ] **Min/Max player counts** inconsistent across docs and code (3 vs 4; 6 vs 8); `MAX_PLAYERS`
   is defined but not enforced on join.
 - [ ] **Dead code** — `pages/index.js` (old Pages-Router build, references missing `Status.jsx`,
@@ -168,7 +172,7 @@ server.js  ──▶ GameManager ──▶ Game ──start──▶ GameState
 
 ## 7. Suggested Build Order
 1. ~~Implement **VoteState**: collect votes, tally, tie-break, resolve winner, broadcast outcome.~~ ✅ done
-2. **Fix disconnect handling + host hand-off** *(← next step, see §8)* and clean up dead code
+2. ~~**Fix disconnect handling + host hand-off**~~ ✅ done (see §8). Next: clean up dead code
    (`pages/index.js`, `GameContext.js`, `models/Room.js`).
 3. Reconcile and centralize player-count + timer config (MIN/MAX, enforce MAX on join).
 4. **Master rotation** between rounds (so `Play Again` doesn't reuse the same Master).
@@ -179,7 +183,7 @@ server.js  ──▶ GameManager ──▶ Game ──start──▶ GameState
 
 ---
 
-## 8. Next Step — Disconnect Handling & Host Hand-off
+## 8. Disconnect Handling & Host Hand-off  ✅ *(done — see `ROADMAP.md` §1; next step is dead-code cleanup, §2)*
 
 With a full round now playable end-to-end (setup → guessing → reveal → vote → result →
 play again), the most valuable next step is **making rooms survive players leaving**, because

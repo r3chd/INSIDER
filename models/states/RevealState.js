@@ -3,6 +3,7 @@ import { GameState } from "./GameState.js";
 export class RevealState extends GameState {
     #game;
     #duration = 5000;
+    #timer;
 
     constructor(game) {
         super();
@@ -21,7 +22,7 @@ export class RevealState extends GameState {
             }
         );
 
-        setTimeout(() => {
+        this.#timer = setTimeout(() => {
             this.handleTimerExpired();
         }, this.#duration)
 
@@ -34,6 +35,8 @@ export class RevealState extends GameState {
     }
 
     exit () {
+        // reset timer
+        clearTimeout(this.#timer);
         this.#game.emit("hideOverlay");
     }
 }

@@ -57,7 +57,45 @@ export default class Game {
     }
 
     removePlayer(player) {
+        const wasHost = player.roomRole === Roles.ROOM.LEADER;
+
         this.#connectedPlayers.delete(player.id);
+        this.#removeVote(player.id); // leavers vote removed from total
+
+        // give host role to next player if the host fucking dc's
+        if (wasHost) {
+            const next = this.#connectedPlayers.values().next().value;
+            if (next) {
+                next.roomRole = Roles.ROOM.LEADER;
+                this.#hostPlayer = next; // cache new host player
+            } else {
+                this.#hostPlayer = null;
+            }
+        }
+    }
+
+    // drop a single voter's contribution from the tally
+    #removeVote(voterId) {
+        const previousVote = this.#voteMap.get(voterId);
+        if (previousVote === undefined) return;
+
+        this.#voteMap.delete(voterId);
+        const prevCount = this.#voteTally.get(previousVote);
+        if (prevCount <= 1) {
+            this.#voteTally.delete(previousVote);
+        } else {
+            this.#voteTally.set(previousVote, prevCount - 1);
+        }
+    }
+
+    // no players left then reclaim the room code for GameManager
+    isEmpty() {
+        return this.#connectedPlayers.size === 0;
+    }
+
+    // check if leaver role is important for gmae to work (FR-32)
+    wasCriticalRole(player) {
+        return player.gameRole === Roles.GAME.MASTER || player.gameRole === Roles.GAME.INSIDER;
     }
 
     hasPlayer(playerId) {

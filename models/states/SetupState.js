@@ -8,6 +8,7 @@ export class SetupState extends GameState {
 
     #duration = 10000;
     #game;
+    #timer;
 
     #generatedWords;
     #wordChosen = false;
@@ -58,13 +59,13 @@ export class SetupState extends GameState {
         // --------------- WORD SELECTION --------------- //
         const masterSocket = this.#game.masterPlayer.socket;
 
-        masterSocket.once("wordSelected", (word) => this.assignWord(word));         
+        masterSocket.once("wordSelected", (word) => this.assignWord(word));
         // Backup method in instance of timeout
-        setTimeout(() => {
+        this.#timer = setTimeout(() => {
             this.handleTimerExpired();
         }, this.#duration);
 
-        
+
     }
 
     handleTimerExpired() {
@@ -128,7 +129,10 @@ export class SetupState extends GameState {
     }
 
     exit() {
-        // Reset variables for next round
+        // reset variables for next round
+
+        // reset timer
+        clearTimeout(this.#timer);
 
         // Need to disable socket
         this.#game.emit("hideOverlay");

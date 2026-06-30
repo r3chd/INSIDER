@@ -36,8 +36,11 @@ app.prepare().then(() => {
     // socket connection
     io.on("connection", (socket) => {
 
-        // initialize player name 
+        // initialize player name
         let playerName = "";
+
+        // need this to know which room the player is in for disconnects
+        let currentRoomCode = null;
 
         // console.log code
         socket.on("console", (data) => {
@@ -58,7 +61,8 @@ app.prepare().then(() => {
             gameManager.addPlayer(createdGame, player)
 
             socket.join(createdGame.code); // set current connection to the roomCode
-            
+            currentRoomCode = createdGame.code;
+
             emitRoomToPlayers(createdGame);
         });
 
@@ -84,8 +88,10 @@ app.prepare().then(() => {
             const player = new Player(socket, playerName, Roles.ROOM.MEMBER);
 
             // add player to room
+            players.set(socket.id, player);
             gameManager.addPlayer(targetGame, player)
             socket.join(code);
+            currentRoomCode = code;
 
             emitRoomToPlayers(targetGame);
 
@@ -133,8 +139,33 @@ app.prepare().then(() => {
 
         // player disconnect
         socket.on("disconnect", () => {
+            players.delete(socket.id);
 
-            players.delete[socket.id];
+            // socket never joined room or room was already deleted
+            if (!currentRoomCode) return;
+            const game = gameManager.getGame(currentRoomCode);
+            if (!game) return;
+
+            // find the player in the game
+            const player = game.connectedPlayers.get(socket.id);
+            if (!player) return;
+
+            // end if player leaving had an giga role
+            const endRound = game.wasCriticalRole(player);
+
+            // slime them out
+            gameManager.removePlayer(currentRoomCode, player);
+
+            // room was reclaimed so no need to emit to players
+            if (!gameManager.getGame(currentRoomCode)) return;
+
+            if (endRound) {
+                // reset if important role left
+                game.resetGame();
+            } else {
+                // just refresh the roster (and any newly promoted host) for everyone left
+                emitRoomToPlayers(game);
+            }
         })
 
         socket.on("playerClicked", (data) => {
