@@ -19,9 +19,10 @@ Status legend: ☐ not started · ◐ partial · ☑ done
 `currentRoomCode`) and calls `gameManager.removePlayer`. `Game.removePlayer` drops the leaver's
 cast vote (`#removeVote`) and, if they were the `ROOM.LEADER`, promotes the next remaining player
 to host (keeping `#hostPlayer` in sync). `Game.isEmpty()` lets `GameManager` reclaim empty rooms.
-If a `ROOM.LEADER`-only departure isn't critical, the roster is re-broadcast (`roomUpdated`); if the
-**Master or Insider** leaves mid-round (`Game.wasCriticalRole`), the round bails to the lobby via
-`resetGame()`. That reset exposed a latent bug — `SetupState`/`RevealState` never cancelled their
+If the departure doesn't break the round the roster is just re-broadcast (`roomUpdated`); otherwise the
+round bails to the lobby via `resetGame()`. `Game.shouldEndRound(leaver)` makes that call: a round in
+progress ends when the **Master or Insider** leaves (`Game.wasCriticalRole`) **or** the table drops
+below `MIN_PLAYERS` (4). That reset exposed a latent bug — `SetupState`/`RevealState` never cancelled their
 phase timers on `exit()` — now fixed so a stale timer can't start a phantom round. Covered by
 `tests/disconnect.test.js` and `tests/stateTimers.test.js`.
 

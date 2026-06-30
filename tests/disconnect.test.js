@@ -5,6 +5,8 @@ import Game from "../models/Game.js";
 import GameManager from "../models/GameManager.js";
 import Player from "../models/Player.js";
 import Roles from "../components/constants/rolesEnum.js";
+import { MIN_PLAYERS } from "../components/constants/gameParam.js";
+import { RevealState } from "../models/states/RevealState.js";
 
 // minimal io stub so Game.emit / emitToPlayer don't blow up
 const fakeIo = { to: () => ({ emit() {} }) };
@@ -89,4 +91,62 @@ test("GameManager keeps the room while players remain", () => {
   gm.removePlayer(code, game.connectedPlayers.get("b"));
   assert.equal(gm.getGame(code), game);
   assert.equal(game.connectedPlayers.size, 1);
+});
+
+// Build a mid-round game: assign roles[id] and drop into a non-lobby state.
+// (RevealState is a lightweight stand-in for "a round is in progress".)
+function makeMidRound(roles) {
+  const ids = Object.keys(roles);
+  const game = new Game("ABCDE", fakeIo);
+  ids.forEach((id, i) => {
+    game.addPlayer(new Player(fakeSocket(id), id, i === 0 ? Roles.ROOM.LEADER : Roles.ROOM.MEMBER));
+  });
+  for (const [id, role] of Object.entries(roles)) {
+    game.connectedPlayers.get(id).gameRole = role;
+    if (role === Roles.GAME.MASTER) game.masterPlayer = game.connectedPlayers.get(id);
+  }
+  game.setState(new RevealState(game)); // now "in progress"
+  return game;
+}
+
+// a full minimum-size table mid-round
+const FULL_ROLES = {
+  host: Roles.GAME.COMMONER,
+  m: Roles.GAME.MASTER,
+  ins: Roles.GAME.INSIDER,
+  c1: Roles.GAME.COMMONER,
+};
+
+test("a player leaving in the lobby never ends a round", () => {
+  const game = makeRoom(["host", "b", "c", "d"]); // lobby, no roles assigned
+  const leaver = game.connectedPlayers.get("d");
+  game.removePlayer(leaver); // 3 left, but we are not in a round
+  assert.equal(game.shouldEndRound(leaver), false);
+});
+
+test("a commoner leaving that drops the room below the minimum ends the round", () => {
+  const game = makeMidRound(FULL_ROLES); // 4 players = MIN_PLAYERS
+  const leaver = game.connectedPlayers.get("c1");
+  game.removePlayer(leaver); // now MIN_PLAYERS - 1
+  assert.ok(game.connectedPlayers.size < MIN_PLAYERS);
+  assert.equal(game.shouldEndRound(leaver), true);
+  game.state.exit(); // clear the reveal timer so the test process can exit
+});
+
+test("a commoner leaving while still at the minimum keeps the round going", () => {
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const leaver = game.connectedPlayers.get("c2");
+  game.removePlayer(leaver); // now exactly MIN_PLAYERS
+  assert.equal(game.connectedPlayers.size, MIN_PLAYERS);
+  assert.equal(game.shouldEndRound(leaver), false);
+  game.state.exit();
+});
+
+test("the Master leaving ends the round even when player count is still fine", () => {
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const leaver = game.connectedPlayers.get("m");
+  game.removePlayer(leaver); // 4 left (>= MIN_PLAYERS) but the Master is gone
+  assert.equal(game.connectedPlayers.size, MIN_PLAYERS);
+  assert.equal(game.shouldEndRound(leaver), true);
+  game.state.exit();
 });

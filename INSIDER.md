@@ -154,8 +154,9 @@ server.js  ──▶ GameManager ──▶ Game ──start──▶ GameState
 - [ ] **Follower role** not implemented (FR-13).
 - [x] **Disconnect handling** — implemented: `server.js`'s `disconnect` resolves the leaver's room
   and calls `GameManager.removePlayer`; `Game.removePlayer` clears the leaver's cast vote and hands
-  off `ROOM.LEADER` host on the host leaving; `Game.isEmpty()` reclaims empty rooms; a Master/Insider
-  leaving mid-round bails to the lobby (`Game.wasCriticalRole` → `resetGame()`). `SetupState`/
+  off `ROOM.LEADER` host on the host leaving; `Game.isEmpty()` reclaims empty rooms. An in-progress
+  round bails to the lobby (`Game.shouldEndRound` → `resetGame()`) when a Master/Insider leaves
+  (`Game.wasCriticalRole`) or the table drops below `MIN_PLAYERS` (4). `SetupState`/
   `RevealState` now cancel their phase timers on `exit()` so the bail-out can't leave a phantom round.
   Covered by `tests/disconnect.test.js` and `tests/stateTimers.test.js`.
 - [ ] **Min/Max player counts** inconsistent across docs and code (3 vs 4; 6 vs 8); `MAX_PLAYERS`

@@ -5,6 +5,7 @@ import { GuessingState } from "./states/GuessingState.js";
 import { RevealState } from "./states/RevealState.js"
 import { VoteState } from "./states/VoteState.js";
 import Roles from "../components/constants/rolesEnum.js"
+import { MIN_PLAYERS } from "../components/constants/gameParam.js"
 
 export default class Game {
 
@@ -96,6 +97,17 @@ export default class Game {
     // check if leaver role is important for gmae to work (FR-32)
     wasCriticalRole(player) {
         return player.gameRole === Roles.GAME.MASTER || player.gameRole === Roles.GAME.INSIDER;
+    }
+
+    // round in progress (not in lobby state)
+    get inProgress() {
+        return !(this.#state instanceof LobbyState);
+    }
+
+    // check if game should still run (cirtical role left or not enough players)
+    shouldEndRound(leaver) {
+        if (!this.inProgress) return false;
+        return this.wasCriticalRole(leaver) || this.#connectedPlayers.size < MIN_PLAYERS;
     }
 
     hasPlayer(playerId) {

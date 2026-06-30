@@ -150,17 +150,14 @@ app.prepare().then(() => {
             const player = game.connectedPlayers.get(socket.id);
             if (!player) return;
 
-            // end if player leaving had an giga role
-            const endRound = game.wasCriticalRole(player);
-
             // slime them out
             gameManager.removePlayer(currentRoomCode, player);
 
             // room was reclaimed so no need to emit to players
             if (!gameManager.getGame(currentRoomCode)) return;
 
-            if (endRound) {
-                // reset if important role left
+            // check if we should reset or just refresh the roster for everyone left
+            if (game.shouldEndRound(player)) {
                 game.resetGame();
             } else {
                 // just refresh the roster (and any newly promoted host) for everyone left
