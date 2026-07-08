@@ -1,5 +1,5 @@
 // imports
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { socket } from "../../socket.js";
 import styles from "./Game.module.css";
 import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
@@ -34,6 +34,7 @@ export default function Game({ fillRef, room }) {
 
   // timer
   let timerCanRun = true;
+  const rafRef = useRef(null); // id of the in-flight animation frame so we can cancel it
   const [timerWhiteout, setTimerWhiteout] = useState(true); //  Timer direction
 
   // main button variables
@@ -63,6 +64,8 @@ export default function Game({ fillRef, room }) {
     const timerFill = fillRef.current;
 
     if (!timerFill) return;
+    // never leave a previous run's loop animating alongside this one
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     // invert whiteout on each run
     setTimerWhiteout(prev => !prev);
     console.trace("timer started");
@@ -92,10 +95,27 @@ export default function Game({ fillRef, room }) {
       timerFill.style.top = `${topValue}%`;
 
       if (progress < 1) {
-        requestAnimationFrame(animate); // keep mainloop going
+        rafRef.current = requestAnimationFrame(animate); // keep mainloop going
+      } else {
+        rafRef.current = null;
       }
     }
-    requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(animate);
+  }
+
+  // reset the timer to nada even if it's mid-way or some
+  function stopTimer() {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    const timerFill = fillRef.current;
+    if (!timerFill) return;
+
+    timerFill.style.transition = "none";
+    timerFill.style.top = "-100%";
+    setTimerWhiteout(true); // next run starts a fresh 
   }
 
   // for when one of the three word options is pressed by the master
@@ -209,8 +229,9 @@ export default function Game({ fillRef, room }) {
       setShowOverlay(true);
     }
 
-    // server reset us back to the pre-start lobby
+    // server reset us back to the pre-start lobby (e.g. a disconnect ended the round)
     const handleLobbyState = () => {
+      stopTimer(); // stop timer so it aint running in lobby
       setShowOverlay(false);
       setResult(null);
       setTargetWord(null);
