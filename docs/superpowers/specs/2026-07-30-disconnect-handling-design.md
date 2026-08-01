@@ -181,8 +181,9 @@ Only meaningful while `#tieCandidates` is non-null (the Master-decides window). 
 leaver's id from `#tieCandidates`, then:
 
 - 1 candidate remaining → `finish(that candidate)`
-- 0 remaining → `finish(null)` (insider team wins, matching the existing timeout branch)
 - 2+ remaining → keep waiting on the Master
+- 0 remaining → `finish(null)`, matching the existing timeout branch. Defensive only: because
+  removals arrive one at a time, the list always collapses to 1 and resolves first.
 
 The leaver's own cast vote is already pruned by `Game.#removeVote`. During the main 18s window
 no action is needed for the same reason.
@@ -253,7 +254,11 @@ Extends the existing files in their current fake-socket / fake-`io` style. No ne
 **`tests/voteFlow.test.js`**
 
 - A tied candidate leaving during tie-break collapses the tie to the survivor.
-- All tied candidates leaving resolves to `null` (insider team wins).
+- One of *three* tied candidates leaving keeps the tie-break open, and the departed candidate is
+  no longer pickable by the Master.
+
+The zero-candidate branch gets no test: removals arrive one at a time, so the list always
+collapses to 1 and resolves before it can reach 0. It stays in the code as a guard.
 
 ## Behaviour change to be aware of
 
