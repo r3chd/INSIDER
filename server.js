@@ -23,6 +23,11 @@ const handler = app.getRequestHandler();
 // used to track all players
 const players = new Map();
 
+// display copy for the two round-ending roles (see TEXT.abort)
+function roleLabel(player) {
+    return player.gameRole === Roles.GAME.MASTER ? "the Master" : "the Insider";
+}
+
 const gameManager = new GameManager();
 
 // app needs to be 'prepared' before handling requests
@@ -157,8 +162,11 @@ app.prepare().then(() => {
             if (!gameManager.getGame(currentRoomCode)) return;
 
             // check if we should reset or just refresh the roster for everyone left
-            if (game.shouldEndRound(player)) {
-                game.resetGame();
+            const reason = game.endRoundReason(player);
+            if (reason) {
+                const abort = { reason, playerName: player.name };
+                if (reason === "critical_role_left") abort.role = roleLabel(player);
+                game.resetGame(abort);
             } else {
                 // just refresh the roster (and any newly promoted host) for everyone left
                 emitRoomToPlayers(game);

@@ -6,6 +6,7 @@ import PlayerDisplay from "../playerDisplay/PlayerDisplay.jsx";
 import WordButton from "../WordButton/WordButton.jsx";
 import MenuButton from "../menu/MenuButton.jsx"
 import { MIN_PLAYERS } from "../constants/gameParam.js";
+import TEXT from "../constants/text.js";
 
 export default function Game({ fillRef, room }) {
   // this is just the room code assignment, makes sure the server's roomUpdated before showing view
@@ -230,16 +231,23 @@ export default function Game({ fillRef, room }) {
     }
 
     // server reset us back to the pre-start lobby (e.g. a disconnect ended the round)
-    const handleLobbyState = () => {
+    const handleLobbyState = (data = {}) => {
       stopTimer(); // stop timer so it aint running in lobby
       setShowOverlay(false);
       setResult(null);
       setTargetWord(null);
       setWordOptions([]);
-      setGameMessage("not assigned");
       setGuessButtonActive(false);
       setGuessingPlayer(null);
       setShowStartButton(true);
+
+      // explain an interrupted round; a host-triggered return sends no reason
+      const copy = data.reason ? TEXT.abort[data.reason] : null;
+      setGameMessage(
+        copy
+          ? copy.replace("{{name}}", data.playerName ?? "A player").replace("{{role}}", data.role ?? "")
+          : "not assigned"
+      );
     };
 
     const handleStateChange = ({ state, data }) => {
