@@ -167,6 +167,55 @@ test("the Master rotation cursor survives a return to the lobby", () => {
   assert.equal(game.nextMaster().id, "b", "rotation must not restart at the first player");
 });
 
+test("endRoundReason names the Master and Insider departures", () => {
+  const game = makeMidRound(FULL_ROLES);
+  assert.equal(game.endRoundReason(game.connectedPlayers.get("m")), "critical_role_left");
+  assert.equal(game.endRoundReason(game.connectedPlayers.get("ins")), "critical_role_left");
+  game.state.exit();
+});
+
+test("endRoundReason names a table that dropped below the minimum", () => {
+  const game = makeMidRound(FULL_ROLES);
+  const leaver = game.connectedPlayers.get("c1");
+  game.removePlayer(leaver);                       // 4 -> 3, below MIN_PLAYERS
+  assert.equal(game.endRoundReason(leaver), "too_few_players");
+  game.state.exit();
+});
+
+test("endRoundReason is null in the lobby and for a harmless departure", () => {
+  const lobby = makeRoom(["host", "b", "c", "d"]);
+  assert.equal(lobby.endRoundReason(lobby.connectedPlayers.get("d")), null);
+
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const leaver = game.connectedPlayers.get("c2");
+  game.removePlayer(leaver);                       // 5 -> 4, still legal
+  assert.equal(game.endRoundReason(leaver), null);
+  game.state.exit();
+});
+
+test("resetGame forwards an abort payload to the lobby stateChange", () => {
+  const captured = [];
+  const io = { to: () => ({ emit: (event, data) => captured.push({ event, data }) }) };
+  const game = new Game("ABCDE", io);
+  ["a", "b"].forEach((id, i) =>
+    game.addPlayer(new Player(fakeSocket(id), id, i === 0 ? Roles.ROOM.LEADER : Roles.ROOM.MEMBER)));
+
+  game.resetGame({ reason: "too_few_players" });
+  const lobby = captured.find((e) => e.event === "stateChange" && e.data.state === "lobby");
+  assert.deepEqual(lobby.data.data, { reason: "too_few_players" });
+});
+
+test("resetGame with no argument still emits an empty lobby payload", () => {
+  const captured = [];
+  const io = { to: () => ({ emit: (event, data) => captured.push({ event, data }) }) };
+  const game = new Game("ABCDE", io);
+  game.addPlayer(new Player(fakeSocket("a"), "a", Roles.ROOM.LEADER));
+
+  game.resetGame();
+  const lobby = captured.find((e) => e.event === "stateChange" && e.data.state === "lobby");
+  assert.deepEqual(lobby.data.data, {});
+});
+
 test("nextMaster returns null once the room is empty", () => {
   const game = makeRoom(["a"]);
   game.removePlayer(game.connectedPlayers.get("a"));

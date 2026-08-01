@@ -104,10 +104,17 @@ export default class Game {
         return !(this.#state instanceof LobbyState);
     }
 
-    // check if game should still run (cirtical role left or not enough players)
+    // why the round has to end, or null if it can carry on (FR-32)
+    endRoundReason(leaver) {
+        if (!this.inProgress) return null;
+        if (this.wasCriticalRole(leaver)) return "critical_role_left";
+        if (this.#connectedPlayers.size < MIN_PLAYERS) return "too_few_players";
+        return null;
+    }
+
+    // check if game should still run (critical role left or not enough players)
     shouldEndRound(leaver) {
-        if (!this.inProgress) return false;
-        return this.wasCriticalRole(leaver) || this.#connectedPlayers.size < MIN_PLAYERS;
+        return this.endRoundReason(leaver) !== null;
     }
 
     hasPlayer(playerId) {
@@ -216,12 +223,12 @@ export default class Game {
         }
     }
 
-    // return to lobby w/ same player (FR-32)
-    resetGame() {
+    // return to lobby w/ same players (FR-32); `abort` explains an interrupted round
+    resetGame(abort = null) {
         this.#resetRound();
         this.#started = false;
         this.setState(new LobbyState(this)); // exit() of the current state clears its timer
-        this.emit("stateChange", { state: "lobby", data: {} });
+        this.emit("stateChange", { state: "lobby", data: abort ?? {} });
         this.#broadcastRoom();
     }
 
