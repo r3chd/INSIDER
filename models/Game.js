@@ -27,9 +27,9 @@ export default class Game {
     #io = null;
     #started = false;
     #state = null;
-    #roundCount;
     #targetWord;
     #masterPlayer; // Current leader of round
+    #lastMasterId = null; // rotation cursor: survives #resetRound on purpose
     #wordFound;
 
 
@@ -251,10 +251,9 @@ export default class Game {
         }
     }
 
-    start(connectedPlayers) {
+    start() {
         if (this.#started) return;
         this.#started = true;
-        this.#roundCount = this.#connectedPlayers.size - 1; // 0 index
         this.nextState(); // move from lobby to setup
     }
 
@@ -299,10 +298,6 @@ export default class Game {
         this.#io.to(socketId).emit(event, data);
     }
 
-    get roundCount() {
-        return this.#roundCount;
-    }
-
     set targetWord(targetWord){
         this.#targetWord = targetWord;
     }
@@ -317,6 +312,17 @@ export default class Game {
 
     get masterPlayer() {
         return this.#masterPlayer;
+    }
+
+    // Master rotates by identity, so a departure can't invalidate the pick (ROADMAP §4)
+    nextMaster() {
+        const ids = [...this.#connectedPlayers.keys()];
+        if (ids.length === 0) return null;
+
+        const i = ids.indexOf(this.#lastMasterId); // -1 when unset or the last Master left
+        const next = ids[(i + 1) % ids.length];    // -1 wraps to index 0
+        this.#lastMasterId = next;
+        return this.#connectedPlayers.get(next);
     }
 
     // the current room host's socket id (the LEADER)

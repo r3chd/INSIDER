@@ -150,3 +150,42 @@ test("the Master leaving ends the round even when player count is still fine", (
   assert.equal(game.shouldEndRound(leaver), true);
   game.state.exit();
 });
+
+test("the Master rotates to a different player each round", () => {
+  const game = makeRoom(["a", "b", "c", "d"]);
+  assert.equal(game.nextMaster().id, "a");
+  assert.equal(game.nextMaster().id, "b");
+  assert.equal(game.nextMaster().id, "c");
+  assert.equal(game.nextMaster().id, "d");
+  assert.equal(game.nextMaster().id, "a", "rotation wraps back to the first player");
+});
+
+test("the Master rotation cursor survives a return to the lobby", () => {
+  const game = makeRoom(["a", "b", "c", "d"]);
+  assert.equal(game.nextMaster().id, "a");
+  game.resetGame();
+  assert.equal(game.nextMaster().id, "b", "rotation must not restart at the first player");
+});
+
+test("nextMaster returns null once the room is empty", () => {
+  const game = makeRoom(["a"]);
+  game.removePlayer(game.connectedPlayers.get("a"));
+  assert.equal(game.nextMaster(), null);
+});
+
+// regression: #roundCount was frozen at start(), so a shrunken roster matched no
+// index, left #masterPlayer null, and SetupState dereferenced it
+test("playAgain after a player leaves assigns a valid Master instead of throwing", () => {
+  const game = makeRoom(["a", "b", "c", "d", "e"]);
+  game.start();
+  game.state.exit();                              // stop the real SetupState timer
+  game.removePlayer(game.connectedPlayers.get("e"));
+
+  assert.doesNotThrow(() => game.playAgain());
+  assert.ok(game.masterPlayer, "expected a Master to be assigned");
+  assert.ok(
+    game.connectedPlayers.has(game.masterPlayer.id),
+    "the Master must be a player who is still in the room"
+  );
+  game.state.exit();
+});

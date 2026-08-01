@@ -75,38 +75,28 @@ export class SetupState extends GameState {
     }
     
     assignRoles() {
-        // Convert to array
         const playersArray = Array.from(this.#game.connectedPlayers.values());
-        
-        // Random number selection
-        let insider_num = -1;
-        if (playersArray.size <= 2) {
-            return; // Temporary break condition to prevent infinite loop.
-        }
-        do {
-            insider_num = Math.floor(Math.random() * playersArray.length) // If 4 ppl; then [0-4)
-        } while (insider_num === this.#game.roundCount);
+        if (playersArray.length < 2) return; // need a Master plus at least one other
 
-        // Role assignment
-        for (let i = 0; i < playersArray.length; i++) {
-            const player = playersArray[i];
-            if (i === this.#game.roundCount) {
-                player.gameRole = Roles.GAME.MASTER;
-                this.#game.masterPlayer = player;
-            } else if (i === insider_num) {
-                player.gameRole = Roles.GAME.INSIDER;
-            } else {
-                player.gameRole = Roles.GAME.COMMONER;
-            }
+        // Master rotates by id; never null while players remain
+        const master = this.#game.nextMaster();
+        master.gameRole = Roles.GAME.MASTER;
+        this.#game.masterPlayer = master;
+
+        // insider: uniform pick among the non-Master players (no rejection loop)
+        const eligible = playersArray.filter(p => p.id !== master.id);
+        const insider = eligible[Math.floor(Math.random() * eligible.length)];
+
+        for (const player of eligible) {
+            player.gameRole = player.id === insider.id ? Roles.GAME.INSIDER : Roles.GAME.COMMONER;
         }
 
-        for (let i = 0; i < playersArray.length; i++) {
-            const player = playersArray[i];
+        for (const player of playersArray) {
             this.#game.emitToPlayer(player.id, "roleAssigned", {
                 gameRole: player.gameRole,          // only send their own role
-                masterId: this.#game.masterPlayer.id // send master id for everyone
-        });
-}
+                masterId: master.id                 // send master id for everyone
+            });
+        }
     }
 
     assignWord(word) {
