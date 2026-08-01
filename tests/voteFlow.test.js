@@ -103,3 +103,36 @@ test("resetGame returns everyone to the lobby and clears the round", () => {
   assert.ok(has(captured, "lobby"));
   assert.ok(captured.some((e) => e.event === "roomUpdated"));
 });
+
+test("a tied candidate leaving collapses the tie to the survivor", () => {
+  const { game, captured } = makeVotingGame();
+  game.handleClick("c1", "ins");
+  game.handleClick("c2", "c1");          // 1-1 tie between ins and c1
+  game.state.handleTimerExpired();
+  assert.ok(has(captured, "tiebreak"));
+
+  game.removePlayer(game.connectedPlayers.get("c1"));
+
+  // only ins is left standing, so they are the one voted out
+  assert.equal(lastResult(captured).winningTeam, "citizens");
+  game.state.exit();
+});
+
+test("one of three tied candidates leaving keeps the tie-break open", () => {
+  const { game, captured } = makeVotingGame();
+  game.handleClick("m", "ins");
+  game.handleClick("ins", "c1");
+  game.handleClick("c1", "c2");          // three-way 1-1-1 tie
+  game.state.handleTimerExpired();
+  assert.ok(has(captured, "tiebreak"));
+
+  game.removePlayer(game.connectedPlayers.get("c2")); // 2 candidates left
+  assert.equal(lastResult(captured), undefined, "still waiting on the Master");
+
+  game.handleClick("m", "c2");           // the departed candidate is no longer pickable
+  assert.equal(lastResult(captured), undefined);
+
+  game.handleClick("m", "ins");          // Master picks from the survivors
+  assert.equal(lastResult(captured).winningTeam, "citizens");
+  game.state.exit();
+});

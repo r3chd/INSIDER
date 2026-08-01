@@ -71,6 +71,19 @@ export class VoteState extends GameState {
         this.#tieTimer = setTimeout(() => this.finish(null), this.#tieDuration);
     }
 
+    // a tie candidate leaving must not leave the Master picking a ghost
+    onPlayerLeft(player) {
+        if (this.#finished || !this.#tieCandidates) return;
+
+        this.#tieCandidates = this.#tieCandidates.filter(id => id !== player.id);
+
+        if (this.#tieCandidates.length === 1) {
+            this.finish(this.#tieCandidates[0]); // only one left standing
+        } else if (this.#tieCandidates.length === 0) {
+            this.finish(null);                   // defensive; see note below
+        }
+    }
+
     finish(votedOutId) {
         if (this.#finished) return;
         this.#finished = true;
