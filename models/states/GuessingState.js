@@ -1,14 +1,11 @@
 import { GameState } from "./GameState.js";
-import { getIo } from "../../io.js";
-import Roles from "../../components/constants/rolesEnum.js";
+
 export class GuessingState extends GameState {
 
-    #currentPlayerIndex = 0;
-    #lobbySize;
-
     #game;
-    #duration = 18000; 
-    #activePlayer;
+    #duration = 18000;
+    #activeGuesserId = null;
+    #previousGuesserId = null;
     #wordFound = false;
     #timerExpirationRun = false;
     #timer;
@@ -16,13 +13,11 @@ export class GuessingState extends GameState {
     constructor(game) {
         super();
         this.#game = game;
-        this.#lobbySize = this.#game.players.size;
     }
 
     enter() {
         console.log("entering guessing state");
-        // Start timer
-        let startTime = Date.now();
+        const startTime = Date.now();
         // the client drives every phase off a single "stateChange" switch
         this.#game.emit("stateChange", {
             state: "guessing",
@@ -30,71 +25,77 @@ export class GuessingState extends GameState {
                 startTime: startTime,
                 endTime: startTime + this.#duration
             }
-        })
-
-        // On timer running out
-        const masterSocket = this.#game.masterPlayer.socket;
-
+        });
 
         this.#timer = setTimeout(() => {
             this.handleTimerExpired();
         }, this.#duration);
 
-        // Remove preexisting socket attachment
-        
+        const masterSocket = this.#game.masterPlayer.socket;
         masterSocket.once("wordFound", () => {
             this.#wordFound = true;
             this.handleTimerExpired();
-        })
+        });
 
-        // Get the player
-        const playerArr = [...this.#game.players.values()];
+        this.#passTurnTo(this.#nextEligible(null));
 
-        // Alternate between players
-        const handlePlayerTurn = () => {
-            // TEMP may need some kind of check to authorise who is clicking the button
-            // otherwise game could be manipulated.
-            do {
-                this.#currentPlayerIndex = (this.#currentPlayerIndex + 1) % this.#lobbySize;
-            } while (playerArr[this.#currentPlayerIndex] === this.#game.masterPlayer);
-            // Convert to player
-            const nextPlayer = playerArr[this.#currentPlayerIndex];
-            this.#activePlayer = nextPlayer; // for disabling
-            // Emit to target player
-            this.#game.emitToPlayer(nextPlayer.id, "showGuessButton", {
-                text: "OK ITS ON ITS UP TO YOU",
-                master: false
-            });
-            this.#game.emit("showGuesser", nextPlayer.id);
-
-            nextPlayer.socket.once("nextTurn", handlePlayerTurn);
-        }
-
-        handlePlayerTurn();
         this.#game.emitToPlayer(this.#game.masterPlayer.id, "showGuessButton", {
             text: "They've got it!",
             master: true
-        })
+        });
+    }
 
+    // live read of the roster: next non-Master player after `afterId`, wrapping.
+    // null when nobody is eligible (everyone but the Master has left).
+    #nextEligible(afterId) {
+        const eligible = [...this.#game.players.values()]
+            .filter(p => p.id !== this.#game.masterPlayer?.id);
+        if (eligible.length === 0) return null;
+
+        const i = eligible.findIndex(p => p.id === afterId); // -1 wraps to index 0
+        return eligible[(i + 1) % eligible.length];
+    }
+
+    #passTurnTo(player) {
+        if (!player) return;
+        this.#previousGuesserId = this.#activeGuesserId;
+        this.#activeGuesserId = player.id;
+
+        // TEMP may need some kind of check to authorise who is clicking the button
+        // otherwise game could be manipulated.
+        this.#game.emitToPlayer(player.id, "showGuessButton", {
+            text: "OK ITS ON ITS UP TO YOU",
+            master: false
+        });
+        this.#game.emit("showGuesser", player.id);
+
+        player.socket.once("nextTurn", () => {
+            this.#passTurnTo(this.#nextEligible(this.#activeGuesserId));
+        });
+    }
+
+    // only matters if the leaver held the turn: their "nextTurn" handler died with
+    // their socket, so nothing else would ever advance the round
+    onPlayerLeft(player) {
+        if (player.id !== this.#activeGuesserId) return;
+
+        // resume from the player before them so the turn order is preserved
+        const next = this.#nextEligible(this.#previousGuesserId);
+        if (!next) return; // round is about to be reset by shouldEndRound
+        this.#passTurnTo(next);
     }
 
     handleTimerExpired() {
         if (this.#timerExpirationRun) return;
         this.#timerExpirationRun = true;
 
-        if (!this.#wordFound) {
-            this.#game.wordFound = false;
-        } else {
-            this.#game.wordFound = true;
-        }
+        this.#game.wordFound = this.#wordFound;
         this.#game.nextState();
         console.log("GOING TO REVEAL STATE");
     }
 
-    exit () {
-        // reset variables here
+    exit() {
         // stop the round timer from firing after we've moved on
         clearTimeout(this.#timer);
     }
-
 }

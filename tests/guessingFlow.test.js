@@ -6,7 +6,22 @@ import Player from "../models/Player.js";
 import Roles from "../components/constants/rolesEnum.js";
 import { GuessingState } from "../models/states/GuessingState.js";
 
-const fakeSocket = (id) => ({ id, emit() {}, once() {}, join() {} });
+// records once() handlers so tests can see who currently holds the "nextTurn" baton
+const fakeSocket = (id) => {
+  const handlers = {};
+  return {
+    id,
+    emit() {},
+    once(event, fn) { handlers[event] = fn; },
+    fire(event) { const fn = handlers[event]; if (fn) { delete handlers[event]; fn(); } },
+    has(event) { return Boolean(handlers[event]); },
+    join() {}
+  };
+};
+
+// the player currently holding the turn, per their socket's registered handler
+const batonHolder = (game) =>
+  [...game.connectedPlayers.values()].find((p) => p.socket.has("nextTurn"));
 
 // A game freshly entered into GuessingState, with roles assigned and every emit
 // captured. Mirrors makeVotingGame() in voteFlow.test.js. The io mock's to()
@@ -62,5 +77,74 @@ test("the Master is shown their own guess button", () => {
     masterButtons.length >= 1,
     "expected a showGuessButton with master:true for the master"
   );
+  game.state.exit();
+});
+
+// regression: the "nextTurn" handler lived on the departed player's socket, so the
+// round hung until the phase timer expired
+test("the active guesser leaving hands the baton to a remaining player", () => {
+  const { game } = makeGuessingGame();
+  const active = batonHolder(game);
+  assert.ok(active, "expected someone to hold the turn");
+
+  game.removePlayer(active);
+
+  const next = batonHolder(game);
+  assert.ok(next, "the turn must not die with the departed player");
+  assert.notEqual(next.id, active.id);
+  assert.ok(game.connectedPlayers.has(next.id), "the baton must go to a player still in the room");
+  game.state.exit();
+});
+
+test("a player who is not holding the turn leaving does not disturb the guesser", () => {
+  const { game } = makeGuessingGame();
+  const active = batonHolder(game);
+  const bystander = [...game.connectedPlayers.values()]
+    .find((p) => p.id !== active.id && p.id !== game.masterPlayer.id);
+
+  game.removePlayer(bystander);
+
+  assert.equal(batonHolder(game).id, active.id);
+  game.state.exit();
+});
+
+test("a departed player is never dealt another turn", () => {
+  const { game } = makeGuessingGame();
+  const first = batonHolder(game);
+  game.removePlayer(first);
+
+  // cycle the turn through the remaining eligible players a few times over
+  for (let i = 0; i < 6; i++) {
+    const holder = batonHolder(game);
+    assert.ok(holder, "turn order stalled");
+    assert.notEqual(holder.id, first.id, "a departed player was dealt a turn");
+    holder.socket.fire("nextTurn");
+  }
+  game.state.exit();
+});
+
+test("the Master is still skipped in the turn order after a departure", () => {
+  const { game } = makeGuessingGame();
+  game.removePlayer(batonHolder(game));
+
+  for (let i = 0; i < 6; i++) {
+    const holder = batonHolder(game);
+    assert.ok(holder, "turn order stalled");
+    assert.notEqual(holder.id, game.masterPlayer.id, "the Master must never guess");
+    holder.socket.fire("nextTurn");
+  }
+  game.state.exit();
+});
+
+// when the departure also drops the room below MIN_PLAYERS, server.js resets the
+// round immediately after — but onPlayerLeft runs first and must not throw
+test("no eligible guesser left -> onPlayerLeft returns without throwing", () => {
+  const { game } = makeGuessingGame();
+  for (const p of [...game.connectedPlayers.values()]) {
+    if (p.id !== game.masterPlayer.id) {
+      assert.doesNotThrow(() => game.removePlayer(p));
+    }
+  }
+  assert.equal(batonHolder(game), undefined);
   game.state.exit();
 });
