@@ -73,6 +73,9 @@ export default class Game {
                 this.#hostPlayer = null;
             }
         }
+
+        // let the running phase react (e.g. re-route the guessing turn)
+        this.#state?.onPlayerLeft?.(player);
     }
 
     // drop a single voter's contribution from the tally

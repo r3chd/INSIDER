@@ -238,3 +238,20 @@ test("playAgain after a player leaves assigns a valid Master instead of throwing
   );
   game.state.exit();
 });
+
+test("removePlayer notifies the active state after the roster has shrunk", () => {
+  const game = makeRoom(["a", "b", "c", "d"]);
+  const seen = [];
+  // a stand-in state that records what it was told, and when
+  game.setState({
+    enter() {},
+    exit() {},
+    onPlayerLeft(player) {
+      seen.push({ id: player.id, rosterSize: game.connectedPlayers.size });
+    }
+  });
+
+  game.removePlayer(game.connectedPlayers.get("d"));
+
+  assert.deepEqual(seen, [{ id: "d", rosterSize: 3 }]);
+});
