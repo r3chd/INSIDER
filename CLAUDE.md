@@ -56,7 +56,7 @@ GameManager  →  Game  →  GameState (one of models/states/*)
 - Each `GameState` (extends `GameState` base with `enter()/exit()/onPlayerAction()`) follows the
   same pattern: on `enter()` it emits a phase payload, registers `socket.once(...)` action handlers,
   and starts a `setTimeout(this.#duration)` → `handleTimerExpired()` → `game.nextState()`. Durations
-  are per-state private fields (Setup 10s, Guessing 180s, Reveal 5s, Vote 18s). This repeated
+  are per-state private fields (Setup 10s, Guessing 18s, Reveal 5s, Vote 18s). This repeated
   timer→nextState pattern is acknowledged tech debt and a candidate for shared base logic.
   `VoteState` is the **exception**: it does not call `nextState()`. On its 18s timer it tallies votes
   and resolves a winner, branching into a Master-decides tie-break (15s) when the lead is tied, then
@@ -96,19 +96,14 @@ SetupState). `utils/wordService.js` loads `public/assets/words.txt` and returns 
 The README's "Project Structure" is partly aspirational — trust the code over it:
 - **`models/Room.js` is entirely commented out.** `Game.js` is the real room aggregate.
   README references to `RoomManager.js`/`Room.js` are stale.
-- **`pages/index.js` is dead** old Pages-Router code (imports a missing `Status.jsx`); the live UI is
-  the App Router under `app/`. `models/states/GameContext.js` is an unused placeholder.
+- **`models/states/GameContext.js` is an unused placeholder.**
 - **`app/page.js` has two `return` statements** — only the first renders; the second block is dead.
-- **`GuessingState` references `this.#game.players`**, but `Game` only exposes `connectedPlayers`
-  (no `players` getter) — this path is mid-refactor. `GuessingState.js` is the file currently being edited.
-- **Disconnect handling is broken**: `players.delete[socket.id]` in `server.js` is a no-op on a `Map`;
-  players are never removed from rooms and there's no host hand-off.
 - **Player-count config is inconsistent**: `MIN_PLAYERS = 4` (code) vs 3 (design); `MAX_PLAYERS = 6`
   is defined but not enforced on join.
 - **`VoteState` is now implemented** (tally → win resolution → Master-decides tie-break → `result`,
-  plus host Play Again / Return to Lobby). Still missing: the **Follower role**, **Master rotation**
-  (Play Again reuses the same Master), and a **runoff re-vote** (ties are settled by the Master, not a
-  second vote). The Master cannot be voted out, enforced in `Game.votePlayer`.
+  plus host Play Again / Return to Lobby). Still missing: the **Follower role** and a **runoff
+  re-vote** (ties are settled by the Master, not a second vote). The Master cannot be voted out,
+  enforced in `Game.votePlayer`.
 
 `INSIDER.md` has full game rules and design; the README's plan section tracks requirements and the
 suggested build order for the unfinished phases.

@@ -26,6 +26,17 @@ below `MIN_PLAYERS` (4). That reset exposed a latent bug — `SetupState`/`Revea
 phase timers on `exit()` — now fixed so a stale timer can't start a phantom round. Covered by
 `tests/disconnect.test.js` and `tests/stateTimers.test.js`.
 
+**Round reactions (follow-up):** the above only kept the roster in sync — it didn't make the *round
+itself* react. `GameState.onPlayerLeft(player)` is a new overridable hook that `Game.removePlayer`
+calls as its final statement, so any phase can respond to a departure. `GuessingState` uses it to
+re-route the turn to a remaining player immediately if the active guesser disconnects, instead of
+stalling until the phase timer expires. `VoteState.onPlayerLeft` drops departed players from the
+tie-break candidate list so the Master is never asked to pick a ghost. `Game.endRoundReason(leaver)`
+names *why* an in-progress round has to end (`"critical_role_left"` | `"too_few_players"`), and
+`resetGame(abort)` carries that reason (plus `TEXT.abort` copy) to the client so players see who left
+and why, instead of a bare "not assigned" message. Covered by the expanded `tests/disconnect.test.js`,
+`tests/guessingFlow.test.js`, and `tests/voteFlow.test.js` (32 → 49 tests total).
+
 **Problem:** `server.js`'s `disconnect` handler is `players.delete[socket.id]` — a no-op (it
 indexes the `delete` operator instead of calling `Map.prototype.delete`). Consequences:
 - Closed tabs linger as "ghost" players and still count toward `MIN_PLAYERS`.
@@ -56,10 +67,18 @@ voter leaves (their tally entry is cleared).
 ## 2. Clean up dead code  ☐  *(next step)*
 
 Remove/retire code that conflicts with the live App Router build:
-- `pages/index.js` — old Pages-Router build; references missing `Status.jsx` and stale events.
 - `models/states/GameContext.js` — unused placeholder.
 - `models/Room.js` — fully commented out (`Game.js` is the real room aggregate).
 - `app/page.js` — has a second, dead `return` block (only the first renders).
+- `utils/insertText.js` — dead: imports a non-existent named `{ TEXT }` from
+  `components/constants/text.js` (which only has a default export, so the import is `undefined`),
+  and its replace regex matches the literal string `{{varName}}` rather than interpolating the
+  variable name, so it could never have substituted a real placeholder like `{{name}}` anyway.
+- `npm run lint` is stale and broken: `next lint` was removed in recent Next.js versions, so the
+  script fails immediately (`Invalid project directory provided, no such directory: .../lint`).
+  Confirmed pre-existing, not caused by any work on `disconnect-round-reactions` — it fails the
+  same way on the pre-branch baseline (`8433f96`). Not fixed here, just flagged so `npm run lint`
+  in `CLAUDE.md` isn't trusted at face value.
 
 ---
 
@@ -74,10 +93,14 @@ Relevant: FR-1, FR-10, FR-11.
 
 ---
 
-## 4. Master rotation between rounds  ☐
+## 4. Master rotation between rounds  ☑  *(done)*
 
-Relevant: §6 tech debt. **Play Again currently reuses the same Master every round.** The Master
-should rotate (or be re-randomized) on each new round so the role moves around the table.
+Relevant: §6 tech debt. Play Again used to reuse the same Master every round — worse, the Master was
+tracked by a frozen array index set at `start()`, so a shrunken roster (a player left mid-game) could
+point past the end of the array and leave the Master `null`, crashing `SetupState`. Fixed by tracking
+the Master by player id instead: `Game.nextMaster()` walks the connected-player map from a rotation
+cursor (`#lastMasterId`, which deliberately survives the round reset) and wraps around, so `playAgain()`
+after a departure always assigns a valid Master instead of throwing.
 
 ---
 
@@ -134,3 +157,10 @@ Only vote/win resolution is covered today (`tests/voteResolution.test.js`,
 `tests/voteFlow.test.js`, run via `npm test`). The rest of the flow is hand-tested only. Add
 coverage as each feature above lands (disconnect, role assignment incl. Follower, Master
 rotation, tie-break branches, config enforcement).
+
+**Now covered:** Master rotation (`nextMaster()`'s cursor wrap-around, `playAgain()` after a
+departure), abort reason codes (`endRoundReason` → `critical_role_left` / `too_few_players`), the
+guessing baton re-route on disconnect, and tie-candidate pruning in `VoteState.onPlayerLeft` — see
+`tests/disconnect.test.js`, `tests/guessingFlow.test.js`, `tests/voteFlow.test.js` (32 → 49 tests).
+Still hand-tested only: role assignment (incl. the unbuilt Follower role), the unbuilt tie-break
+branches (§6), and player-count/timer config enforcement (§3).
