@@ -61,7 +61,11 @@ export default class Game {
         const wasHost = player.roomRole === Roles.ROOM.LEADER;
 
         this.#connectedPlayers.delete(player.id);
-        this.#removeVote(player.id); // leavers vote removed from total
+        const castChanged = this.#removeVote(player.id);        // leavers vote removed from total
+        const receivedChanged = this.#removeVotesFor(player.id); // ghost candidate can't win a vote either
+        if (castChanged || receivedChanged) {
+            this.emit("updateVotes", Object.fromEntries(this.#voteTally));
+        }
 
         // give host role to next player if the host fucking dc's
         if (wasHost) {
@@ -78,10 +82,10 @@ export default class Game {
         this.#state?.onPlayerLeft?.(player);
     }
 
-    // drop a single voter's contribution from the tally
+    // drop a single voter's contribution from the tally. returns whether anything changed.
     #removeVote(voterId) {
         const previousVote = this.#voteMap.get(voterId);
-        if (previousVote === undefined) return;
+        if (previousVote === undefined) return false;
 
         this.#voteMap.delete(voterId);
         const prevCount = this.#voteTally.get(previousVote);
@@ -90,6 +94,19 @@ export default class Game {
         } else {
             this.#voteTally.set(previousVote, prevCount - 1);
         }
+        return true;
+    }
+
+    // drop votes cast FOR a departed candidate too (ghost candidates can't win a vote) -
+    // and free the voters who picked them so they can vote again. returns whether anything changed.
+    #removeVotesFor(candidateId) {
+        if (!this.#voteTally.has(candidateId)) return false;
+
+        this.#voteTally.delete(candidateId);
+        for (const [voterId, votedFor] of this.#voteMap.entries()) {
+            if (votedFor === candidateId) this.#voteMap.delete(voterId);
+        }
+        return true;
     }
 
     // no players left then reclaim the room code for GameManager
@@ -110,6 +127,8 @@ export default class Game {
     // why the round has to end, or null if it can carry on (FR-32)
     endRoundReason(leaver) {
         if (!this.inProgress) return null;
+        // round already resolved (e.g. VoteState.finish() ran) -> a late departure isn't a round-ender
+        if (this.#state?.isRoundOver?.()) return null;
         if (this.wasCriticalRole(leaver)) return "critical_role_left";
         if (this.#connectedPlayers.size < MIN_PLAYERS) return "too_few_players";
         return null;
@@ -206,6 +225,7 @@ export default class Game {
     clearVotes() {
         this.#voteMap.clear();
         this.#voteTally.clear();
+        this.emit("updateVotes", Object.fromEntries(this.#voteTally)); // so clients drop stale counts too
     }
 
     // reset all da bullshit

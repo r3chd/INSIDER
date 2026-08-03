@@ -109,4 +109,9 @@ export class VoteState extends GameState {
         clearTimeout(this.#voteTimer);
         clearTimeout(this.#tieTimer);
     }
+
+    // a departure after finish() must not be read as a round-ending event (Finding 1)
+    isRoundOver() {
+        return this.#finished;
+    }
 }
