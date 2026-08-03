@@ -15,16 +15,19 @@ npm install        # install deps
 npm run dev        # dev server with auto-reload (nodemon server.js) — http://localhost:3000
 npm run build      # next build (production bundle)
 npm start          # production server (NODE_ENV=production node server.js)
-npm run lint       # next lint (ESLint 9)
+npm run lint       # next lint (ESLint 9) — BROKEN, don't bother: `next lint` is gone from recent
+                    # Next.js versions, so this fails immediately. See ROADMAP.md §2.
 ```
 
-`npm test` runs the Node built-in runner (`node --test`) over `tests/*.test.js` — currently the
-vote/win-resolution logic (`tests/voteResolution.test.js` for the pure resolver, `tests/voteFlow.test.js`
-for `VoteState` orchestration + reset). There is **no** browser/integration harness, so gameplay is
-still exercised by hand: run `npm run dev` and open multiple browser tabs — **each tab is a separate
-player/socket**. Create a room in tab 1 (note the room code), join from other tabs, then start from the
-host tab. `MIN_PLAYERS` (4) tabs are required to start. The server logs connections, room/role
-assignment, and emitted events to the terminal.
+`npm test` runs the Node built-in runner (`node --test`) over `tests/*.test.js` — vote/win-resolution
+logic (`tests/voteResolution.test.js` for the pure resolver, `tests/voteFlow.test.js` for `VoteState`
+orchestration + reset), disconnect/host-handoff/round-reaction behavior (`tests/disconnect.test.js`),
+the guessing-turn baton re-route on disconnect (`tests/guessingFlow.test.js`), and phase-timer
+cancellation on `exit()` (`tests/stateTimers.test.js`). There is **no** browser/integration harness,
+so gameplay is still exercised by hand: run `npm run dev` and open multiple browser tabs — **each
+tab is a separate player/socket**. Create a room in tab 1 (note the room code), join from other
+tabs, then start from the host tab. `MIN_PLAYERS` (4) tabs are required to start. The server logs
+connections, room/role assignment, and emitted events to the terminal.
 
 ## Architecture
 

@@ -37,30 +37,18 @@ names *why* an in-progress round has to end (`"critical_role_left"` | `"too_few_
 and why, instead of a bare "not assigned" message. Covered by the expanded `tests/disconnect.test.js`,
 `tests/guessingFlow.test.js`, and `tests/voteFlow.test.js` (32 → 49 tests total).
 
-**Problem:** `server.js`'s `disconnect` handler is `players.delete[socket.id]` — a no-op (it
-indexes the `delete` operator instead of calling `Map.prototype.delete`). Consequences:
-- Closed tabs linger as "ghost" players and still count toward `MIN_PLAYERS`.
-- If the **host** disconnects, the room is stuck — start / Play Again / Return to Lobby are
-  gated on `game.hostId === socket.id` and `ROOM.LEADER` is never reassigned.
-- Empty rooms are never reclaimed from `GameManager` (leak).
-
-**Already exists (just not wired up):** `GameManager.removePlayer(roomCode, player)`,
-`GameManager.deleteGame(code)`, `Game.removePlayer(player)`.
-
-**Work:**
-1. Resolve the leaver's `Game` on `disconnect` (track each socket's room, or scan `GameManager`).
-2. Add `Game.isEmpty()` (`connectedPlayers.size === 0`) so `GameManager.removePlayer`'s
-   empty-room cleanup actually fires; have `Game.removePlayer` also clear the leaver's vote
-   from `#voteMap` / `#voteTally`.
-3. **Host hand-off:** if the leaver was `ROOM.LEADER`, promote the next remaining player to
-   `ROOM.LEADER` (the `hostId` getter follows `ROOM.LEADER`, so guards track the new host).
-4. If the leaver was the **Master** or **Insider** mid-game, end the round gracefully
-   (resolve / `resetGame()` back to `LobbyState`) instead of leaving an unwinnable game.
-5. Re-broadcast `roomUpdated` (+ a host-change / `stateChange`) so clients reflect the new roster.
-
-**Tests first (TDD), `tests/disconnect.test.js`:** non-host leaves (roster shrinks, count drops);
-host leaves (next player becomes new `hostId`); last player leaves (room removed via `isEmpty`);
-voter leaves (their tally entry is cleared).
+**Original problem (historical — fixed by the "Done:" work above, kept here for context):**
+before this landed, `server.js`'s `disconnect` handler was `players.delete[socket.id]` — a no-op
+(it indexed the `delete` operator instead of calling `Map.prototype.delete`). Closed tabs lingered
+as "ghost" players and still counted toward `MIN_PLAYERS`; a disconnecting **host** stuck the room
+(start / Play Again / Return to Lobby are gated on `game.hostId === socket.id`, and `ROOM.LEADER`
+was never reassigned); empty rooms were never reclaimed from `GameManager`. The fix wired up
+pieces that already existed but weren't hooked up yet — `GameManager.removePlayer(roomCode, player)`,
+`GameManager.deleteGame(code)`, `Game.removePlayer(player)` — to resolve the leaver's `Game` on
+`disconnect`, add `Game.isEmpty()`, hand off the host role, end the round on a critical departure,
+and re-broadcast the roster, per the "Done:" paragraph above. The original TDD cases (non-host
+leaves, host leaves, last player leaves, voter leaves) are the older half of
+`tests/disconnect.test.js`.
 
 ---
 
