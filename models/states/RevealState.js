@@ -1,8 +1,9 @@
 import { GameState } from "./GameState.js";
+import { TIMERS } from "../../components/constants/gameParam.js";
 
 export class RevealState extends GameState {
     #game;
-    #duration = 5000;
+    #duration = TIMERS.REVEAL;
     #timer;
 
     constructor(game) {

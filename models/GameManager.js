@@ -31,10 +31,15 @@ export default class GameManager {
 
     addPlayer(game, player) {
         if (!game) {
-            return;
+            return { ok: false, reason: "room_not_found" };
+        }
+
+        if (game.isFull()) {
+            return { ok: false, reason: "room_full" };
         }
 
         game.addPlayer(player);
+        return { ok: true };
     }
 
     removePlayer(roomCode, player) {

@@ -1,9 +1,13 @@
-// R: game requires minimum of 4 players
-export const MIN_PLAYERS = 4;
-// R: how come its 6 right now shouldn't it be 8? 6(7)8
-// j: code is flexible, i think i set it to 6 for the time being
-// because it changed how much up and down i had to move the mouse
-// 8 doesn't break it
-const MAX_PLAYERS = 6;
+// Player-count and phase-timer configuration, centralized here (see ROADMAP §3).
+// Player counts follow the INSIDER.md design doc.
+export const MIN_PLAYERS = 3;
+export const MAX_PLAYERS = 8;
 
-export default MAX_PLAYERS;
+// Phase durations in ms.
+export const TIMERS = {
+    SETUP: 10000,
+    GUESSING: 18000,
+    REVEAL: 5000,
+    VOTE: 18000,
+    TIE_BREAK: 15000,
+};

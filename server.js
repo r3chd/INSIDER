@@ -92,9 +92,14 @@ app.prepare().then(() => {
             // create member player
             const player = new Player(socket, playerName, Roles.ROOM.MEMBER);
 
-            // add player to room
+            // add player to room, refusing if the room is already at capacity
+            const result = gameManager.addPlayer(targetGame, player);
+            if (!result.ok) {
+                socket.emit("joinError", { reason: result.reason, code });
+                return;
+            }
+
             players.set(socket.id, player);
-            gameManager.addPlayer(targetGame, player)
             socket.join(code);
             currentRoomCode = code;
 

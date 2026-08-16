@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { socket } from "../../socket.js";
 import styles from "./PlayerDisplay.module.css";
-import MAX_PLAYERS from "../constants/gameParam.js";
+import { MAX_PLAYERS } from "../constants/gameParam.js";
 import PlayerCard from "./PlayerCard.jsx"
 
 export default function PlayerDisplay({showEmpty=true, guessingPlayer, onCardClick, room}) { // Arguments needed here in for loop

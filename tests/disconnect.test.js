@@ -111,7 +111,6 @@ function makeMidRound(roles) {
 
 // a full minimum-size table mid-round
 const FULL_ROLES = {
-  host: Roles.GAME.COMMONER,
   m: Roles.GAME.MASTER,
   ins: Roles.GAME.INSIDER,
   c1: Roles.GAME.COMMONER,
@@ -125,7 +124,7 @@ test("a player leaving in the lobby never ends a round", () => {
 });
 
 test("a commoner leaving that drops the room below the minimum ends the round", () => {
-  const game = makeMidRound(FULL_ROLES); // 4 players = MIN_PLAYERS
+  const game = makeMidRound(FULL_ROLES); // 3 players = MIN_PLAYERS
   const leaver = game.connectedPlayers.get("c1");
   game.removePlayer(leaver); // now MIN_PLAYERS - 1
   assert.ok(game.connectedPlayers.size < MIN_PLAYERS);
@@ -134,7 +133,7 @@ test("a commoner leaving that drops the room below the minimum ends the round", 
 });
 
 test("a commoner leaving while still at the minimum keeps the round going", () => {
-  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 4 players
   const leaver = game.connectedPlayers.get("c2");
   game.removePlayer(leaver); // now exactly MIN_PLAYERS
   assert.equal(game.connectedPlayers.size, MIN_PLAYERS);
@@ -143,9 +142,9 @@ test("a commoner leaving while still at the minimum keeps the round going", () =
 });
 
 test("the Master leaving ends the round even when player count is still fine", () => {
-  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 4 players
   const leaver = game.connectedPlayers.get("m");
-  game.removePlayer(leaver); // 4 left (>= MIN_PLAYERS) but the Master is gone
+  game.removePlayer(leaver); // 3 left (>= MIN_PLAYERS) but the Master is gone
   assert.equal(game.connectedPlayers.size, MIN_PLAYERS);
   assert.equal(game.shouldEndRound(leaver), true);
   game.state.exit();
@@ -177,7 +176,7 @@ test("endRoundReason names the Master and Insider departures", () => {
 test("endRoundReason names a table that dropped below the minimum", () => {
   const game = makeMidRound(FULL_ROLES);
   const leaver = game.connectedPlayers.get("c1");
-  game.removePlayer(leaver);                       // 4 -> 3, below MIN_PLAYERS
+  game.removePlayer(leaver);                       // 3 -> 2, below MIN_PLAYERS
   assert.equal(game.endRoundReason(leaver), "too_few_players");
   game.state.exit();
 });
@@ -186,9 +185,9 @@ test("endRoundReason is null in the lobby and for a harmless departure", () => {
   const lobby = makeRoom(["host", "b", "c", "d"]);
   assert.equal(lobby.endRoundReason(lobby.connectedPlayers.get("d")), null);
 
-  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 5 players
+  const game = makeMidRound({ ...FULL_ROLES, c2: Roles.GAME.COMMONER }); // 4 players
   const leaver = game.connectedPlayers.get("c2");
-  game.removePlayer(leaver);                       // 5 -> 4, still legal
+  game.removePlayer(leaver);                       // 4 -> 3, still legal
   assert.equal(game.endRoundReason(leaver), null);
   game.state.exit();
 });

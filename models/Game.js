@@ -5,7 +5,7 @@ import { GuessingState } from "./states/GuessingState.js";
 import { RevealState } from "./states/RevealState.js"
 import { VoteState } from "./states/VoteState.js";
 import Roles from "../components/constants/rolesEnum.js"
-import { MIN_PLAYERS } from "../components/constants/gameParam.js"
+import { MIN_PLAYERS, MAX_PLAYERS } from "../components/constants/gameParam.js"
 
 export default class Game {
 
@@ -112,6 +112,11 @@ export default class Game {
     // no players left then reclaim the room code for GameManager
     isEmpty() {
         return this.#connectedPlayers.size === 0;
+    }
+
+    // room at capacity, refuse further joins (ROADMAP §3)
+    isFull() {
+        return this.#connectedPlayers.size >= MAX_PLAYERS;
     }
 
     // check if leaver role is important for gmae to work (FR-32)

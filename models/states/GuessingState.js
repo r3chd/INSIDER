@@ -1,9 +1,10 @@
 import { GameState } from "./GameState.js";
+import { TIMERS } from "../../components/constants/gameParam.js";
 
 export class GuessingState extends GameState {
 
     #game;
-    #duration = 18000;
+    #duration = TIMERS.GUESSING;
     #activeGuesserId = null;
     #previousGuesserId = null;
     #wordFound = false;

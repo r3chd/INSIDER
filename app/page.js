@@ -85,6 +85,8 @@ export default function Home() {
             setJoinError(
                 data?.reason === "room_not_found"
                     ? `No room found with code "${data.code}".`
+                    : data?.reason === "room_full"
+                    ? `Room "${data.code}" is full.`
                     : "Could not join that room."
             );
         }

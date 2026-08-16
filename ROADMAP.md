@@ -77,14 +77,29 @@ Verified with `npm test` (51/51 passing) and `npm run build` (compiles clean) af
 
 ---
 
-## 3. Reconcile & centralize player-count + timer config  ☐
+## 3. Reconcile & centralize player-count + timer config  ☑  *(done)*
 
-Relevant: FR-1, FR-10, FR-11.
-- **Min players:** design says **3**, code uses **4** (`MIN_PLAYERS`, `MIN_PLAYERS_TO_START`).
-  Pick one and apply everywhere.
-- **Max players:** design says **8**, code defines `MAX_PLAYERS = 6` and **does not enforce it
-  on join**. Enforce on join and reconcile the number.
-- Centralize these (and timer durations) in one config location instead of scattered constants.
+Relevant: FR-1, FR-10, FR-11. Resolved in favor of the design doc's numbers:
+- **Min players:** `MIN_PLAYERS = 3` (was 4). `SetupState.assignRoles` already only required 2+
+  players (Master + at least one other), so a 3-player round (Master, Insider, one Commoner) needs
+  no role-assignment changes — just the constant. The disconnect tests that hardcoded a 4-player
+  "full minimum table" (`FULL_ROLES` in `tests/disconnect.test.js`) were rewritten for the new
+  3-player minimum.
+- **Max players:** `MAX_PLAYERS = 8` (was 6), now **enforced on join**: `Game.isFull()` and
+  `GameManager.addPlayer()` (which now returns `{ ok, reason? }` instead of nothing) refuse a join
+  once the room is at capacity; `server.js`'s `joinRoom` handler emits `joinError` with
+  `reason: "room_full"` instead of seating the player, and the client shows "Room is full."
+  `MAX_PLAYERS` was also fixed to be a **named** export (it was a stray `export default`, the only
+  one in `gameParam.js`) — see the updated import in `PlayerDisplay.jsx`.
+- **Centralized:** both player-count constants and every phase-timer duration (Setup, Guessing,
+  Reveal, Vote, tie-break) now live in `components/constants/gameParam.js` as `MIN_PLAYERS`,
+  `MAX_PLAYERS`, and a `TIMERS` object; the state classes (`SetupState`, `GuessingState`,
+  `RevealState`, `VoteState`) read their `#duration`/`#tieDuration` from `TIMERS` instead of
+  hardcoding the millisecond literal locally.
+
+Covered by `tests/roomCapacity.test.js` (`isFull()`, `GameManager.addPlayer` accept/reject) plus the
+rewritten minimum-table cases in `tests/disconnect.test.js`. Verified with `npm test` (54/54) and
+`npm run build`.
 
 ---
 
@@ -155,7 +170,9 @@ rotation, tie-break branches, config enforcement).
 
 **Now covered:** Master rotation (`nextMaster()`'s cursor wrap-around, `playAgain()` after a
 departure), abort reason codes (`endRoundReason` → `critical_role_left` / `too_few_players`), the
-guessing baton re-route on disconnect, and tie-candidate pruning in `VoteState.onPlayerLeft` — see
-`tests/disconnect.test.js`, `tests/guessingFlow.test.js`, `tests/voteFlow.test.js` (32 → 49 tests).
-Still hand-tested only: role assignment (incl. the unbuilt Follower role), the unbuilt tie-break
-branches (§6), and player-count/timer config enforcement (§3).
+guessing baton re-route on disconnect, tie-candidate pruning in `VoteState.onPlayerLeft`, and
+room-capacity enforcement (`Game.isFull()`, `GameManager.addPlayer` accept/reject) — see
+`tests/disconnect.test.js`, `tests/guessingFlow.test.js`, `tests/voteFlow.test.js`,
+`tests/roomCapacity.test.js` (32 → 54 tests).
+Still hand-tested only: role assignment (incl. the unbuilt Follower role) and the unbuilt tie-break
+branches (§6).

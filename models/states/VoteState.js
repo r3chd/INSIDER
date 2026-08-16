@@ -1,9 +1,10 @@
 import { GameState } from "./GameState.js"
+import { TIMERS } from "../../components/constants/gameParam.js";
 
 export class VoteState extends GameState {
     #game;
-    #duration = 18000; // main voting window
-    #tieDuration = 15000; // how long the Master has to break a tie (this is temp we'll probs make it a revote afterwards)
+    #duration = TIMERS.VOTE; // main voting window
+    #tieDuration = TIMERS.TIE_BREAK; // how long the Master has to break a tie (this is temp we'll probs make it a revote afterwards)
 
     #voteTimer;
     #tieTimer;

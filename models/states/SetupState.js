@@ -4,9 +4,10 @@ import Roles from "../../components/constants/rolesEnum.js";
 import TEXT from "../../components/constants/text.js";
 import generateRandomWords from "../../utils/wordService.js";
 import { getIo } from "../../io.js";
+import { TIMERS } from "../../components/constants/gameParam.js";
 export class SetupState extends GameState {
 
-    #duration = 10000;
+    #duration = TIMERS.SETUP;
     #game;
     #timer;
 

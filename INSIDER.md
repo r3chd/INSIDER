@@ -45,11 +45,10 @@ and send player actions.
 
 ### 3.2 Lobby & Game Start
 - **FR-9** Only the **host** sees and can use the **Start** button.
-- **FR-10** The game requires a **minimum player count** to start; the start control is
-  disabled with a clear hint until met.
-  > ⚠️ Reconcile the threshold: design doc says **3**, code uses **4**
-  > (`MIN_PLAYERS`, `MIN_PLAYERS_TO_START`). Pick one and apply everywhere.
-- **FR-11** Enforce a **maximum player count** on join (design = 8; code currently `MAX_PLAYERS = 6`).
+- **FR-10** The game requires a **minimum player count** (`MIN_PLAYERS = 3`) to start; the start
+  control is disabled with a clear hint until met.
+- **FR-11** Enforce a **maximum player count** (`MAX_PLAYERS = 8`) on join — `GameManager.addPlayer`
+  refuses the join and the joiner sees a `room_full` error.
 
 ### 3.3 Roles
 - **FR-12** On game start, assign exactly one **Master** and one **Insider**; all others are **Commoners**.

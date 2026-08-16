@@ -22,12 +22,13 @@ npm run lint       # next lint (ESLint 9) — BROKEN, don't bother: `next lint` 
 `npm test` runs the Node built-in runner (`node --test`) over `tests/*.test.js` — vote/win-resolution
 logic (`tests/voteResolution.test.js` for the pure resolver, `tests/voteFlow.test.js` for `VoteState`
 orchestration + reset), disconnect/host-handoff/round-reaction behavior (`tests/disconnect.test.js`),
-the guessing-turn baton re-route on disconnect (`tests/guessingFlow.test.js`), and phase-timer
-cancellation on `exit()` (`tests/stateTimers.test.js`). There is **no** browser/integration harness,
-so gameplay is still exercised by hand: run `npm run dev` and open multiple browser tabs — **each
-tab is a separate player/socket**. Create a room in tab 1 (note the room code), join from other
-tabs, then start from the host tab. `MIN_PLAYERS` (4) tabs are required to start. The server logs
-connections, room/role assignment, and emitted events to the terminal.
+the guessing-turn baton re-route on disconnect (`tests/guessingFlow.test.js`), phase-timer
+cancellation on `exit()` (`tests/stateTimers.test.js`), and room-capacity enforcement
+(`tests/roomCapacity.test.js`). There is **no** browser/integration harness, so gameplay is still
+exercised by hand: run `npm run dev` and open multiple browser tabs — **each tab is a separate
+player/socket**. Create a room in tab 1 (note the room code), join from other tabs, then start from
+the host tab. `MIN_PLAYERS` (3) tabs are required to start; joins past `MAX_PLAYERS` (8) are
+rejected. The server logs connections, room/role assignment, and emitted events to the terminal.
 
 ## Architecture
 
@@ -90,7 +91,8 @@ listener, which avoids missing the first event during the mount). The shared tim
 ### Roles & constants
 `components/constants/` holds enums/config imported by **both** server and client (unusual but
 intentional): `rolesEnum.js` (`ROOM.LEADER/MEMBER` vs `GAME.MASTER/INSIDER/COMMONER`),
-`gameParam.js` (`MIN_PLAYERS`, `MAX_PLAYERS`), `text.js` (overlay copy with `{{name}}` placeholders).
+`gameParam.js` (`MIN_PLAYERS`, `MAX_PLAYERS`, and the `TIMERS` object every phase's `#duration` is
+read from), `text.js` (overlay copy with `{{name}}` placeholders).
 Note the two role axes: **room role** (host vs member) is separate from **game role** (assigned at
 SetupState). `utils/wordService.js` loads `public/assets/words.txt` and returns 3 unique random words.
 
@@ -101,8 +103,6 @@ real room aggregate; README references to `RoomManager.js`/`Room.js` are stale (
 with the unused `GameContext.js` placeholder, the dead second `return` in `app/page.js`, the
 never-wired `components/Lobby/` component, and the broken `utils/insertText.js` helper, were removed —
 see ROADMAP §2).
-- **Player-count config is inconsistent**: `MIN_PLAYERS = 4` (code) vs 3 (design); `MAX_PLAYERS = 6`
-  is defined but not enforced on join.
 - **`VoteState` is now implemented** (tally → win resolution → Master-decides tie-break → `result`,
   plus host Play Again / Return to Lobby). Still missing: the **Follower role** and a **runoff
   re-vote** (ties are settled by the Master, not a second vote). The Master cannot be voted out,
