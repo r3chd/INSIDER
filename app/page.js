@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import { socket } from "../socket.js";
 
 import Menu from '../components/menu/Menu.jsx';
-import Lobby from '../components/Lobby/Lobby.jsx';
 import Game from '../components/Game/Game.jsx';
 import styles from './style.module.css';
 
@@ -120,32 +119,6 @@ export default function Home() {
                 )}
 
               {activeView === 'game' && <Game fillRef = {timerFillRef} room={room} />}
-
-              <p>Transport: { transport }</p>
-            </div>
-          </div>
-      </div>
-    </div>
-  );
-
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.timerBack}>
-        <div ref={timerFillRef} className={styles.timerFill}> </div>
-        {/* this is the timer fill */}
-          <div className={styles.main}>
-              <div className={styles.logo}><img src='/assets/templogo.svg'></img> <p>insider</p></div>
-            
-            <div className={styles.content}>
-              <Menu isActive={activeView === 'menu'}  
-                handleCreate={handleCreate} 
-                handleJoin={handleJoin} /> 
-              <Lobby 
-                isActive={activeView === 'lobby'} 
-              />
-              <Game isActive={activeView === 'game'} 
-                fillRef = {timerFillRef} />
 
               <p>Transport: { transport }</p>
             </div>

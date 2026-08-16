@@ -52,21 +52,28 @@ leaves, host leaves, last player leaves, voter leaves) are the older half of
 
 ---
 
-## 2. Clean up dead code  ☐  *(next step)*
+## 2. Clean up dead code  ☑  *(done)*
 
-Remove/retire code that conflicts with the live App Router build:
-- `models/states/GameContext.js` — unused placeholder.
-- `models/Room.js` — fully commented out (`Game.js` is the real room aggregate).
-- `app/page.js` — has a second, dead `return` block (only the first renders).
+Removed the code that conflicted with the live App Router build:
+- `models/states/GameContext.js` — unused placeholder. Deleted.
+- `models/Room.js` — fully commented out (`Game.js` is the real room aggregate). Deleted.
+- `app/page.js` — had a second, dead `return` block (only the first ever rendered). Removed, along
+  with the now-unused `Lobby` import.
+- `components/Lobby/` (`Lobby.jsx` + `Lobby.module.css`) — found while removing the dead `return`
+  above: the component was entirely commented out (same pattern as `Room.js`) and its only call
+  site was the dead block. Deleted the directory.
 - `utils/insertText.js` — dead: imports a non-existent named `{ TEXT }` from
   `components/constants/text.js` (which only has a default export, so the import is `undefined`),
   and its replace regex matches the literal string `{{varName}}` rather than interpolating the
   variable name, so it could never have substituted a real placeholder like `{{name}}` anyway.
-- `npm run lint` is stale and broken: `next lint` was removed in recent Next.js versions, so the
-  script fails immediately (`Invalid project directory provided, no such directory: .../lint`).
-  Confirmed pre-existing, not caused by any work on `disconnect-round-reactions` — it fails the
-  same way on the pre-branch baseline (`8433f96`). Not fixed here, just flagged so `npm run lint`
-  in `CLAUDE.md` isn't trusted at face value.
+  Deleted.
+- `npm run lint` is still stale and broken: `next lint` was removed in recent Next.js versions, so
+  the script fails immediately (`Invalid project directory provided, no such directory: .../lint`).
+  Confirmed pre-existing, not caused by this cleanup or by `disconnect-round-reactions` — it failed
+  the same way on the pre-branch baseline (`8433f96`). Left as-is; `npm run lint` in `CLAUDE.md`
+  still shouldn't be trusted at face value.
+
+Verified with `npm test` (51/51 passing) and `npm run build` (compiles clean) after the removals.
 
 ---
 

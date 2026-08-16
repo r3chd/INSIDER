@@ -96,11 +96,11 @@ SetupState). `utils/wordService.js` loads `public/assets/words.txt` and returns 
 
 ## Gotchas / known dead code
 
-The README's "Project Structure" is partly aspirational — trust the code over it:
-- **`models/Room.js` is entirely commented out.** `Game.js` is the real room aggregate.
-  README references to `RoomManager.js`/`Room.js` are stale.
-- **`models/states/GameContext.js` is an unused placeholder.**
-- **`app/page.js` has two `return` statements** — only the first renders; the second block is dead.
+The README's "Project Structure" is partly aspirational — trust the code over it. `Game.js` is the
+real room aggregate; README references to `RoomManager.js`/`Room.js` are stale (that file, along
+with the unused `GameContext.js` placeholder, the dead second `return` in `app/page.js`, the
+never-wired `components/Lobby/` component, and the broken `utils/insertText.js` helper, were removed —
+see ROADMAP §2).
 - **Player-count config is inconsistent**: `MIN_PLAYERS = 4` (code) vs 3 (design); `MAX_PLAYERS = 6`
   is defined but not enforced on join.
 - **`VoteState` is now implemented** (tally → win resolution → Master-decides tie-break → `result`,
